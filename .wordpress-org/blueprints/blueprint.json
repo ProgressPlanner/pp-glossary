@@ -11,8 +11,11 @@
             "step": "login"
         },
         {
-            "step": "importFile",
-            "file": "blueprint.xml"
+            "step": "importWxr",
+            "file": {
+                "resource": "url",
+                "url": "https://progressplanner.com/research/pp-glossary.xml"
+            }
         }
     ]
 }
