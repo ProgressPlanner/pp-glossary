@@ -1,5 +1,5 @@
 {
-    "landingPage": "/wp-admin/",
+    "landingPage": "/fair/",
     "features": {
         "networking": true
     },
@@ -20,7 +20,7 @@
         {
             "step": "setSiteOptions",
             "options": {
-                "pp_glossary_settings": "{\"glossary_page\":10}"
+                "pp_glossary_settings": "a:1:{s:13:\"glossary_page\";i:10;}"
             }
         }
     ]
