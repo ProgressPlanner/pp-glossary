@@ -18,14 +18,10 @@
             }
         },
         {
-            "steps": [
-                {
-                    "step": "setSiteOptions",
-                    "options": {
-                        "pp_glossary_settings": "a:1:{s:13:\"glossary_page\";i:10;}"
-                    }
-                }
-            ]
+            "step": "setSiteOptions",
+            "options": {
+                "pp_glossary_settings": "a:1:{s:13:\"glossary_page\";i:10;}"
+            }
         }
     ]
 }
