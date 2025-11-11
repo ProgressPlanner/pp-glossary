@@ -168,30 +168,6 @@ The plugin follows WCAG 2.1 Level AA guidelines:
 - `cursor: help` to indicate interactive terms
 - Color contrast ratios meet AA standards
 
-## File Structure
-
-```
-pp-glossary/
-├── assets/
-│   ├── css/
-│   │   └── glossary.css         # All plugin styles
-│   └── js/
-│       └── glossary.js           # Hover behavior and accessibility
-├── blocks/
-│   └── glossary-list/
-│       ├── block.json            # Block configuration
-│       └── editor.js             # Block editor interface
-├── includes/
-│   ├── meta-boxes.php            # Custom meta boxes for glossary fields
-│   ├── blocks.php                # Block registration and rendering
-│   ├── content-filter.php        # Content filtering and term replacement
-│   ├── post-type.php             # Custom post type registration
-│   └── settings.php              # Settings page and options
-├── pp-glossary.php               # Main plugin file
-├── CLAUDE.md                     # AI assistant guidance
-└── README.md                     # This file
-```
-
 ## Development
 
 ### No Build Process
@@ -209,16 +185,6 @@ To check code:
 composer install
 composer run phpcs
 ```
-
-### Testing Checklist
-
-- [ ] Different WordPress themes
-- [ ] Various content types (posts, pages)
-- [ ] Multiple glossary entries with overlapping terms
-- [ ] Keyboard-only navigation
-- [ ] Screen readers (NVDA, JAWS, VoiceOver)
-- [ ] Touch devices
-- [ ] Different viewport sizes
 
 ## License
 

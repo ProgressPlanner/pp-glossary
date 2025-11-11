@@ -1,5 +1,5 @@
 {
-    "landingPage": "/wp-admin/",
+    "landingPage": "/fair/",
     "features": {
         "networking": true
     },
@@ -9,6 +9,17 @@
     "steps": [
         {
             "step": "login"
+        },
+        {
+            "step": "importWxr",
+            "file": {
+                "resource": "url",
+                "url": "https://progressplanner.com/research/pp-glossary.xml"
+            }
+        },
+        {
+            "step": "runPHP",
+            "code": "<?php require_once '/wordpress/wp-load.php'; update_option( 'pp_glossary_settings', array( 'glossary_page' => 10 ) ); ?>"
         }
     ]
 }
