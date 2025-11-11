@@ -251,7 +251,7 @@ class PP_Glossary_Content_Filter {
 				$full_url     = $glossary_page_url . '#' . $entry_anchor;
 
 				$popover_html .= sprintf(
-					'<p><a href="%s">Read more about %s</a></p>',
+					'<p><a href="%s">Read more about <strong>%s</strong></a></p>',
 					esc_url( $full_url ),
 					esc_html( $title )
 				);
