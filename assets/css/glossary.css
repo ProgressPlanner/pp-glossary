@@ -85,7 +85,7 @@ aside[popover]::backdrop {
 	background-color: rgba(0, 0, 0, 0.1);
 }
 
-aside[popover] strong {
+aside[popover] .glossary-title {
 	display: block;
 	font-size: 1.05rem;
 	font-weight: 600;

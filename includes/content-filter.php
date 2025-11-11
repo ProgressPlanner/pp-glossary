@@ -235,7 +235,7 @@ class PP_Glossary_Content_Filter {
 			esc_attr( $anchor_name )
 		);
 
-		$popover_html .= sprintf( '<strong>%s</strong>', $title );
+		$popover_html .= sprintf( '<strong class="glossary-title">%s</strong>', $title );
 
 		if ( ! empty( $entry['short_description'] ) ) {
 			$popover_html .= sprintf( '<p>%s</p>', esc_html( $entry['short_description'] ) );
