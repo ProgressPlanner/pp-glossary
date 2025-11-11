@@ -1,0 +1,14 @@
+{
+    "landingPage": "/wp-admin/",
+    "features": {
+        "networking": true
+    },
+    "plugins": [
+        "pp-glossary"
+    ],
+    "steps": [
+        {
+            "step": "login"
+        }
+    ]
+}

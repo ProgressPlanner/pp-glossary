@@ -1,0 +1,169 @@
+<?php
+/**
+ * Block Registration for Glossary
+ *
+ * @package PP_Glossary
+ */
+
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
+/**
+ * Class PP_Glossary_Blocks
+ */
+class PP_Glossary_Blocks {
+
+	/**
+	 * Initialize blocks
+	 */
+	public static function init() {
+		add_action( 'init', array( __CLASS__, 'register_blocks' ) );
+	}
+
+	/**
+	 * Register blocks
+	 */
+	public static function register_blocks() {
+		// Register the editor script
+		wp_register_script(
+			'pp-glossary-block-editor',
+			PP_GLOSSARY_PLUGIN_URL . 'blocks/glossary-list/editor.js',
+			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ),
+			PP_GLOSSARY_VERSION,
+			true
+		);
+
+		// Register the block type
+		register_block_type(
+			PP_GLOSSARY_PLUGIN_DIR . 'blocks/glossary-list',
+			array(
+				'editor_script'   => 'pp-glossary-block-editor',
+				'render_callback' => array( __CLASS__, 'render_glossary_list_block' ),
+			)
+		);
+	}
+
+	/**
+	 * Render glossary list block
+	 *
+	 * @param array $attributes Block attributes.
+	 * @return string Block HTML.
+	 */
+	public static function render_glossary_list_block( $attributes ) {
+		$grouped_entries = self::get_grouped_entries();
+
+		ob_start();
+		?>
+		<div class="pp-glossary-block">
+			<?php if ( ! empty( $grouped_entries ) ) : ?>
+				<nav class="glossary-navigation" aria-label="<?php esc_attr_e( 'Glossary alphabet navigation', 'pp-glossary' ); ?>">
+					<ul class="glossary-alphabet">
+						<?php foreach ( $grouped_entries as $letter => $entries ) : ?>
+							<li>
+								<a href="#letter-<?php echo esc_attr( strtolower( $letter ) ); ?>">
+									<?php echo esc_html( $letter ); ?>
+								</a>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				</nav>
+
+				<div class="glossary-entries">
+					<?php foreach ( $grouped_entries as $letter => $entries ) : ?>
+						<section class="glossary-letter-section" id="letter-<?php echo esc_attr( strtolower( $letter ) ); ?>">
+							<h3 class="glossary-letter-heading"><?php echo esc_html( $letter ); ?></h3>
+
+							<?php foreach ( $entries as $entry ) : ?>
+								<article id="<?php echo esc_attr( $entry['slug'] ); ?>" class="glossary-entry">
+									<h4 class="glossary-entry-title">
+										<?php echo esc_html( $entry['title'] ); ?>
+									</h4>
+
+									<?php if ( ! empty( $entry['synonyms'] ) && is_array( $entry['synonyms'] ) ) : ?>
+										<div class="glossary-synonyms">
+											<span class="synonyms-label"><?php esc_html_e( 'Also known as:', 'pp-glossary' ); ?></span>
+											<?php
+											$synonym_terms = array();
+											foreach ( $entry['synonyms'] as $synonym ) {
+												if ( ! empty( $synonym ) ) {
+													$synonym_terms[] = esc_html( $synonym );
+												}
+											}
+											echo esc_html( implode( ', ', $synonym_terms ) );
+											?>
+										</div>
+									<?php endif; ?>
+
+									<?php if ( ! empty( $entry['long_description'] ) ) : ?>
+										<div class="glossary-long-description">
+											<?php echo wp_kses_post( $entry['long_description'] ); ?>
+										</div>
+									<?php endif; ?>
+								</article>
+							<?php endforeach; ?>
+						</section>
+					<?php endforeach; ?>
+				</div>
+
+			<?php else : ?>
+				<p><?php esc_html_e( 'No glossary entries found.', 'pp-glossary' ); ?></p>
+			<?php endif; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Get glossary entries grouped by first letter
+	 *
+	 * @return array Grouped glossary entries.
+	 */
+	private static function get_grouped_entries() {
+		$grouped = array();
+
+		$query = new WP_Query(
+			array(
+				'post_type'      => 'pp_glossary',
+				'posts_per_page' => -1,
+				'post_status'    => 'publish',
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			)
+		);
+
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$title  = get_the_title();
+				$letter = strtoupper( substr( $title, 0, 1 ) );
+
+				// Handle numbers and special characters
+				if ( ! preg_match( '/[A-Z]/', $letter ) ) {
+					$letter = '#';
+				}
+
+				if ( ! isset( $grouped[ $letter ] ) ) {
+					$grouped[ $letter ] = array();
+				}
+
+				$post_id = get_the_ID();
+				$grouped[ $letter ][] = array(
+					'id'                => $post_id,
+					'slug'              => sanitize_title( $title ),
+					'title'             => $title,
+					'short_description' => get_post_meta( $post_id, '_pp_glossary_short_description', true ),
+					'long_description'  => get_post_meta( $post_id, '_pp_glossary_long_description', true ),
+					'synonyms'          => get_post_meta( $post_id, '_pp_glossary_synonyms', true ),
+				);
+			}
+			wp_reset_postdata();
+		}
+
+		// Sort by letter
+		ksort( $grouped );
+
+		return $grouped;
+	}
+}

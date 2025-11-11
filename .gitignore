@@ -1,0 +1,29 @@
+# WordPress
+.DS_Store
+*.log
+*.sql
+*.sqlite
+wp-config.php
+wp-content/uploads/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+
+# Node
+node_modules/
+npm-debug.log
+
+# Composer
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db

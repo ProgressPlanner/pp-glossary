@@ -1,0 +1,15 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pp-glossary/glossary-list",
+	"title": "Glossary List",
+	"category": "widgets",
+	"icon": "book-alt",
+	"description": "Display an alphabetical list of all glossary entries.",
+	"keywords": ["glossary", "terms", "definitions", "dictionary"],
+	"textdomain": "pp-glossary",
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	}
+}

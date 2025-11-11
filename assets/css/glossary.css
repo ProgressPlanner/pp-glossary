@@ -1,0 +1,269 @@
+/**
+ * Glossary Styles
+ *
+ * @package PP_Glossary
+ */
+
+/* ==========================================================================
+   Glossary Term Spans
+   ========================================================================== */
+
+dfn {
+	font-style: normal;
+}
+
+dfn.pp-glossary-term span {
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-style: dotted;
+	text-decoration-thickness: 1px;
+	text-decoration-color: var(--glossary-underline-color, rgba(0, 0, 0, 0.4));
+	text-underline-offset: 3px;
+	cursor: help;
+	font-weight: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	border-bottom: none;
+}
+
+dfn.pp-glossary-term span:hover,
+dfn.pp-glossary-term span:focus {
+	text-decoration-color: var(--glossary-underline-hover-color, rgba(0, 0, 0, 0.7));
+}
+
+dfn.pp-glossary-term span:focus-visible {
+	outline: 2px solid var(--glossary-focus-color, #005a87);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+/* ==========================================================================
+   Popover Styles
+   ========================================================================== */
+
+aside[popover] {
+	position: fixed;
+	margin: 0;
+	border: 1px solid var(--glossary-border-color, #ddd);
+	border-radius: 8px;
+	padding: 1rem;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+	background-color: var(--glossary-bg-color, #fff);
+	max-width: min(90vw, 400px);
+	color: var(--glossary-text-color, #333);
+	font-size: 0.95rem;
+	line-height: 1.5;
+}
+
+aside[popover]::backdrop {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+aside[popover] strong {
+	display: block;
+	font-size: 1.05rem;
+	font-weight: 600;
+	color: var(--glossary-heading-color, #000);
+	margin-bottom: 0.5rem;
+}
+
+aside[popover] > p {
+	margin: 0.5rem 0 0 0;
+}
+
+aside[popover] > p:first-of-type {
+	margin-top: 0;
+}
+
+aside[popover] > p:last-of-type {
+	margin-bottom: 0;
+}
+
+aside[popover] > p a {
+	color: var(--glossary-link-color, #0073aa);
+	text-decoration: none;
+	font-weight: 500;
+	border-bottom: 1px solid transparent;
+	transition: border-color 0.2s ease;
+}
+
+aside[popover] > p a:hover,
+aside[popover] > p a:focus {
+	border-bottom-color: currentColor;
+}
+
+aside[popover] > p a:focus-visible {
+	outline: 2px solid var(--glossary-focus-color, #005a87);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+/* ==========================================================================
+   Glossary Block Styles
+   ========================================================================== */
+
+.pp-glossary-block {
+	margin: 2rem 0;
+}
+
+.pp-glossary-block .glossary-header {
+	margin-bottom: 2rem;
+	padding-bottom: 1rem;
+	border-bottom: 2px solid var(--glossary-border-color, #ddd);
+}
+
+.pp-glossary-block .glossary-title {
+	font-size: 2.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.glossary-navigation {
+	margin: 2rem 0;
+	position: sticky;
+	top: 0;
+	background-color: var(--glossary-nav-bg, #fff);
+	padding: 1rem 0;
+	border-top: 1px solid var(--glossary-border-color, #ddd);
+	border-bottom: 1px solid var(--glossary-border-color, #ddd);
+	z-index: 10;
+}
+
+.glossary-alphabet {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	justify-content: center;
+}
+
+.glossary-alphabet li a {
+	display: inline-block;
+	padding: 0.5rem 0.75rem;
+	background-color: var(--glossary-letter-bg, #f5f5f5);
+	color: var(--glossary-letter-color, #333);
+	text-decoration: none;
+	border-radius: 4px;
+	font-weight: 600;
+	transition: all 0.2s ease;
+	min-width: 40px;
+	text-align: center;
+}
+
+.glossary-alphabet li a:hover,
+.glossary-alphabet li a:focus {
+	background-color: var(--glossary-letter-hover-bg, #0073aa);
+	color: var(--glossary-letter-hover-color, #fff);
+}
+
+.glossary-alphabet li a:focus-visible {
+	outline: 2px solid var(--glossary-focus-color, #005a87);
+	outline-offset: 2px;
+}
+
+.glossary-entries {
+	margin-top: 2rem;
+}
+
+.glossary-letter-section {
+	margin-bottom: 3rem;
+	scroll-margin-top: 100px;
+}
+
+.glossary-letter-heading {
+	font-size: 2rem;
+	margin-bottom: 1.5rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid var(--glossary-border-color, #ddd);
+	color: var(--glossary-heading-color, #000);
+}
+
+.glossary-entry {
+	margin-bottom: 2rem;
+	padding: 1.5rem;
+	background-color: var(--glossary-entry-bg, #f9f9f9);
+	border-radius: 8px;
+	border-left: 4px solid var(--glossary-accent-color, #0073aa);
+}
+
+.glossary-entry-title {
+	font-size: 1.5rem;
+	margin-top: 0;
+	margin-bottom: 0.75rem;
+	color: var(--glossary-heading-color, #000);
+}
+
+.glossary-synonyms {
+	font-size: 0.9rem;
+	color: var(--glossary-meta-color, #666);
+	margin-bottom: 0.75rem;
+	font-style: italic;
+}
+
+.glossary-synonyms .synonyms-label {
+	font-weight: 600;
+	font-style: normal;
+}
+
+.glossary-short-description {
+	font-weight: 500;
+	color: var(--glossary-text-color, #333);
+	margin-bottom: 1rem;
+}
+
+.glossary-long-description {
+	color: var(--glossary-text-color, #555);
+}
+
+.glossary-long-description p:first-child {
+	margin-top: 0;
+}
+
+.glossary-long-description p:last-child {
+	margin-bottom: 0;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+	.glossary-alphabet {
+		gap: 0.25rem;
+	}
+
+	.glossary-alphabet li a {
+		padding: 0.4rem 0.6rem;
+		min-width: 35px;
+		font-size: 0.9rem;
+	}
+
+	.glossary-letter-heading {
+		font-size: 1.5rem;
+	}
+
+	.glossary-entry-title {
+		font-size: 1.25rem;
+	}
+
+	.pp-glossary-block .glossary-title {
+		font-size: 2rem;
+	}
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+	aside[popover],
+	.glossary-navigation {
+		display: none;
+	}
+
+	dfn.pp-glossary-term span {
+		text-decoration: none;
+		cursor: inherit;
+	}
+}
