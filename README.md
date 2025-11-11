@@ -164,17 +164,26 @@ The glossary block itself includes Schema.org structured data (Microdata when Yo
 
 ### Styling
 
-The plugin uses CSS custom properties for easy theming:
+The plugin uses CSS custom properties for easy theming, with their defaults listed:
 
 ```css
 :root {
   --glossary-underline-color: rgba(0, 0, 0, 0.4);
   --glossary-underline-hover-color: rgba(0, 0, 0, 0.7);
+  --glossary-focus-color: #005a87;
   --glossary-bg-color: #fff;
   --glossary-border-color: #ddd;
-  --glossary-accent-color: #0073aa;
+  --glossary-text-color: #333;
+  --glossary-heading-color: #000;
   --glossary-link-color: #0073aa;
-  /* ... and more */
+  --glossary-accent-color: #0073aa;
+  --glossary-nav-bg: #fff;
+  --glossary-letter-bg: #f5f5f5;
+  --glossary-letter-color: #333;
+  --glossary-letter-hover-bg: #0073aa;
+  --glossary-letter-hover-color: #fff;
+  --glossary-entry-bg: #f9f9f9;
+  --glossary-meta-color: #666;
 }
 ```
 
