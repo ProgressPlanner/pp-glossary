@@ -26,7 +26,8 @@ pp-glossary/
 │   ├── meta-boxes.php           # PP_Glossary_Meta_Boxes class - Custom meta boxes
 │   ├── content-filter.php       # PP_Glossary_Content_Filter class - Term replacement
 │   ├── settings.php             # PP_Glossary_Settings class - Settings page
-│   └── blocks.php               # PP_Glossary_Blocks class - Block registration
+│   ├── blocks.php               # PP_Glossary_Blocks class - Block registration
+│   └── schema.php               # PP_Glossary_Schema class - Schema.org integration
 ├── blocks/
 │   └── glossary-list/
 │       ├── block.json           # Block metadata
@@ -72,6 +73,13 @@ pp-glossary/
    - Displays all entries grouped alphabetically with navigation
    - Supports wide and full alignment
    - Shows only long description (short description only in popovers)
+
+6. **Schema.org Integration** (`includes/schema.php`)
+   - Detects if Yoast SEO is active using `defined('WPSEO_VERSION')`
+   - With Yoast SEO: Hooks into `wpseo_schema_graph` filter to add JSON-LD
+   - Without Yoast SEO: Outputs Microdata markup in HTML
+   - Implements DefinedTermSet (glossary) and DefinedTerm (entries) schemas
+   - Methods: `add_to_yoast_schema_graph()`, `get_microdata_attributes()`, `get_entry_microdata_attributes()`, `get_itemprop()`
 
 ## Data Storage
 
@@ -155,6 +163,114 @@ The plugin uses CSS Anchor Positioning for automatic popover placement (`assets/
 **Browser Support:**
 - Chrome/Edge 125+ (full support)
 - Safari/Firefox (not yet supported, popovers still display but may not position optimally)
+
+## Schema.org Integration
+
+The plugin provides rich structured data for glossary entries using Schema.org's DefinedTerm and DefinedTermSet types.
+
+### Implementation Strategy
+
+**Dual-Mode Output:**
+1. **Yoast SEO Active**: Integrates with Yoast's schema graph (JSON-LD format)
+2. **Yoast SEO Inactive**: Outputs Microdata markup in HTML
+
+This ensures compatibility regardless of whether Yoast SEO is installed.
+
+### Yoast SEO Integration
+
+When `WPSEO_VERSION` is defined:
+- Hooks into `wpseo_schema_graph` filter (priority 10)
+- Adds DefinedTermSet to the graph with all DefinedTerm entries nested inside
+- Only runs on the glossary page (checks `get_glossary_page_id()`)
+- Output format: JSON-LD via Yoast's graph system
+
+**Schema Structure (JSON-LD):**
+```json
+{
+  "@type": "DefinedTermSet",
+  "@id": "https://example.com/glossary/#glossary",
+  "name": "Glossary Page Title",
+  "description": "Page excerpt",
+  "hasDefinedTerm": [
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://example.com/glossary/#term-slug",
+      "name": "Term Title",
+      "description": "Short description",
+      "text": "Long description (stripped of HTML)",
+      "url": "https://example.com/glossary/#term-slug",
+      "termCode": "Synonym1, Synonym2",
+      "inDefinedTermSet": "https://example.com/glossary/#glossary"
+    }
+  ]
+}
+```
+
+### Microdata Integration
+
+When Yoast SEO is NOT active:
+- Adds `itemscope`, `itemtype`, `itemprop` attributes to HTML elements
+- Applied directly to the glossary block container and each entry
+- All schema helper methods return empty strings when Yoast is active
+
+**HTML Output (Microdata):**
+```html
+<div class="pp-glossary-block" itemscope itemtype="https://schema.org/DefinedTermSet" itemid="...">
+  <meta itemprop="name" content="Glossary Title">
+
+  <article itemscope itemtype="https://schema.org/DefinedTerm" itemprop="hasDefinedTerm">
+    <link itemprop="url" href="...">
+    <h4 itemprop="name">Term Title</h4>
+    <meta itemprop="description" content="Short description">
+    <span itemprop="termCode">Synonyms</span>
+    <div itemprop="text">Long description</div>
+  </article>
+</div>
+```
+
+### Schema Properties Mapping
+
+| Schema Property | WordPress Data | Location |
+|----------------|----------------|----------|
+| `name` | Entry title | `get_the_title()` |
+| `description` | Short description | `_pp_glossary_short_description` meta |
+| `text` | Long description (HTML stripped for JSON-LD) | `_pp_glossary_long_description` meta |
+| `url` | Anchor link | `{glossary_page_url}#{slug}` |
+| `termCode` | Synonyms (comma-separated) | `_pp_glossary_synonyms` meta |
+| `inDefinedTermSet` | Parent glossary reference | `{glossary_page_url}#glossary` |
+
+### Key Methods
+
+**`PP_Glossary_Schema::add_to_yoast_schema_graph($graph, $context)`**
+- Adds glossary to Yoast's schema graph
+- Returns modified `$graph` array with DefinedTermSet added
+
+**`PP_Glossary_Schema::get_microdata_attributes($entries, $page_id)`**
+- Returns microdata attributes for glossary container
+- Empty string if Yoast SEO is active
+
+**`PP_Glossary_Schema::get_entry_microdata_attributes($entry)`**
+- Returns microdata attributes for individual entry
+- Empty string if Yoast SEO is active
+
+**`PP_Glossary_Schema::get_itemprop($prop)`**
+- Returns itemprop attribute for a property name
+- Empty string if Yoast SEO is active
+
+### Detection Logic
+
+```php
+if ( defined( 'WPSEO_VERSION' ) ) {
+    // Use Yoast integration (JSON-LD)
+} else {
+    // Use Microdata
+}
+```
+
+This check is performed:
+- In `init()` to determine which hooks to add
+- In all helper methods to determine output
+- Ensures no duplicate schema markup
 
 ## Development Commands
 
@@ -281,6 +397,7 @@ JavaScript checks for both features and logs warnings if unavailable. Consider:
 - `wp_enqueue_scripts` - Load CSS and JavaScript
 - `admin_menu` - Add settings page
 - `admin_init` - Register settings
+- `wpseo_schema_graph` (priority 10) - Add schema to Yoast SEO graph (when Yoast is active)
 - `register_activation_hook` - Flush rewrite rules on activation
 - `register_deactivation_hook` - Clean up on deactivation
 
@@ -306,6 +423,7 @@ Code updated throughout to handle simple string array instead of nested associat
 
 ## Testing Tips
 
+### General Testing
 - Test with overlapping terms (e.g., "CLS" and "Cumulative Layout Shift")
 - Verify hover delay doesn't interfere with "Read more" clicks
 - Check keyboard navigation (Tab, Enter, Space, Escape)
@@ -314,4 +432,29 @@ Code updated throughout to handle simple string array instead of nested associat
 - Check that only first occurrence is linked per term
 - Test synonym functionality (add/remove in admin)
 - Verify glossary page doesn't highlight its own terms
-- Check popover positioning near viewport edges
+- Check popover positioning near viewport edges (CSS Anchor Positioning should handle this)
+
+### Schema Testing
+
+**With Yoast SEO:**
+1. Install and activate Yoast SEO
+2. View glossary page source
+3. Look for JSON-LD script tag with `@type: "DefinedTermSet"`
+4. Verify all entries appear in `hasDefinedTerm` array
+5. Test with [Google Rich Results Test](https://search.google.com/test/rich-results)
+6. Verify no duplicate schema markup appears
+
+**Without Yoast SEO:**
+1. Deactivate Yoast SEO
+2. View glossary page source
+3. Look for `itemscope itemtype="https://schema.org/DefinedTermSet"` on main div
+4. Verify each entry has `itemscope itemtype="https://schema.org/DefinedTerm"`
+5. Check all `itemprop` attributes are present (name, description, text, url, termCode)
+6. Test with [Google Rich Results Test](https://search.google.com/test/rich-results)
+7. Verify Microdata is properly nested
+
+**Validation:**
+- Use [Schema.org Validator](https://validator.schema.org/)
+- Use [Google Rich Results Test](https://search.google.com/test/rich-results)
+- Check for any warnings or errors
+- Verify all required properties are present
