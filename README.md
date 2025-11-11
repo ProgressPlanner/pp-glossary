@@ -187,20 +187,16 @@ The plugin uses CSS custom properties for easy theming, with their defaults list
 }
 ```
 
-### Block Customization
-
-The Glossary List block supports:
-- Wide and full alignment
-- Toggle title visibility
-- Custom title text
-
 ### Filters
 
 Modify behavior using WordPress filters:
 
 ```php
-// Modify which post types get glossary term replacement
-add_filter( 'the_content', 'your_custom_filter', 19 ); // Run before glossary filter at priority 20
+// Disable content filtering for specific post types.
+add_filter( 'pp_glossary_disabled_post_types', function( $post_types ) {
+    // Disable filtering for 'product' and 'custom_post_type'.
+    return array( 'product', 'custom_post_type' );
+} );
 ```
 
 ## Browser Support

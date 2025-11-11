@@ -50,14 +50,19 @@ class PP_Glossary_Content_Filter {
 	 * @return string Modified content.
 	 */
 	public static function filter_content( $content ) {
+		
 		// Reset counters and storage for each content piece
 		self::$popover_counter = 0;
 		self::$popovers        = array();
 		self::$helper_added    = false;
 
-		// Don't process on glossary entries themselves
-		if ( is_singular( 'pp_glossary' ) ) {
-			return $content;
+		// Check if content filtering is disabled for this post type
+		$disabled_post_types = apply_filters( 'pp_glossary_disabled_post_types', array() );
+		if ( ! empty( $disabled_post_types ) && is_array( $disabled_post_types ) ) {
+			$current_post_type = get_post_type();
+			if ( $current_post_type && in_array( $current_post_type, $disabled_post_types, true ) ) {
+				return $content;
+			}
 		}
 
 		// Don't process on the glossary page
