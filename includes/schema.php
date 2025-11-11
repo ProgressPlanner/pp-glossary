@@ -138,9 +138,9 @@ class PP_Glossary_Schema {
 			$defined_term['description'] = wp_strip_all_tags( $entry['long_description'] );
 		}
 
-		// Add synonyms as alternateName
+		// Add synonyms as alternateName (array of strings)
 		if ( ! empty( $entry['synonyms'] ) && is_array( $entry['synonyms'] ) ) {
-			$defined_term['alternateName'] = implode( ', ', $entry['synonyms'] );
+			$defined_term['alternateName'] = $entry['synonyms'];
 		}
 
 		return $defined_term;

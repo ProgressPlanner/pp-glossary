@@ -148,7 +148,9 @@ The glossary block itself includes Schema.org structured data (Microdata when Yo
 
     <div class="glossary-synonyms">
       <span class="synonyms-label">Also known as:</span>
-      <span itemprop="alternateName">Synonym 1, Synonym 2</span>
+      <span>Synonym 1, Synonym 2</span>
+      <meta itemprop="alternateName" content="Synonym 1">
+      <meta itemprop="alternateName" content="Synonym 2">
     </div>
 
     <div class="glossary-long-description" itemprop="description">
@@ -242,7 +244,7 @@ Each glossary entry includes:
 - **name**: The term title
 - **description**: Short description (shown in popovers)
 - **url**: Anchor link to the entry on the glossary page
-- **alternateName**: Synonyms (alternative terms)
+- **alternateName**: Array of synonyms (alternative terms)
 
 ## Accessibility
 

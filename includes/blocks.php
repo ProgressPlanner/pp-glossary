@@ -119,7 +119,17 @@ class PP_Glossary_Blocks {
 												}
 											}
 											?>
-											<span<?php echo PP_Glossary_Schema::get_itemprop( 'alternateName' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_html( implode( ', ', $synonym_terms ) ); ?></span>
+											<span><?php echo esc_html( implode( ', ', $synonym_terms ) ); ?></span>
+											<?php
+											// Output multiple meta tags for Microdata (array of alternateName)
+											if ( ! defined( 'WPSEO_VERSION' ) ) {
+												foreach ( $entry['synonyms'] as $synonym ) {
+													if ( ! empty( $synonym ) ) {
+														echo '<meta itemprop="alternateName" content="' . esc_attr( $synonym ) . '">';
+													}
+												}
+											}
+											?>
 										</div>
 									<?php endif; ?>
 

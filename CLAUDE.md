@@ -198,7 +198,7 @@ When `WPSEO_VERSION` is defined:
       "name": "Term Title",
       "description": "Short description or Long description (stripped of HTML)",
       "url": "https://example.com/glossary/#term-slug",
-      "alternateName": "Synonym1, Synonym2",
+      "alternateName": ["Synonym1", "Synonym2"]
     }
   ]
 }
@@ -210,6 +210,7 @@ When Yoast SEO is NOT active:
 - Adds `itemscope`, `itemtype`, `itemprop` attributes to HTML elements
 - Applied directly to the glossary block container and each entry
 - All schema helper methods return empty strings when Yoast is active
+- Arrays (like `alternateName`) are represented using multiple elements with the same `itemprop`
 
 **HTML Output (Microdata):**
 ```html
@@ -219,9 +220,12 @@ When Yoast SEO is NOT active:
   <article itemscope itemtype="https://schema.org/DefinedTerm" itemprop="hasDefinedTerm">
     <link itemprop="url" href="...">
     <h4 itemprop="name">Term Title</h4>
-    <meta itemprop="description" content="Short description">
-    <span itemprop="alternateName">Synonyms</span>
-    <div itemprop="text">Long description</div>
+    <div class="glossary-synonyms">
+      <span>Synonym1, Synonym2</span>
+      <meta itemprop="alternateName" content="Synonym1">
+      <meta itemprop="alternateName" content="Synonym2">
+    </div>
+    <div itemprop="description">Long description</div>
   </article>
 </div>
 ```
@@ -231,9 +235,9 @@ When Yoast SEO is NOT active:
 | Schema Property | WordPress Data | Location |
 |----------------|----------------|----------|
 | `name` | Entry title | `get_the_title()` |
-| `description` | Short description | `_pp_glossary_short_description` meta |
+| `description` | Short description or Long description | `_pp_glossary_short_description` or `_pp_glossary_long_description` meta |
 | `url` | Anchor link | `{glossary_page_url}#{slug}` |
-| `alternateName` | Synonyms (comma-separated) | `_pp_glossary_synonyms` meta |
+| `alternateName` | Array of synonyms | `_pp_glossary_synonyms` meta |
 
 ### Key Methods
 
@@ -267,6 +271,22 @@ This check is performed:
 - In `init()` to determine which hooks to add
 - In all helper methods to determine output
 - Ensures no duplicate schema markup
+
+### Array Handling for alternateName
+
+The `alternateName` property (synonyms) is output as an array in both formats, but using different methods:
+
+**JSON-LD (Yoast SEO):**
+- Simply assigns the PHP array directly: `$defined_term['alternateName'] = $entry['synonyms'];`
+- JSON-LD supports arrays natively: `"alternateName": ["Synonym1", "Synonym2"]`
+
+**Microdata:**
+- Outputs multiple `<meta>` tags with the same `itemprop="alternateName"`
+- Each synonym gets its own meta tag: `<meta itemprop="alternateName" content="Synonym1">`
+- Microdata parsers understand multiple properties with the same name as an array
+- Visual display shows comma-separated synonyms in a `<span>`, with hidden meta tags for schema
+
+This ensures that search engines see synonyms as an array regardless of the schema format used.
 
 ## Development Commands
 
@@ -445,9 +465,10 @@ Code updated throughout to handle simple string array instead of nested associat
 2. View glossary page source
 3. Look for `itemscope itemtype="https://schema.org/DefinedTermSet"` on main div
 4. Verify each entry has `itemscope itemtype="https://schema.org/DefinedTerm"`
-5. Check all `itemprop` attributes are present (name, description, url, alternateName)
-6. Test with [Google Rich Results Test](https://search.google.com/test/rich-results)
-7. Verify Microdata is properly nested
+5. Check all `itemprop` attributes are present (name, description, url)
+6. Verify multiple `<meta itemprop="alternateName">` tags exist for each synonym
+7. Test with [Google Rich Results Test](https://search.google.com/test/rich-results)
+8. Verify Microdata is properly nested and alternateName appears as an array
 
 **Validation:**
 - Use [Schema.org Validator](https://validator.schema.org/)
