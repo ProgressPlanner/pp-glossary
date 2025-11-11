@@ -151,13 +151,21 @@ add_filter( 'the_content', 'your_custom_filter', 19 ); // Run before glossary fi
 
 ## Browser Support
 
-The plugin uses the native Popover API with manual positioning:
+The plugin uses modern web platform features:
 
+**Popover API:**
 - Chrome/Edge 114+
 - Safari 17+
 - Firefox (experimental support behind flag)
 
-For older browsers, consider adding the [Popover API polyfill](https://github.com/oddbird/popover-polyfill).
+**CSS Anchor Positioning:**
+- Chrome/Edge 125+
+- Safari (not yet supported)
+- Firefox (not yet supported)
+
+For older browsers:
+- Consider adding the [Popover API polyfill](https://github.com/oddbird/popover-polyfill)
+- CSS Anchor Positioning gracefully degrades (popovers may not position optimally but will still be functional)
 
 ## Accessibility
 
