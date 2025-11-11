@@ -162,8 +162,7 @@ The plugin uses modern web platform features:
 - Firefox (experimental support behind flag)
 
 **CSS Anchor Positioning:**
-- Chrome/Edge 125+
-- Safari (not yet supported)
+- Chrome/Edge 125+/Safari: supported
 - Firefox (not yet supported)
 
 For older browsers:
@@ -195,10 +194,8 @@ Each glossary entry includes:
 - **@type**: DefinedTerm
 - **name**: The term title
 - **description**: Short description (shown in popovers)
-- **text**: Long description (full explanation)
 - **url**: Anchor link to the entry on the glossary page
-- **termCode**: Synonyms (alternative terms)
-- **inDefinedTermSet**: Reference to the parent glossary
+- **alternateName**: Synonyms (alternative terms)
 
 ## Accessibility
 

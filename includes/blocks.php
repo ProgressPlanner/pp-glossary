@@ -119,16 +119,12 @@ class PP_Glossary_Blocks {
 												}
 											}
 											?>
-											<span<?php echo PP_Glossary_Schema::get_itemprop( 'termCode' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_html( implode( ', ', $synonym_terms ) ); ?></span>
+											<span<?php echo PP_Glossary_Schema::get_itemprop( 'alternateName' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_html( implode( ', ', $synonym_terms ) ); ?></span>
 										</div>
 									<?php endif; ?>
 
-									<?php if ( ! empty( $entry['short_description'] ) ) : ?>
-										<meta itemprop="description" content="<?php echo esc_attr( $entry['short_description'] ); ?>">
-									<?php endif; ?>
-
 									<?php if ( ! empty( $entry['long_description'] ) ) : ?>
-										<div class="glossary-long-description"<?php echo PP_Glossary_Schema::get_itemprop( 'text' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+										<div class="glossary-long-description" <?php echo PP_Glossary_Schema::get_itemprop( 'description' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 											<?php echo wp_kses_post( $entry['long_description'] ); ?>
 										</div>
 									<?php endif; ?>

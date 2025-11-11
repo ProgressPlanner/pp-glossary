@@ -18,7 +18,13 @@
 		"wp-coding-standards/wpcs": "^3.0"
 	},
 	"scripts": {
-		"phpcs": "phpcs --standard=WordPress .",
-		"phpcbf": "phpcbf --standard=WordPress ."
+		"cs": "phpcs --standard=WordPress .",
+		"cs:fix": "phpcbf --standard=WordPress ."
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
 	}
 }

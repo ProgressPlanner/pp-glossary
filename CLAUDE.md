@@ -196,11 +196,9 @@ When `WPSEO_VERSION` is defined:
       "@type": "DefinedTerm",
       "@id": "https://example.com/glossary/#term-slug",
       "name": "Term Title",
-      "description": "Short description",
-      "text": "Long description (stripped of HTML)",
+      "description": "Short description or Long description (stripped of HTML)",
       "url": "https://example.com/glossary/#term-slug",
-      "termCode": "Synonym1, Synonym2",
-      "inDefinedTermSet": "https://example.com/glossary/#glossary"
+      "alternateName": "Synonym1, Synonym2",
     }
   ]
 }
@@ -222,7 +220,7 @@ When Yoast SEO is NOT active:
     <link itemprop="url" href="...">
     <h4 itemprop="name">Term Title</h4>
     <meta itemprop="description" content="Short description">
-    <span itemprop="termCode">Synonyms</span>
+    <span itemprop="alternateName">Synonyms</span>
     <div itemprop="text">Long description</div>
   </article>
 </div>
@@ -234,10 +232,8 @@ When Yoast SEO is NOT active:
 |----------------|----------------|----------|
 | `name` | Entry title | `get_the_title()` |
 | `description` | Short description | `_pp_glossary_short_description` meta |
-| `text` | Long description (HTML stripped for JSON-LD) | `_pp_glossary_long_description` meta |
 | `url` | Anchor link | `{glossary_page_url}#{slug}` |
-| `termCode` | Synonyms (comma-separated) | `_pp_glossary_synonyms` meta |
-| `inDefinedTermSet` | Parent glossary reference | `{glossary_page_url}#glossary` |
+| `alternateName` | Synonyms (comma-separated) | `_pp_glossary_synonyms` meta |
 
 ### Key Methods
 
@@ -449,7 +445,7 @@ Code updated throughout to handle simple string array instead of nested associat
 2. View glossary page source
 3. Look for `itemscope itemtype="https://schema.org/DefinedTermSet"` on main div
 4. Verify each entry has `itemscope itemtype="https://schema.org/DefinedTerm"`
-5. Check all `itemprop` attributes are present (name, description, text, url, termCode)
+5. Check all `itemprop` attributes are present (name, description, url, alternateName)
 6. Test with [Google Rich Results Test](https://search.google.com/test/rich-results)
 7. Verify Microdata is properly nested
 

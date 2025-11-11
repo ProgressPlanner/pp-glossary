@@ -50,10 +50,18 @@ class PP_Glossary_Schema {
 		$defined_term_set = array(
 			'@type'          => 'DefinedTermSet',
 			'@id'            => get_permalink( $glossary_page_id ) . '#glossary',
+			"isPartOf"       => array(
+				'@type' => 'WebPage',
+				'@id'   => get_permalink( $glossary_page_id ),
+			),
 			'name'           => get_the_title( $glossary_page_id ),
-			'description'    => get_the_excerpt( $glossary_page_id ),
 			'hasDefinedTerm' => array(),
 		);
+
+		$excerpt = wp_strip_all_tags( get_the_excerpt( $glossary_page_id ) );
+		if ( ! empty( $excerpt ) ) {
+			$defined_term_set['description'] = $excerpt;
+		}
 
 		// Add each entry as a DefinedTerm
 		foreach ( $entries as $entry ) {
@@ -126,17 +134,14 @@ class PP_Glossary_Schema {
 
 		// Add detailed description if available
 		if ( ! empty( $entry['long_description'] ) ) {
-			// Strip HTML tags for schema
-			$defined_term['text'] = wp_strip_all_tags( $entry['long_description'] );
+			// Strip HTML tags for schema.
+			$defined_term['description'] = wp_strip_all_tags( $entry['long_description'] );
 		}
 
-		// Add synonyms as termCode
+		// Add synonyms as alternateName
 		if ( ! empty( $entry['synonyms'] ) && is_array( $entry['synonyms'] ) ) {
-			$defined_term['termCode'] = implode( ', ', $entry['synonyms'] );
+			$defined_term['alternateName'] = implode( ', ', $entry['synonyms'] );
 		}
-
-		// Link to the DefinedTermSet
-		$defined_term['inDefinedTermSet'] = $glossary_url . '#glossary';
 
 		return $defined_term;
 	}
