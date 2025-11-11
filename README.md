@@ -1,5 +1,7 @@
 # Glossary by Progress Planner
 
+[![Try Glossary on the WordPress playground](https://img.shields.io/badge/Try%20Glossary%20on%20the%20WordPress%20Playground-%23117AC9.svg?style=for-the-badge&logo=WordPress&logoColor=ddd)](https://playground.wordpress.net/?blueprint-url=https%3A%2F%2Fprogressplanner.com%2Fresearch%2Fblueprint-glossary.php)
+
 A semantic, accessible WordPress glossary plugin that automatically links terms to hover-triggered popover definitions using native WordPress functionality.
 
 ## Features
