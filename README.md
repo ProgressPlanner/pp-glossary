@@ -93,10 +93,13 @@ The Glossary List block displays:
 
 ## HTML Structure
 
-The plugin generates semantic, accessible HTML:
+The plugin generates semantic, accessible HTML with CSS Anchor Positioning:
 
 ```html
-<dfn id="dfn-term-1" class="pp-glossary-term">
+<!-- Glossary term with anchor definition -->
+<dfn id="dfn-term-1"
+     class="pp-glossary-term"
+     style="anchor-name: --dfn-term-1;">
   <span data-glossary-popover="pop-term-1"
         aria-describedby="help-def"
         tabindex="0"
@@ -106,17 +109,56 @@ The plugin generates semantic, accessible HTML:
   </span>
 </dfn>
 
+<!-- Popover anchored to the term -->
 <aside id="pop-term-1"
        popover="manual"
        role="tooltip"
-       aria-labelledby="dfn-term-1">
-  <strong>Term</strong>
+       aria-labelledby="dfn-term-1"
+       style="position-anchor: --dfn-term-1;">
+  <strong class="glossary-title">Term</strong>
   <p>Short description of the term.</p>
-  <p><a href="/glossary/#entry-123">Read more about term</a></p>
+  <p><a href="/glossary/#term-slug">Read more about <strong>Term</strong></a></p>
 </aside>
 
+<!-- Hidden helper text for accessibility -->
 <p id="help-def" hidden>Hover or focus to see the definition of the term.</p>
 ```
+
+The glossary block itself includes Schema.org structured data (Microdata when Yoast SEO is not active, JSON-LD when Yoast SEO is active):
+
+```html
+<!-- Glossary block with schema markup -->
+<div class="pp-glossary-block"
+     itemscope
+     itemtype="https://schema.org/DefinedTermSet"
+     itemid="https://example.com/glossary/#glossary">
+
+  <meta itemprop="name" content="Glossary">
+
+  <!-- Each entry -->
+  <article id="term-slug"
+           class="glossary-entry"
+           itemprop="hasDefinedTerm"
+           itemscope
+           itemtype="https://schema.org/DefinedTerm">
+
+    <link itemprop="url" href="https://example.com/glossary/#term-slug">
+
+    <h4 class="glossary-entry-title" itemprop="name">Term Title</h4>
+
+    <div class="glossary-synonyms">
+      <span class="synonyms-label">Also known as:</span>
+      <span itemprop="alternateName">Synonym 1, Synonym 2</span>
+    </div>
+
+    <div class="glossary-long-description" itemprop="description">
+      Long description of the term...
+    </div>
+  </article>
+</div>
+```
+
+**Note**: When Yoast SEO is active, the Microdata attributes are omitted and structured data is added to Yoast's JSON-LD schema graph instead.
 
 ## Customization
 
