@@ -9,6 +9,10 @@
     "steps": [
         {
             "step": "login"
+        },
+        {
+            "step": "importFile",
+            "file": "blueprint.xml"
         }
     ]
 }
