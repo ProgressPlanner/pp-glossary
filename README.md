@@ -9,8 +9,11 @@ A semantic, accessible WordPress glossary plugin that automatically links terms 
 - **Custom Post Type**: Register glossary entries with custom fields (no content editor needed)
 - **Native WordPress Fields**: Uses WordPress custom meta boxes for field management (short description, long description, synonyms)
 - **Automatic Term Linking**: Automatically transforms the first mention of glossary terms in your content
-- **Hover-Triggered Popovers**: Display definitions on hover/focus using the native Popover API
+- **Hover-Triggered Popovers**: Display definitions on hover/focus using the native Popover API with CSS Anchor Positioning
 - **Semantic HTML**: Uses `<dfn>` and `<aside>` elements with proper ARIA attributes
+- **Schema.org Integration**: Full DefinedTerm and DefinedTermSet structured data support
+  - Integrates with Yoast SEO schema graph when available
+  - Falls back to Microdata when Yoast SEO is not active
 - **Synonyms Support**: Define alternative terms that trigger the same glossary entry
 - **Glossary Block**: Gutenberg block to display full glossary with alphabetical navigation
 - **Settings Page**: Configure which page displays the glossary
@@ -159,13 +162,40 @@ The plugin uses modern web platform features:
 - Firefox (experimental support behind flag)
 
 **CSS Anchor Positioning:**
-- Chrome/Edge 125+
-- Safari (not yet supported)
+- Chrome/Edge 125+/Safari: supported
 - Firefox (not yet supported)
 
 For older browsers:
 - Consider adding the [Popover API polyfill](https://github.com/oddbird/popover-polyfill)
 - CSS Anchor Positioning gracefully degrades (popovers may not position optimally but will still be functional)
+
+## Schema.org Structured Data
+
+The plugin automatically adds Schema.org structured data for glossary entries:
+
+### With Yoast SEO
+
+When Yoast SEO is active, the plugin integrates with the Yoast schema graph API to add:
+- **DefinedTermSet** for the glossary page
+- **DefinedTerm** for each glossary entry
+
+The structured data appears in Yoast's JSON-LD output and is compatible with Yoast's schema features.
+
+### Without Yoast SEO
+
+When Yoast SEO is not active, the plugin outputs Microdata markup directly in the HTML:
+- Uses `itemscope` and `itemtype` attributes on the glossary block
+- Each entry includes proper `itemprop` attributes for name, description, URL, and synonyms
+- Fully compliant with Schema.org DefinedTerm specification
+
+### Schema Properties
+
+Each glossary entry includes:
+- **@type**: DefinedTerm
+- **name**: The term title
+- **description**: Short description (shown in popovers)
+- **url**: Anchor link to the entry on the glossary page
+- **alternateName**: Synonyms (alternative terms)
 
 ## Accessibility
 
@@ -210,10 +240,13 @@ Developed by Joost de Valk for Progress Planner.
 - Initial release
 - Custom post type for glossary entries
 - Native WordPress custom fields (short description, long description, synonyms)
-- Hover-triggered popovers using Popover API
+- Hover-triggered popovers using Popover API with CSS Anchor Positioning
 - Automatic term linking (first occurrence only)
 - Glossary List Gutenberg block
 - Settings page for glossary page configuration
+- Schema.org structured data (DefinedTerm and DefinedTermSet)
+  - Yoast SEO integration (JSON-LD)
+  - Microdata fallback when Yoast is not active
 - Semantic, accessible HTML
 - Responsive design with CSS custom properties
 - Full keyboard and screen reader support

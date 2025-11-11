@@ -41,28 +41,6 @@ dfn.pp-glossary-term span:focus-visible {
    Popover Styles
    ========================================================================== */
 
-/* Position fallback options for anchor positioning */
-@position-try --top-left {
-	top: anchor(top);
-	bottom: auto;
-	left: anchor(left);
-	right: auto;
-}
-
-@position-try --bottom-right {
-	top: anchor(bottom);
-	bottom: auto;
-	left: auto;
-	right: anchor(right);
-}
-
-@position-try --top-right {
-	top: anchor(top);
-	bottom: auto;
-	left: auto;
-	right: anchor(right);
-}
-
 aside[popover] {
 	position: fixed;
 	margin: 0 !important;

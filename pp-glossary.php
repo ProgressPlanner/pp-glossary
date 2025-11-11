@@ -32,6 +32,7 @@ function pp_glossary_init() {
 	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/content-filter.php';
 	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/settings.php';
 	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/blocks.php';
+	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/schema.php';
 
 	// Initialize components
 	PP_Glossary_Post_Type::init();
@@ -39,6 +40,7 @@ function pp_glossary_init() {
 	PP_Glossary_Content_Filter::init();
 	PP_Glossary_Settings::init();
 	PP_Glossary_Blocks::init();
+	PP_Glossary_Schema::init();
 }
 add_action( 'plugins_loaded', 'pp_glossary_init' );
 

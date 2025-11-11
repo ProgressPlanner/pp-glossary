@@ -54,10 +54,28 @@ class PP_Glossary_Blocks {
 	public static function render_glossary_list_block( $attributes ) {
 		$grouped_entries = self::get_grouped_entries();
 
+		// Get all entries for schema
+		$all_entries = array();
+		foreach ( $grouped_entries as $letter => $entries ) {
+			$all_entries = array_merge( $all_entries, $entries );
+		}
+
+		// Get glossary page ID for schema
+		$glossary_page_id = PP_Glossary_Settings::get_glossary_page_id();
+
+		// Get schema microdata attributes (empty if Yoast SEO is active)
+		$schema_attrs = PP_Glossary_Schema::get_microdata_attributes( $all_entries, $glossary_page_id );
+
 		ob_start();
 		?>
-		<div class="pp-glossary-block">
+		<div class="pp-glossary-block"<?php echo $schema_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 			<?php if ( ! empty( $grouped_entries ) ) : ?>
+				<?php
+				// Hidden schema name for microdata
+				if ( ! defined( 'WPSEO_VERSION' ) && $glossary_page_id ) {
+					echo '<meta itemprop="name" content="' . esc_attr( get_the_title( $glossary_page_id ) ) . '">';
+				}
+				?>
 				<nav class="glossary-navigation" aria-label="<?php esc_attr_e( 'Glossary alphabet navigation', 'pp-glossary' ); ?>">
 					<ul class="glossary-alphabet">
 						<?php foreach ( $grouped_entries as $letter => $entries ) : ?>
@@ -76,8 +94,17 @@ class PP_Glossary_Blocks {
 							<h3 class="glossary-letter-heading"><?php echo esc_html( $letter ); ?></h3>
 
 							<?php foreach ( $entries as $entry ) : ?>
-								<article id="<?php echo esc_attr( $entry['slug'] ); ?>" class="glossary-entry">
-									<h4 class="glossary-entry-title">
+								<?php $entry_schema = PP_Glossary_Schema::get_entry_microdata_attributes( $entry ); ?>
+								<article id="<?php echo esc_attr( $entry['slug'] ); ?>" class="glossary-entry"<?php echo $entry_schema; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+									<?php
+									$glossary_url = PP_Glossary_Settings::get_glossary_page_url();
+									$entry_url    = $glossary_url . '#' . $entry['slug'];
+									?>
+									<?php if ( ! defined( 'WPSEO_VERSION' ) && $entry_url ) : ?>
+										<link itemprop="url" href="<?php echo esc_url( $entry_url ); ?>">
+									<?php endif; ?>
+
+									<h4 class="glossary-entry-title"<?php echo PP_Glossary_Schema::get_itemprop( 'name' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 										<?php echo esc_html( $entry['title'] ); ?>
 									</h4>
 
@@ -91,13 +118,13 @@ class PP_Glossary_Blocks {
 													$synonym_terms[] = esc_html( $synonym );
 												}
 											}
-											echo esc_html( implode( ', ', $synonym_terms ) );
 											?>
+											<span<?php echo PP_Glossary_Schema::get_itemprop( 'alternateName' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_html( implode( ', ', $synonym_terms ) ); ?></span>
 										</div>
 									<?php endif; ?>
 
 									<?php if ( ! empty( $entry['long_description'] ) ) : ?>
-										<div class="glossary-long-description">
+										<div class="glossary-long-description" <?php echo PP_Glossary_Schema::get_itemprop( 'description' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 											<?php echo wp_kses_post( $entry['long_description'] ); ?>
 										</div>
 									<?php endif; ?>
