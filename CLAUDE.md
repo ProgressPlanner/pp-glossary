@@ -85,10 +85,12 @@ Retrieved using `get_post_meta()` and saved using `update_post_meta()`.
 
 ## HTML Structure Pattern
 
-The plugin generates highly semantic, accessible HTML with hover triggers:
+The plugin generates highly semantic, accessible HTML with hover triggers and CSS Anchor Positioning:
 
 ```html
-<dfn id="dfn-{term}-{counter}" class="pp-glossary-term">
+<dfn id="dfn-{term}-{counter}"
+     class="pp-glossary-term"
+     style="anchor-name: --dfn-{term}-{counter};">
   <span data-glossary-popover="pop-{term}-{counter}"
         aria-describedby="help-def"
         tabindex="0"
@@ -101,7 +103,8 @@ The plugin generates highly semantic, accessible HTML with hover triggers:
 <aside id="pop-{term}-{counter}"
        popover="manual"
        role="tooltip"
-       aria-labelledby="dfn-{term}-{counter}">
+       aria-labelledby="dfn-{term}-{counter}"
+       style="position-anchor: --dfn-{term}-{counter};">
   <strong>{Entry Title}</strong>
   <p>{Short description}</p>
   <p><a href="{glossary_page_url}#{slug}">Read more about {term}</a></p>
@@ -115,17 +118,43 @@ Key differences from typical popover implementations:
 - Uses `<span>` with `data-glossary-popover` attribute (not button)
 - Role is `tooltip` not `note`
 - Triggered by hover/focus, not click
-- Popover positioned with JavaScript using `position: fixed`
+- Popover positioned using CSS Anchor Positioning API
+- Each dfn defines an `anchor-name` that the popover references with `position-anchor`
 
 ## JavaScript Hover Implementation
 
 The plugin uses manual popover control with hover events (`assets/js/glossary.js`):
 
-- **Hover**: Shows popover with 0ms delay, hides with 300ms delay
+- **Hover**: Shows popover with 0ms delay, hides with 500ms delay
 - **Focus**: Shows popover immediately for keyboard users
 - **Popover hover**: Clears hide timeout so users can click "Read more" link
-- **Positioning**: Custom JavaScript positions popover 4px below trigger element
+- **Positioning**: Uses CSS Anchor Positioning API for automatic positioning
 - **Keyboard**: Enter/Space toggles, Escape closes and returns focus
+
+## CSS Anchor Positioning Implementation
+
+The plugin uses CSS Anchor Positioning for automatic popover placement (`assets/css/glossary.css`):
+
+**How it works:**
+1. Each `<dfn>` element defines an anchor using inline `anchor-name: --dfn-{id};`
+2. Each popover references its anchor using inline `position-anchor: --dfn-{id};`
+3. CSS positions the popover using `anchor()` functions:
+   - `top: anchor(bottom)` - Position below the term
+   - `left: anchor(left)` - Align with left edge of term
+4. Fallback positions defined with `@position-try` rules for viewport overflow:
+   - `--top-left` - Above the term when it would overflow bottom
+   - `--bottom-right` - Below and right-aligned when it would overflow right
+   - `--top-right` - Above and right-aligned
+
+**Benefits:**
+- Browser automatically handles viewport containment
+- No JavaScript calculations needed
+- Better performance than JavaScript positioning
+- Respects scrolling and transforms automatically
+
+**Browser Support:**
+- Chrome/Edge 125+ (full support)
+- Safari/Firefox (not yet supported, popovers still display but may not position optimally)
 
 ## Development Commands
 
@@ -200,12 +229,21 @@ Terms inherit text color from surrounding content, only underline indicates glos
 
 ## Browser Compatibility
 
-Requires Popover API support:
+Requires two modern web platform features:
+
+**Popover API** (required):
 - Chrome/Edge 114+
 - Safari 17+
 - Firefox (experimental)
 
-JavaScript checks for support and logs warning if unavailable. Recommend [Popover API polyfill](https://github.com/oddbird/popover-polyfill) for older browsers.
+**CSS Anchor Positioning** (required for optimal positioning):
+- Chrome/Edge 125+
+- Safari (not yet supported)
+- Firefox (not yet supported)
+
+JavaScript checks for both features and logs warnings if unavailable. Consider:
+- [Popover API polyfill](https://github.com/oddbird/popover-polyfill) for older browsers
+- CSS Anchor Positioning gracefully degrades (popovers still show but may not position optimally)
 
 ## Common Modification Points
 
@@ -215,7 +253,7 @@ JavaScript checks for support and logs warning if unavailable. Recommend [Popove
 4. **Adjust which content types are processed**: Add conditional logic in `PP_Glossary_Content_Filter::filter_content()`
 5. **Customize block output**: Edit `PP_Glossary_Blocks::render_glossary_list_block()`
 6. **Add more custom fields**: Modify `PP_Glossary_Meta_Boxes::render_meta_box()` and `save_meta_boxes()`
-7. **Change popover positioning**: Edit `positionPopover()` in `assets/js/glossary.js`
+7. **Change popover positioning**: Modify CSS anchor positioning rules in `assets/css/glossary.css` (see `aside[popover]` and `@position-try` rules)
 
 ## Security Considerations
 

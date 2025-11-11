@@ -10,7 +10,7 @@
 	'use strict';
 
 	let hideTimeout = null;
-	const HIDE_DELAY = 300; // ms delay before hiding popover
+	const HIDE_DELAY = 500; // ms delay before hiding popover (increased for easier mouse movement)
 
 	/**
 	 * Initialize glossary functionality when DOM is ready
@@ -110,7 +110,6 @@
 			if (!popover.matches(':popover-open')) {
 				popover.showPopover();
 				trigger.setAttribute('aria-expanded', 'true');
-				positionPopover(popover, trigger);
 			}
 		} catch (error) {
 			console.error('Error showing popover:', error);
@@ -132,51 +131,6 @@
 		} catch (error) {
 			console.error('Error hiding popover:', error);
 		}
-	}
-
-	/**
-	 * Position popover near the trigger element
-	 *
-	 * @param {HTMLElement} popover The popover element
-	 * @param {HTMLElement} trigger The trigger element
-	 */
-	function positionPopover(popover, trigger) {
-		const triggerRect = trigger.getBoundingClientRect();
-		const popoverRect = popover.getBoundingClientRect();
-		const viewportWidth = window.innerWidth;
-		const viewportHeight = window.innerHeight;
-		const scrollY = window.scrollY || window.pageYOffset;
-		const scrollX = window.scrollX || window.pageXOffset;
-
-		// Small offset from trigger (reduced from 8px to 4px)
-		const offset = 4;
-
-		// Calculate position below the trigger (using fixed positioning, no scroll offset needed)
-		let top = triggerRect.bottom + offset;
-		let left = triggerRect.left;
-
-		// Adjust if popover would overflow right edge
-		if (left + popoverRect.width > viewportWidth - 16) {
-			left = Math.max(16, viewportWidth - popoverRect.width - 16);
-		}
-
-		// Adjust if popover would overflow left edge
-		if (left < 16) {
-			left = 16;
-		}
-
-		// If popover would overflow bottom, position above trigger
-		if (triggerRect.bottom + popoverRect.height + offset > viewportHeight - 16) {
-			top = triggerRect.top - popoverRect.height - offset;
-			// If it would overflow the top too, just position below anyway
-			if (top < 16) {
-				top = triggerRect.bottom + offset;
-			}
-		}
-
-		// Apply positioning (fixed position doesn't need scroll offsets)
-		popover.style.top = top + 'px';
-		popover.style.left = left + 'px';
 	}
 
 	/**
@@ -212,12 +166,19 @@
 	}
 
 	/**
-	 * Polyfill check for Popover API
+	 * Check browser support for Popover API and CSS Anchor Positioning
 	 */
 	function checkPopoverSupport() {
 		if (!HTMLElement.prototype.hasOwnProperty('popover')) {
 			console.warn(
 				'Popover API is not supported in this browser. Consider adding a polyfill for older browsers.'
+			);
+		}
+
+		// Check for CSS Anchor Positioning support
+		if (!CSS.supports('anchor-name', '--test')) {
+			console.warn(
+				'CSS Anchor Positioning is not supported in this browser. Popovers may not position correctly. Chrome 125+, Edge 125+ required.'
 			);
 		}
 	}

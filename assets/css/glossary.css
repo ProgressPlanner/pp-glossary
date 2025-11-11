@@ -41,25 +41,51 @@ dfn.pp-glossary-term span:focus-visible {
    Popover Styles
    ========================================================================== */
 
+/* Position fallback options for anchor positioning */
+@position-try --top-left {
+	top: anchor(top);
+	bottom: auto;
+	left: anchor(left);
+	right: auto;
+}
+
+@position-try --bottom-right {
+	top: anchor(bottom);
+	bottom: auto;
+	left: auto;
+	right: anchor(right);
+}
+
+@position-try --top-right {
+	top: anchor(top);
+	bottom: auto;
+	left: auto;
+	right: anchor(right);
+}
+
 aside[popover] {
 	position: fixed;
-	margin: 0;
+	margin: 0 !important;
 	border: 1px solid var(--glossary-border-color, #ddd);
 	border-radius: 8px;
 	padding: 1rem;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
 	background-color: var(--glossary-bg-color, #fff);
-	max-width: min(90vw, 400px);
+	max-width: min(90vw, 280px);
 	color: var(--glossary-text-color, #333);
 	font-size: 0.95rem;
 	line-height: 1.5;
+
+	/* CSS Anchor Positioning */
+	top: anchor(bottom);
+	left: anchor(left);
 }
 
 aside[popover]::backdrop {
 	background-color: rgba(0, 0, 0, 0.1);
 }
 
-aside[popover] strong {
+aside[popover] .glossary-title {
 	display: block;
 	font-size: 1.05rem;
 	font-weight: 600;

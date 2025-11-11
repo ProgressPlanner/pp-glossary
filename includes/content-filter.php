@@ -206,9 +206,11 @@ class PP_Glossary_Content_Filter {
 	 * @return string HTML for the term button.
 	 */
 	private static function create_term_button( $term, $unique_id, $popover_id ) {
+		$anchor_name = '--' . $unique_id;
 		return sprintf(
-			'<dfn id="%s" class="pp-glossary-term"><span data-glossary-popover="%s" aria-describedby="help-def" tabindex="0" role="button" aria-expanded="false">%s</span></dfn>',
+			'<dfn id="%s" class="pp-glossary-term" style="anchor-name: %s;"><span data-glossary-popover="%s" aria-describedby="help-def" tabindex="0" role="button" aria-expanded="false">%s</span></dfn>',
 			esc_attr( $unique_id ),
+			esc_attr( $anchor_name ),
 			esc_attr( $popover_id ),
 			esc_html( $term )
 		);
@@ -224,14 +226,16 @@ class PP_Glossary_Content_Filter {
 	 */
 	private static function create_popover( $entry, $unique_id, $popover_id ) {
 		$title = esc_html( $entry['title'] );
+		$anchor_name = '--' . $unique_id;
 
 		$popover_html = sprintf(
-			'<aside id="%s" popover="manual" role="tooltip" aria-labelledby="%s">',
+			'<aside id="%s" popover="manual" role="tooltip" aria-labelledby="%s" style="position-anchor: %s;">',
 			esc_attr( $popover_id ),
-			esc_attr( $unique_id )
+			esc_attr( $unique_id ),
+			esc_attr( $anchor_name )
 		);
 
-		$popover_html .= sprintf( '<strong>%s</strong>', $title );
+		$popover_html .= sprintf( '<strong class="glossary-title">%s</strong>', $title );
 
 		if ( ! empty( $entry['short_description'] ) ) {
 			$popover_html .= sprintf( '<p>%s</p>', esc_html( $entry['short_description'] ) );
@@ -247,9 +251,9 @@ class PP_Glossary_Content_Filter {
 				$full_url     = $glossary_page_url . '#' . $entry_anchor;
 
 				$popover_html .= sprintf(
-					'<p><a href="%s">Read more about %s</a></p>',
+					'<p><a href="%s">Read more about <strong>%s</strong></a></p>',
 					esc_url( $full_url ),
-					esc_html( strtolower( $title ) )
+					esc_html( $title )
 				);
 			}
 		}
