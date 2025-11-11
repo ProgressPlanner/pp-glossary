@@ -253,7 +253,7 @@ class PP_Glossary_Content_Filter {
 				$popover_html .= sprintf(
 					'<p><a href="%s">Read more about %s</a></p>',
 					esc_url( $full_url ),
-					esc_html( strtolower( $title ) )
+					esc_html( $title )
 				);
 			}
 		}
