@@ -6,7 +6,7 @@
  * Version: 1.0.0
  * Author: Joost de Valk
  * Author URI: https://joost.blog
- * License: GPL v2 or later
+ * License: GPL v3 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: pp-glossary
  * Requires at least: 6.0
@@ -35,6 +35,7 @@ function pp_glossary_init(): void {
 	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-settings.php';
 	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-blocks.php';
 	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-schema.php';
+	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-assets.php';
 
 	// Initialize components.
 	PP_Glossary_Post_Type::init();
@@ -43,29 +44,9 @@ function pp_glossary_init(): void {
 	PP_Glossary_Settings::init();
 	PP_Glossary_Blocks::init();
 	PP_Glossary_Schema::init();
+	PP_Glossary_Assets::init();
 }
 add_action( 'plugins_loaded', 'pp_glossary_init' );
-
-/**
- * Enqueue frontend assets
- */
-function pp_glossary_enqueue_assets(): void {
-	wp_enqueue_style(
-		'pp-glossary',
-		PP_GLOSSARY_PLUGIN_URL . 'assets/css/glossary.css',
-		[],
-		PP_GLOSSARY_VERSION
-	);
-
-	wp_enqueue_script(
-		'pp-glossary',
-		PP_GLOSSARY_PLUGIN_URL . 'assets/js/glossary.js',
-		[],
-		PP_GLOSSARY_VERSION,
-		true
-	);
-}
-add_action( 'wp_enqueue_scripts', 'pp_glossary_enqueue_assets' );
 
 /**
  * Activation hook

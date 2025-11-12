@@ -1,7 +1,7 @@
 /**
  * Glossary JavaScript
  *
- * Handles hover-based popover display and accessibility features
+ * Handles hover-based popover display and accessibility features.
  *
  * @package PP_Glossary
  */
@@ -10,10 +10,10 @@
 	'use strict';
 
 	let hideTimeout = null;
-	const HIDE_DELAY = 500; // ms delay before hiding popover (increased for easier mouse movement)
+	const HIDE_DELAY = 500;
 
 	/**
-	 * Initialize glossary functionality when DOM is ready
+	 * Initialize glossary functionality when DOM is ready.
 	 */
 	function init() {
 		setupHoverPopovers();
@@ -22,10 +22,10 @@
 	}
 
 	/**
-	 * Setup hover-based popovers for glossary terms
+	 * Setup hover-based popovers for glossary terms.
 	 */
 	function setupHoverPopovers() {
-		// Get all glossary term spans
+		// Get all glossary term spans.
 		const termSpans = document.querySelectorAll('[data-glossary-popover]');
 
 		termSpans.forEach((span) => {
@@ -36,45 +36,45 @@
 				return;
 			}
 
-			// Show popover on hover
+			// Show popover on hover.
 			span.addEventListener('mouseenter', () => {
 				clearTimeout(hideTimeout);
 				showPopover(popover, span);
 			});
 
-			// Hide popover when mouse leaves (with delay)
+			// Hide popover when mouse leaves (with delay).
 			span.addEventListener('mouseleave', () => {
 				hideTimeout = setTimeout(() => {
 					hidePopover(popover, span);
 				}, HIDE_DELAY);
 			});
 
-			// Show popover on focus (keyboard navigation)
+			// Show popover on focus (keyboard navigation).
 			span.addEventListener('focus', () => {
 				clearTimeout(hideTimeout);
 				showPopover(popover, span);
 			});
 
-			// Hide popover on blur
+			// Hide popover on blur.
 			span.addEventListener('blur', () => {
 				hideTimeout = setTimeout(() => {
 					hidePopover(popover, span);
 				}, HIDE_DELAY);
 			});
 
-			// Keep popover open when mouse is over it
+			// Keep popover open when mouse is over it.
 			popover.addEventListener('mouseenter', () => {
 				clearTimeout(hideTimeout);
 			});
 
-			// Hide when mouse leaves popover
+			// Hide when mouse leaves popover.
 			popover.addEventListener('mouseleave', () => {
 				hideTimeout = setTimeout(() => {
 					hidePopover(popover, span);
 				}, HIDE_DELAY);
 			});
 
-			// Handle keyboard interactions
+			// Handle keyboard interactions.
 			span.addEventListener('keydown', (event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
 					event.preventDefault();
@@ -89,7 +89,7 @@
 				}
 			});
 
-			// Handle keyboard navigation within popover
+			// Handle keyboard navigation within popover.
 			popover.addEventListener('keydown', (event) => {
 				if (event.key === 'Escape') {
 					hidePopover(popover, span);
@@ -100,10 +100,10 @@
 	}
 
 	/**
-	 * Show a popover
+	 * Show a popover.
 	 *
-	 * @param {HTMLElement} popover The popover element
-	 * @param {HTMLElement} trigger The trigger element
+	 * @param {HTMLElement} popover The popover element.
+	 * @param {HTMLElement} trigger The trigger element.
 	 */
 	function showPopover(popover, trigger) {
 		try {
@@ -117,10 +117,10 @@
 	}
 
 	/**
-	 * Hide a popover
+	 * Hide a popover.
 	 *
-	 * @param {HTMLElement} popover The popover element
-	 * @param {HTMLElement} trigger The trigger element
+	 * @param {HTMLElement} popover The popover element.
+	 * @param {HTMLElement} trigger The trigger element.
 	 */
 	function hidePopover(popover, trigger) {
 		try {
@@ -134,7 +134,7 @@
 	}
 
 	/**
-	 * Setup smooth scrolling for alphabet navigation
+	 * Setup smooth scrolling for alphabet navigation.
 	 */
 	function setupSmoothScrolling() {
 		const alphabetLinks = document.querySelectorAll('.glossary-alphabet a[href^="#"]');
@@ -146,41 +146,23 @@
 				const targetElement = document.getElementById(targetId);
 
 				if (targetElement) {
-					// Smooth scroll to the target
+					// Smooth scroll to the target.
 					targetElement.scrollIntoView({
 						behavior: 'smooth',
 						block: 'start',
 					});
 
-					// Update focus for keyboard navigation
+					// Update focus for keyboard navigation.
 					targetElement.setAttribute('tabindex', '-1');
 					targetElement.focus();
 
-					// Update URL without triggering scroll
+					// Update URL without triggering scroll.
 					if (history.pushState) {
 						history.pushState(null, null, `#${targetId}`);
 					}
 				}
 			});
 		});
-	}
-
-	/**
-	 * Check browser support for Popover API and CSS Anchor Positioning
-	 */
-	function checkPopoverSupport() {
-		if (!HTMLElement.prototype.hasOwnProperty('popover')) {
-			console.warn(
-				'Popover API is not supported in this browser. Consider adding a polyfill for older browsers.'
-			);
-		}
-
-		// Check for CSS Anchor Positioning support
-		if (!CSS.supports('anchor-name', '--test')) {
-			console.warn(
-				'CSS Anchor Positioning is not supported in this browser. Popovers may not position correctly. Chrome 125+, Edge 125+ required.'
-			);
-		}
 	}
 
 	// Initialize when DOM is ready
