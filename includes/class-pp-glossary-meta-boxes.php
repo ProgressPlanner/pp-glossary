@@ -202,7 +202,7 @@ class PP_Glossary_Meta_Boxes {
 	 */
 	public static function enqueue_admin_scripts( $hook ) {
 		// Only load on post edit screens for glossary entries.
-		if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ] ) ) {
+		if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
 			return;
 		}
 
