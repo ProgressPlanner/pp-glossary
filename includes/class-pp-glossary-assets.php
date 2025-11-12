@@ -47,4 +47,3 @@ class PP_Glossary_Assets {
 		);
 	}
 }
-
