@@ -79,11 +79,11 @@ class PP_Glossary_Settings {
 		}
 
 		// Check if settings were saved
-		if ( isset( $_GET['settings-updated'] ) ) {
+		if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - Nonce check not needed here.
 			add_settings_error(
 				'pp_glossary_messages',
 				'pp_glossary_message',
-				__( 'Settings saved.', 'pp-glossary' ),
+				esc_html__( 'Settings saved.', 'pp-glossary' ),
 				'updated'
 			);
 		}
@@ -119,9 +119,9 @@ class PP_Glossary_Settings {
 
 		wp_dropdown_pages(
 			array(
-				'name'              => self::OPTION_NAME . '[glossary_page]',
-				'selected'          => $page_id,
-				'show_option_none'  => __( '— Select a Page —', 'pp-glossary' ),
+				'name'              => esc_attr( self::OPTION_NAME ) . '[glossary_page]',
+				'selected'          => esc_attr( $page_id ),
+				'show_option_none'  => esc_html__( '— Select a Page —', 'pp-glossary' ),
 				'option_none_value' => '0',
 			)
 		);
