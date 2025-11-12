@@ -166,8 +166,8 @@ class PP_Glossary_Content_Filter {
 	/**
 	 * Replace first occurrence of glossary terms in content
 	 *
-	 * @param string                $content The content.
-	 * @param array<string, mixed>  $entry   The glossary entry data.
+	 * @param string               $content The content.
+	 * @param array<string, mixed> $entry   The glossary entry data.
 	 * @return string Modified content.
 	 */
 	private static function replace_first_occurrence( $content, $entry ): string {
@@ -227,9 +227,9 @@ class PP_Glossary_Content_Filter {
 	/**
 	 * Create the popover HTML
 	 *
-	 * @param array<string, mixed>  $entry       The glossary entry data.
-	 * @param string                $unique_id   The unique ID for the dfn element.
-	 * @param string                $popover_id  The popover ID.
+	 * @param array<string, mixed> $entry       The glossary entry data.
+	 * @param string               $unique_id   The unique ID for the dfn element.
+	 * @param string               $popover_id  The popover ID.
 	 * @return string HTML for the popover.
 	 */
 	private static function create_popover( $entry, $unique_id, $popover_id ): string {

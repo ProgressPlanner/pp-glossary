@@ -95,7 +95,7 @@ class PP_Glossary_Schema {
 		if ( $query->have_posts() ) {
 			while ( $query->have_posts() ) {
 				$query->the_post();
-				$post_id = (int)get_the_ID();
+				$post_id = (int) get_the_ID();
 
 				$entries[] = [
 					'id'                => $post_id,
@@ -151,7 +151,7 @@ class PP_Glossary_Schema {
 	 * This is used when Yoast SEO is not active
 	 *
 	 * @param array<int, array<string, mixed>> $entries          Array of glossary entries.
-	 * @param int                                $glossary_page_id The glossary page ID.
+	 * @param int                              $glossary_page_id The glossary page ID.
 	 * @return string Microdata attributes and invisible schema markup.
 	 */
 	public static function get_microdata_attributes( $entries, $glossary_page_id ): string {
