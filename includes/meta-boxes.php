@@ -114,7 +114,7 @@ class PP_Glossary_Meta_Boxes {
 			<div id="pp-glossary-synonyms-container">
 				<?php if ( ! empty( $synonyms ) ) : ?>
 					<?php foreach ( $synonyms as $index => $synonym ) : ?>
-						<div class="pp-glossary-synonym-row" style="margin-bottom: 10px;">
+						<div class="pp-glossary-synonym-row" style="margin-bottom: 10px;display: flex;gap: 10px;">
 							<input
 								type="text"
 								name="pp_glossary_synonyms[]"
@@ -229,7 +229,7 @@ class PP_Glossary_Meta_Boxes {
 			$('#pp-glossary-add-synonym').on('click', function(e) {
 				e.preventDefault();
 				var container = $('#pp-glossary-synonyms-container');
-				var row = $('<div class="pp-glossary-synonym-row" style="margin-bottom: 10px;">' +
+				var row = $('<div class="pp-glossary-synonym-row" style="margin-bottom: 10px;display: flex;gap: 10px;">' +
 					'<input type="text" name="pp_glossary_synonyms[]" value="" class="regular-text" placeholder="<?php echo esc_js( __( 'e.g., CLS, layout shift', 'pp-glossary' ) ); ?>">' +
 					'<button type="button" class="button pp-glossary-remove-synonym"><?php echo esc_js( __( 'Remove', 'pp-glossary' ) ); ?></button>' +
 					'</div>');

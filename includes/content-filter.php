@@ -40,7 +40,11 @@ class PP_Glossary_Content_Filter {
 	 * Initialize the content filter
 	 */
 	public static function init() {
-		add_filter( 'the_content', array( __CLASS__, 'filter_content' ), 20 );
+
+		// No need to filter content in Dashboard.
+		if ( ! is_admin() ) {
+			add_filter( 'the_content', array( __CLASS__, 'filter_content' ), 20 );
+		}
 	}
 
 	/**
@@ -256,8 +260,9 @@ class PP_Glossary_Content_Filter {
 				$full_url     = $glossary_page_url . '#' . $entry_anchor;
 
 				$popover_html .= sprintf(
-					'<p><a href="%s">Read more about <strong>%s</strong></a></p>',
+					'<p><a href="%s">%s <strong>%s</strong></a></p>',
 					esc_url( $full_url ),
+					esc_html__( 'Read more about', 'pp-glossary' ),
 					esc_html( $title )
 				);
 			}
@@ -274,6 +279,6 @@ class PP_Glossary_Content_Filter {
 	 * @return string HTML for helper text.
 	 */
 	private static function get_helper_text() {
-		return '<p id="help-def" hidden>Hover or focus to see the definition of the term.</p>';
+		return '<p id="help-def" hidden>' . esc_html__( 'Hover or focus to see the definition of the term.', 'pp-glossary' ) . '</p>';
 	}
 }
