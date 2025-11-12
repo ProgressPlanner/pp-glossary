@@ -18,16 +18,16 @@ class PP_Glossary_Meta_Boxes {
 	/**
 	 * Initialize the meta boxes
 	 */
-	public static function init() {
+	public static function init(): void {
 		add_action( 'add_meta_boxes', [ __CLASS__, 'add_meta_boxes' ] );
-		add_action( 'save_post_pp_glossary', [ __CLASS__, 'save_meta_boxes' ], 10, 2 );
+		add_action( 'save_post_pp_glossary', [ __CLASS__, 'save_meta_boxes' ], 10 );
 		add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_admin_scripts' ] );
 	}
 
 	/**
 	 * Add meta boxes for glossary entries
 	 */
-	public static function add_meta_boxes() {
+	public static function add_meta_boxes(): void {
 		add_meta_box(
 			'pp_glossary_details',
 			__( 'Glossary Entry Details', 'pp-glossary' ),
@@ -43,7 +43,7 @@ class PP_Glossary_Meta_Boxes {
 	 *
 	 * @param WP_Post $post The post object.
 	 */
-	public static function render_meta_box( $post ) {
+	public static function render_meta_box( $post ): void {
 		// Add nonce for security.
 		wp_nonce_field( 'pp_glossary_meta_box', 'pp_glossary_meta_box_nonce' );
 
@@ -143,7 +143,7 @@ class PP_Glossary_Meta_Boxes {
 	 *
 	 * @param int $post_id Post ID.
 	 */
-	public static function save_meta_boxes( $post_id ) {
+	public static function save_meta_boxes( $post_id ): void {
 		// Check nonce.
 		if ( ! isset( $_POST['pp_glossary_meta_box_nonce'] ) ) {
 			return;
@@ -199,7 +199,7 @@ class PP_Glossary_Meta_Boxes {
 	 *
 	 * @param string $hook The current admin page hook.
 	 */
-	public static function enqueue_admin_scripts( $hook ) {
+	public static function enqueue_admin_scripts( $hook ): void {
 		// Only load on post edit screens for glossary entries.
 		if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
 			return;
@@ -220,7 +220,7 @@ class PP_Glossary_Meta_Boxes {
 	/**
 	 * Render the synonyms JavaScript in the footer
 	 */
-	public static function render_synonyms_script() {
+	public static function render_synonyms_script(): void {
 		?>
 		<script type="text/javascript">
 		jQuery(document).ready(function($) {

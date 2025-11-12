@@ -23,7 +23,7 @@ class PP_Glossary_Settings {
 	/**
 	 * Initialize the settings
 	 */
-	public static function init() {
+	public static function init(): void {
 		add_action( 'admin_menu', [ __CLASS__, 'add_settings_page' ] );
 		add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
 	}
@@ -31,7 +31,7 @@ class PP_Glossary_Settings {
 	/**
 	 * Add settings page to Glossary menu
 	 */
-	public static function add_settings_page() {
+	public static function add_settings_page(): void {
 		add_submenu_page(
 			'edit.php?post_type=pp_glossary',
 			__( 'Glossary Settings', 'pp-glossary' ),
@@ -45,7 +45,7 @@ class PP_Glossary_Settings {
 	/**
 	 * Register settings
 	 */
-	public static function register_settings() {
+	public static function register_settings(): void {
 		register_setting(
 			'pp_glossary_settings_group',
 			self::OPTION_NAME,
@@ -73,7 +73,7 @@ class PP_Glossary_Settings {
 	/**
 	 * Render settings page
 	 */
-	public static function render_settings_page() {
+	public static function render_settings_page(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
@@ -106,21 +106,21 @@ class PP_Glossary_Settings {
 	/**
 	 * Render display section description
 	 */
-	public static function render_display_section() {
+	public static function render_display_section(): void {
 		echo '<p>' . esc_html__( 'Configure how and where the glossary is displayed on your site.', 'pp-glossary' ) . '</p>';
 	}
 
 	/**
 	 * Render glossary page field
 	 */
-	public static function render_glossary_page_field() {
+	public static function render_glossary_page_field(): void {
 		$settings = self::get_settings();
 		$page_id  = isset( $settings['glossary_page'] ) ? absint( $settings['glossary_page'] ) : 0;
 
 		wp_dropdown_pages(
 			[
 				'name'              => esc_attr( self::OPTION_NAME ) . '[glossary_page]',
-				'selected'          => esc_attr( $page_id ),
+				'selected'          => (string) $page_id,
 				'show_option_none'  => esc_html__( '— Select a Page —', 'pp-glossary' ),
 				'option_none_value' => '0',
 			]
@@ -134,10 +134,10 @@ class PP_Glossary_Settings {
 	/**
 	 * Sanitize settings
 	 *
-	 * @param array $input Settings input.
-	 * @return array Sanitized settings.
+	 * @param array<string, mixed> $input Settings input.
+	 * @return array<string, mixed> Sanitized settings.
 	 */
-	public static function sanitize_settings( $input ) {
+	public static function sanitize_settings( $input ): array {
 		$sanitized = [];
 
 		if ( isset( $input['glossary_page'] ) ) {
@@ -150,9 +150,9 @@ class PP_Glossary_Settings {
 	/**
 	 * Get settings
 	 *
-	 * @return array Settings.
+	 * @return array<string, mixed> Settings.
 	 */
-	public static function get_settings() {
+	public static function get_settings(): array {
 		$defaults = [
 			'glossary_page' => 0,
 		];
@@ -167,7 +167,7 @@ class PP_Glossary_Settings {
 	 *
 	 * @return int Page ID or 0 if not set.
 	 */
-	public static function get_glossary_page_id() {
+	public static function get_glossary_page_id(): int {
 		$settings = self::get_settings();
 		return absint( $settings['glossary_page'] );
 	}
@@ -177,13 +177,14 @@ class PP_Glossary_Settings {
 	 *
 	 * @return string Page URL or empty string if not set.
 	 */
-	public static function get_glossary_page_url() {
+	public static function get_glossary_page_url(): string {
 		$page_id = self::get_glossary_page_id();
 
 		if ( ! $page_id ) {
 			return '';
 		}
 
-		return get_permalink( $page_id );
+		$permalink = get_permalink( $page_id );
+		return $permalink ? $permalink : '';
 	}
 }

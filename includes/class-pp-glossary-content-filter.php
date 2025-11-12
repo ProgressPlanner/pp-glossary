@@ -25,7 +25,7 @@ class PP_Glossary_Content_Filter {
 	/**
 	 * Array to store popovers to be appended
 	 *
-	 * @var array
+	 * @var array<int, string>
 	 */
 	private static $popovers = [];
 
@@ -39,7 +39,7 @@ class PP_Glossary_Content_Filter {
 	/**
 	 * Initialize the content filter
 	 */
-	public static function init() {
+	public static function init(): void {
 
 		// No need to filter content in Dashboard.
 		if ( ! is_admin() ) {
@@ -53,7 +53,7 @@ class PP_Glossary_Content_Filter {
 	 * @param string $content The post content.
 	 * @return string Modified content.
 	 */
-	public static function filter_content( $content ) {
+	public static function filter_content( $content ): string {
 
 		// Reset counters and storage for each content piece.
 		self::$popover_counter = 0;
@@ -92,7 +92,7 @@ class PP_Glossary_Content_Filter {
 			$content .= "\n" . implode( "\n", self::$popovers );
 
 			// Add helper text once if we have any popovers.
-			if ( self::$helper_added ) {
+			if ( self::$helper_added ) { // @phpstan-ignore-line -- self::$helper_added is set to true in the replace_first_occurrence method.
 				$content .= self::get_helper_text();
 			}
 		}
@@ -103,9 +103,9 @@ class PP_Glossary_Content_Filter {
 	/**
 	 * Get all glossary entries with their metadata
 	 *
-	 * @return array Array of glossary entries.
+	 * @return array<int, array<string, mixed>> Array of glossary entries.
 	 */
-	private static function get_glossary_entries() {
+	private static function get_glossary_entries(): array {
 		$entries = [];
 
 		$query = new WP_Query(
@@ -121,7 +121,7 @@ class PP_Glossary_Content_Filter {
 		if ( $query->have_posts() ) {
 			while ( $query->have_posts() ) {
 				$query->the_post();
-				$post_id = get_the_ID();
+				$post_id = (int) get_the_ID();
 
 				$short_description = get_post_meta( $post_id, '_pp_glossary_short_description', true );
 				$long_description  = get_post_meta( $post_id, '_pp_glossary_long_description', true );
@@ -166,11 +166,11 @@ class PP_Glossary_Content_Filter {
 	/**
 	 * Replace first occurrence of glossary terms in content
 	 *
-	 * @param string $content The content.
-	 * @param array  $entry   The glossary entry data.
+	 * @param string                $content The content.
+	 * @param array<string, mixed>  $entry   The glossary entry data.
 	 * @return string Modified content.
 	 */
-	private static function replace_first_occurrence( $content, $entry ) {
+	private static function replace_first_occurrence( $content, $entry ): string {
 		foreach ( $entry['terms'] as $term ) {
 			// Create a pattern that matches the term as a whole word, case-insensitive but not within HTML tags.
 			$pattern = '/\b(' . preg_quote( $term, '/' ) . ')\b(?![^<]*>)/iu';
@@ -213,7 +213,7 @@ class PP_Glossary_Content_Filter {
 	 * @param string $popover_id  The popover target ID.
 	 * @return string HTML for the term button.
 	 */
-	private static function create_term_button( $term, $unique_id, $popover_id ) {
+	private static function create_term_button( $term, $unique_id, $popover_id ): string {
 		$anchor_name = '--' . $unique_id;
 		return sprintf(
 			'<dfn id="%s" class="pp-glossary-term" style="anchor-name: %s;"><span data-glossary-popover="%s" aria-describedby="help-def" tabindex="0" role="button" aria-expanded="false">%s</span></dfn>',
@@ -227,12 +227,12 @@ class PP_Glossary_Content_Filter {
 	/**
 	 * Create the popover HTML
 	 *
-	 * @param array  $entry       The glossary entry data.
-	 * @param string $unique_id   The unique ID for the dfn element.
-	 * @param string $popover_id  The popover ID.
+	 * @param array<string, mixed>  $entry       The glossary entry data.
+	 * @param string                $unique_id   The unique ID for the dfn element.
+	 * @param string                $popover_id  The popover ID.
 	 * @return string HTML for the popover.
 	 */
-	private static function create_popover( $entry, $unique_id, $popover_id ) {
+	private static function create_popover( $entry, $unique_id, $popover_id ): string {
 		$title       = esc_html( $entry['title'] );
 		$anchor_name = '--' . $unique_id;
 
@@ -277,7 +277,7 @@ class PP_Glossary_Content_Filter {
 	 *
 	 * @return string HTML for helper text.
 	 */
-	private static function get_helper_text() {
+	private static function get_helper_text(): string {
 		return '<p id="help-def" hidden>' . esc_html__( 'Hover or focus to see the definition of the term.', 'pp-glossary' ) . '</p>';
 	}
 }

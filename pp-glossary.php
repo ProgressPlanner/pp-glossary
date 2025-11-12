@@ -27,7 +27,7 @@ define( 'PP_GLOSSARY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 /**
  * Initialize the plugin.
  */
-function pp_glossary_init() {
+function pp_glossary_init(): void {
 	// Load required files.
 	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-post-type.php';
 	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-meta-boxes.php';
@@ -49,7 +49,7 @@ add_action( 'plugins_loaded', 'pp_glossary_init' );
 /**
  * Enqueue frontend assets
  */
-function pp_glossary_enqueue_assets() {
+function pp_glossary_enqueue_assets(): void {
 	wp_enqueue_style(
 		'pp-glossary',
 		PP_GLOSSARY_PLUGIN_URL . 'assets/css/glossary.css',
@@ -70,7 +70,7 @@ add_action( 'wp_enqueue_scripts', 'pp_glossary_enqueue_assets' );
 /**
  * Activation hook
  */
-function pp_glossary_activate() {
+function pp_glossary_activate(): void {
 	// Flush rewrite rules.
 	pp_glossary_init();
 	flush_rewrite_rules();
@@ -80,7 +80,7 @@ register_activation_hook( __FILE__, 'pp_glossary_activate' );
 /**
  * Deactivation hook
  */
-function pp_glossary_deactivate() {
+function pp_glossary_deactivate(): void {
 	flush_rewrite_rules();
 }
 register_deactivation_hook( __FILE__, 'pp_glossary_deactivate' );

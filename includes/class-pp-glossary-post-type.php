@@ -18,14 +18,14 @@ class PP_Glossary_Post_Type {
 	/**
 	 * Initialize the post type
 	 */
-	public static function init() {
+	public static function init(): void {
 		add_action( 'init', [ __CLASS__, 'register_post_type' ] );
 	}
 
 	/**
 	 * Register the Glossary post type
 	 */
-	public static function register_post_type() {
+	public static function register_post_type(): void {
 		$labels = [
 			'name'                  => _x( 'Glossary', 'Post Type General Name', 'pp-glossary' ),
 			'singular_name'         => _x( 'Entry', 'Post Type Singular Name', 'pp-glossary' ),

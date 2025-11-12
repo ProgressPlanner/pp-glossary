@@ -18,7 +18,7 @@ class PP_Glossary_Schema {
 	/**
 	 * Initialize the schema integration
 	 */
-	public static function init() {
+	public static function init(): void {
 		// Check if Yoast SEO is active.
 		if ( defined( 'WPSEO_VERSION' ) ) {
 			add_filter( 'wpseo_schema_graph', [ __CLASS__, 'add_to_yoast_schema_graph' ], 10 );
@@ -28,10 +28,10 @@ class PP_Glossary_Schema {
 	/**
 	 * Add glossary entries to Yoast SEO schema graph
 	 *
-	 * @param array $graph  The schema graph array.
-	 * @return array Modified schema graph.
+	 * @param array<int, array<string, mixed>> $graph  The schema graph array.
+	 * @return array<int, array<string, mixed>> Modified schema graph.
 	 */
-	public static function add_to_yoast_schema_graph( $graph ) {
+	public static function add_to_yoast_schema_graph( $graph ): array {
 		// Only add on the glossary page.
 		$glossary_page_id = PP_Glossary_Settings::get_glossary_page_id();
 		if ( ! $glossary_page_id || ! is_page( $glossary_page_id ) ) {
@@ -77,9 +77,9 @@ class PP_Glossary_Schema {
 	/**
 	 * Get glossary entries formatted for schema
 	 *
-	 * @return array Array of glossary entries.
+	 * @return array<int, array<string, mixed>> Array of glossary entries.
 	 */
-	private static function get_glossary_entries_for_schema() {
+	private static function get_glossary_entries_for_schema(): array {
 		$entries = [];
 
 		$query = new WP_Query(
@@ -95,7 +95,7 @@ class PP_Glossary_Schema {
 		if ( $query->have_posts() ) {
 			while ( $query->have_posts() ) {
 				$query->the_post();
-				$post_id = get_the_ID();
+				$post_id = (int)get_the_ID();
 
 				$entries[] = [
 					'id'                => $post_id,
@@ -115,11 +115,11 @@ class PP_Glossary_Schema {
 	/**
 	 * Create a DefinedTerm schema object
 	 *
-	 * @param array $entry           The glossary entry data.
-	 * @param int   $glossary_page_id The glossary page ID.
-	 * @return array Schema.org DefinedTerm object.
+	 * @param array<string, mixed> $entry           The glossary entry data.
+	 * @param int                  $glossary_page_id The glossary page ID.
+	 * @return array<string, mixed> Schema.org DefinedTerm object.
 	 */
-	private static function create_defined_term_schema( $entry, $glossary_page_id ) {
+	private static function create_defined_term_schema( $entry, $glossary_page_id ): array {
 		$glossary_url = get_permalink( $glossary_page_id );
 		$entry_url    = $glossary_url . '#' . $entry['slug'];
 
@@ -150,11 +150,11 @@ class PP_Glossary_Schema {
 	 *
 	 * This is used when Yoast SEO is not active
 	 *
-	 * @param array $entries          Array of glossary entries.
-	 * @param int   $glossary_page_id The glossary page ID.
+	 * @param array<int, array<string, mixed>> $entries          Array of glossary entries.
+	 * @param int                                $glossary_page_id The glossary page ID.
 	 * @return string Microdata attributes and invisible schema markup.
 	 */
-	public static function get_microdata_attributes( $entries, $glossary_page_id ) {
+	public static function get_microdata_attributes( $entries, $glossary_page_id ): string {
 		// If Yoast SEO is active, don't output Microdata (use their JSON-LD instead).
 		if ( defined( 'WPSEO_VERSION' ) ) {
 			return '';
@@ -175,7 +175,7 @@ class PP_Glossary_Schema {
 	 *
 	 * @return string Microdata attributes.
 	 */
-	public static function get_entry_microdata_attributes() {
+	public static function get_entry_microdata_attributes(): string {
 		// If Yoast SEO is active, don't output Microdata.
 		if ( defined( 'WPSEO_VERSION' ) ) {
 			return '';
@@ -190,7 +190,7 @@ class PP_Glossary_Schema {
 	 * @param string $prop The property name.
 	 * @return string Itemprop attribute or empty string if Yoast is active.
 	 */
-	public static function get_itemprop( $prop ) {
+	public static function get_itemprop( $prop ): string {
 		// If Yoast SEO is active, don't output Microdata.
 		if ( defined( 'WPSEO_VERSION' ) ) {
 			return '';

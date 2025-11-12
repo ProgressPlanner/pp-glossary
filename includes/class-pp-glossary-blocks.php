@@ -18,26 +18,26 @@ class PP_Glossary_Blocks {
 	/**
 	 * Initialize blocks
 	 */
-	public static function init() {
+	public static function init(): void {
 		add_action( 'init', [ __CLASS__, 'register_blocks' ] );
 	}
 
 	/**
 	 * Register blocks
 	 */
-	public static function register_blocks() {
+	public static function register_blocks(): void {
 		// Register the editor script.
 		wp_register_script(
 			'pp-glossary-block-editor',
-			PP_GLOSSARY_PLUGIN_URL . 'blocks/glossary-list/editor.js',
+			constant( 'PP_GLOSSARY_PLUGIN_URL' ) . 'blocks/glossary-list/editor.js',
 			[ 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ],
-			PP_GLOSSARY_VERSION,
+			constant( 'PP_GLOSSARY_VERSION' ),
 			true
 		);
 
 		// Register the block type.
 		register_block_type(
-			PP_GLOSSARY_PLUGIN_DIR . 'blocks/glossary-list',
+			constant( 'PP_GLOSSARY_PLUGIN_DIR' ) . 'blocks/glossary-list',
 			[
 				'editor_script'   => 'pp-glossary-block-editor',
 				'render_callback' => [ __CLASS__, 'render_glossary_list_block' ],
@@ -48,7 +48,7 @@ class PP_Glossary_Blocks {
 	/**
 	 * Render glossary list block
 	 *
-	 * @return string Block HTML.
+	 * @return string|false Block HTML.
 	 */
 	public static function render_glossary_list_block() {
 		$grouped_entries = self::get_grouped_entries();
@@ -99,7 +99,7 @@ class PP_Glossary_Blocks {
 									$glossary_url = PP_Glossary_Settings::get_glossary_page_url();
 									$entry_url    = $glossary_url . '#' . $entry['slug'];
 									?>
-									<?php if ( ! defined( 'WPSEO_VERSION' ) && $entry_url ) : ?>
+									<?php if ( ! defined( 'WPSEO_VERSION' ) ) : ?>
 										<link itemprop="url" href="<?php echo esc_url( $entry_url ); ?>">
 									<?php endif; ?>
 
@@ -154,9 +154,9 @@ class PP_Glossary_Blocks {
 	/**
 	 * Get glossary entries grouped by first letter
 	 *
-	 * @return array Grouped glossary entries.
+	 * @return array<string, array<int, array<string, mixed>>> Grouped glossary entries.
 	 */
-	private static function get_grouped_entries() {
+	private static function get_grouped_entries(): array {
 		$grouped = [];
 
 		$query = new WP_Query(
@@ -184,7 +184,7 @@ class PP_Glossary_Blocks {
 					$grouped[ $letter ] = [];
 				}
 
-				$post_id              = get_the_ID();
+				$post_id              = (int) get_the_ID();
 				$grouped[ $letter ][] = [
 					'id'                => $post_id,
 					'slug'              => sanitize_title( $title ),
