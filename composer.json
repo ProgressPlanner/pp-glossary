@@ -19,8 +19,8 @@
 		"phpcompatibility/phpcompatibility-wp": "*"
 	},
 	"scripts": {
-		"cs": "phpcs --standard=phpcs.xml",
-		"cs:fix": "phpcbf --standard=phpcs.xml"
+		"phpcs": "phpcs --standard=phpcs.xml",
+		"phpcs:fix": "phpcbf --standard=phpcs.xml"
 	},
 	"config": {
 		"allow-plugins": {
