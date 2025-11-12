@@ -1,0 +1,11 @@
+.distignore
+.git
+.gitignore
+.wordpress-org
+composer.json
+composer.lock
+CLAUDE.md
+phpcs.xml
+phpstan.neon.dist
+README.md
+vendor
