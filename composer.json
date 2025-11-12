@@ -15,11 +15,12 @@
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.7",
-		"wp-coding-standards/wpcs": "^3.0"
+		"wp-coding-standards/wpcs": "^3.0",
+		"phpcompatibility/phpcompatibility-wp": "*"
 	},
 	"scripts": {
-		"cs": "phpcs --standard=WordPress .",
-		"cs:fix": "phpcbf --standard=WordPress ."
+		"cs": "phpcs --standard=phpcs.xml",
+		"cs:fix": "phpcbf --standard=phpcs.xml"
 	},
 	"config": {
 		"allow-plugins": {

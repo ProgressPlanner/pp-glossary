@@ -24,8 +24,8 @@ class PP_Glossary_Settings {
 	 * Initialize the settings
 	 */
 	public static function init() {
-		add_action( 'admin_menu', array( __CLASS__, 'add_settings_page' ) );
-		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
+		add_action( 'admin_menu', [ __CLASS__, 'add_settings_page' ] );
+		add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
 	}
 
 	/**
@@ -38,7 +38,7 @@ class PP_Glossary_Settings {
 			__( 'Settings', 'pp-glossary' ),
 			'manage_options',
 			'pp-glossary-settings',
-			array( __CLASS__, 'render_settings_page' )
+			[ __CLASS__, 'render_settings_page' ]
 		);
 	}
 
@@ -49,22 +49,22 @@ class PP_Glossary_Settings {
 		register_setting(
 			'pp_glossary_settings_group',
 			self::OPTION_NAME,
-			array(
-				'sanitize_callback' => array( __CLASS__, 'sanitize_settings' ),
-			)
+			[
+				'sanitize_callback' => [ __CLASS__, 'sanitize_settings' ],
+			]
 		);
 
 		add_settings_section(
 			'pp_glossary_display_section',
 			__( 'Display Settings', 'pp-glossary' ),
-			array( __CLASS__, 'render_display_section' ),
+			[ __CLASS__, 'render_display_section' ],
 			'pp-glossary-settings'
 		);
 
 		add_settings_field(
 			'glossary_page',
 			__( 'Glossary Page', 'pp-glossary' ),
-			array( __CLASS__, 'render_glossary_page_field' ),
+			[ __CLASS__, 'render_glossary_page_field' ],
 			'pp-glossary-settings',
 			'pp_glossary_display_section'
 		);
@@ -78,7 +78,7 @@ class PP_Glossary_Settings {
 			return;
 		}
 
-		// Check if settings were saved
+		// Check if settings were saved.
 		if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - Nonce check not needed here.
 			add_settings_error(
 				'pp_glossary_messages',
@@ -118,12 +118,12 @@ class PP_Glossary_Settings {
 		$page_id  = isset( $settings['glossary_page'] ) ? absint( $settings['glossary_page'] ) : 0;
 
 		wp_dropdown_pages(
-			array(
+			[
 				'name'              => esc_attr( self::OPTION_NAME ) . '[glossary_page]',
 				'selected'          => esc_attr( $page_id ),
 				'show_option_none'  => esc_html__( '— Select a Page —', 'pp-glossary' ),
 				'option_none_value' => '0',
-			)
+			]
 		);
 
 		echo '<p class="description">';
@@ -138,7 +138,7 @@ class PP_Glossary_Settings {
 	 * @return array Sanitized settings.
 	 */
 	public static function sanitize_settings( $input ) {
-		$sanitized = array();
+		$sanitized = [];
 
 		if ( isset( $input['glossary_page'] ) ) {
 			$sanitized['glossary_page'] = absint( $input['glossary_page'] );
@@ -153,11 +153,11 @@ class PP_Glossary_Settings {
 	 * @return array Settings.
 	 */
 	public static function get_settings() {
-		$defaults = array(
+		$defaults = [
 			'glossary_page' => 0,
-		);
+		];
 
-		$settings = get_option( self::OPTION_NAME, array() );
+		$settings = get_option( self::OPTION_NAME, [] );
 
 		return wp_parse_args( $settings, $defaults );
 	}

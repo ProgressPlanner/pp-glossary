@@ -19,9 +19,9 @@ class PP_Glossary_Meta_Boxes {
 	 * Initialize the meta boxes
 	 */
 	public static function init() {
-		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
-		add_action( 'save_post_pp_glossary', array( __CLASS__, 'save_meta_boxes' ), 10, 2 );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_scripts' ) );
+		add_action( 'add_meta_boxes', [ __CLASS__, 'add_meta_boxes' ] );
+		add_action( 'save_post_pp_glossary', [ __CLASS__, 'save_meta_boxes' ], 10, 2 );
+		add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_admin_scripts' ] );
 	}
 
 	/**
@@ -31,7 +31,7 @@ class PP_Glossary_Meta_Boxes {
 		add_meta_box(
 			'pp_glossary_details',
 			__( 'Glossary Entry Details', 'pp-glossary' ),
-			array( __CLASS__, 'render_meta_box' ),
+			[ __CLASS__, 'render_meta_box' ],
 			'pp_glossary',
 			'normal',
 			'high'
@@ -44,16 +44,16 @@ class PP_Glossary_Meta_Boxes {
 	 * @param WP_Post $post The post object.
 	 */
 	public static function render_meta_box( $post ) {
-		// Add nonce for security
+		// Add nonce for security.
 		wp_nonce_field( 'pp_glossary_meta_box', 'pp_glossary_meta_box_nonce' );
 
-		// Get current values
+		// Get current values.
 		$short_description = get_post_meta( $post->ID, '_pp_glossary_short_description', true );
 		$long_description  = get_post_meta( $post->ID, '_pp_glossary_long_description', true );
 		$synonyms          = get_post_meta( $post->ID, '_pp_glossary_synonyms', true );
 
 		if ( ! is_array( $synonyms ) ) {
-			$synonyms = array();
+			$synonyms = [];
 		}
 		?>
 		<div class="pp-glossary-meta-box">
@@ -90,14 +90,14 @@ class PP_Glossary_Meta_Boxes {
 				wp_editor(
 					$long_description,
 					'pp_glossary_long_description',
-					array(
+					[
 						'textarea_name' => 'pp_glossary_long_description',
 						'textarea_rows' => 10,
 						'media_buttons' => true,
 						'teeny'         => false,
 						'tinymce'       => true,
 						'quicktags'     => true,
-					)
+					]
 				);
 				?>
 			</p>
@@ -145,7 +145,7 @@ class PP_Glossary_Meta_Boxes {
 	 * @param WP_Post $post    Post object.
 	 */
 	public static function save_meta_boxes( $post_id, $post ) {
-		// Check nonce
+		// Check nonce.
 		if ( ! isset( $_POST['pp_glossary_meta_box_nonce'] ) ) {
 			return;
 		}
@@ -154,17 +154,17 @@ class PP_Glossary_Meta_Boxes {
 			return;
 		}
 
-		// Check autosave
+		// Check autosave.
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
 
-		// Check permissions
+		// Check permissions.
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 
-		// Save short description
+		// Save short description.
 		if ( isset( $_POST['pp_glossary_short_description'] ) ) {
 			update_post_meta(
 				$post_id,
@@ -173,7 +173,7 @@ class PP_Glossary_Meta_Boxes {
 			);
 		}
 
-		// Save long description
+		// Save long description.
 		if ( isset( $_POST['pp_glossary_long_description'] ) ) {
 			update_post_meta(
 				$post_id,
@@ -182,8 +182,8 @@ class PP_Glossary_Meta_Boxes {
 			);
 		}
 
-		// Save synonyms
-		$synonyms = array();
+		// Save synonyms.
+		$synonyms = [];
 		if ( isset( $_POST['pp_glossary_synonyms'] ) && is_array( $_POST['pp_glossary_synonyms'] ) ) {
 			foreach ( wp_unslash( $_POST['pp_glossary_synonyms'] ) as $synonym ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization handled below.
 				$synonym = sanitize_text_field( $synonym );
@@ -201,8 +201,8 @@ class PP_Glossary_Meta_Boxes {
 	 * @param string $hook The current admin page hook.
 	 */
 	public static function enqueue_admin_scripts( $hook ) {
-		// Only load on post edit screens for glossary entries
-		if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ) ) ) {
+		// Only load on post edit screens for glossary entries.
+		if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ] ) ) {
 			return;
 		}
 
@@ -211,11 +211,11 @@ class PP_Glossary_Meta_Boxes {
 			return;
 		}
 
-		// Enqueue jQuery
+		// Enqueue jQuery.
 		wp_enqueue_script( 'jquery' );
 
-		// Add inline script for adding/removing synonyms
-		add_action( 'admin_footer', array( __CLASS__, 'render_synonyms_script' ) );
+		// Add inline script for adding/removing synonyms.
+		add_action( 'admin_footer', [ __CLASS__, 'render_synonyms_script' ] );
 	}
 
 	/**
@@ -225,7 +225,7 @@ class PP_Glossary_Meta_Boxes {
 		?>
 		<script type="text/javascript">
 		jQuery(document).ready(function($) {
-			// Add synonym
+			// Add synonym.
 			$('#pp-glossary-add-synonym').on('click', function(e) {
 				e.preventDefault();
 				var container = $('#pp-glossary-synonyms-container');
@@ -236,7 +236,7 @@ class PP_Glossary_Meta_Boxes {
 				container.append(row);
 			});
 
-			// Remove synonym (delegated event)
+			// Remove synonym (delegated event).
 			$(document).on('click', '.pp-glossary-remove-synonym', function(e) {
 				e.preventDefault();
 				$(this).closest('.pp-glossary-synonym-row').remove();
