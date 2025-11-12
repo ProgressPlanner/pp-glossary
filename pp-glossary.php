@@ -29,12 +29,12 @@ define( 'PP_GLOSSARY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
  */
 function pp_glossary_init() {
 	// Load required files.
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/post-type.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/meta-boxes.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/content-filter.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/settings.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/blocks.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/schema.php';
+	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-post-type.php';
+	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-meta-boxes.php';
+	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-content-filter.php';
+	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-settings.php';
+	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-blocks.php';
+	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-schema.php';
 
 	// Initialize components.
 	PP_Glossary_Post_Type::init();
