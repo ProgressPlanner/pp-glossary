@@ -150,7 +150,7 @@ class PP_Glossary_Meta_Boxes {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_POST['pp_glossary_meta_box_nonce'], 'pp_glossary_meta_box' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pp_glossary_meta_box_nonce'] ) ), 'pp_glossary_meta_box' ) ) {
 			return;
 		}
 
@@ -169,7 +169,7 @@ class PP_Glossary_Meta_Boxes {
 			update_post_meta(
 				$post_id,
 				'_pp_glossary_short_description',
-				sanitize_textarea_field( $_POST['pp_glossary_short_description'] )
+				sanitize_textarea_field( wp_unslash( $_POST['pp_glossary_short_description'] ) )
 			);
 		}
 
@@ -178,14 +178,14 @@ class PP_Glossary_Meta_Boxes {
 			update_post_meta(
 				$post_id,
 				'_pp_glossary_long_description',
-				wp_kses_post( $_POST['pp_glossary_long_description'] )
+				wp_kses_post( wp_unslash( $_POST['pp_glossary_long_description'] ) )
 			);
 		}
 
 		// Save synonyms
 		$synonyms = array();
 		if ( isset( $_POST['pp_glossary_synonyms'] ) && is_array( $_POST['pp_glossary_synonyms'] ) ) {
-			foreach ( $_POST['pp_glossary_synonyms'] as $synonym ) {
+			foreach ( wp_unslash( $_POST['pp_glossary_synonyms'] ) as $synonym ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization handled below.
 				$synonym = sanitize_text_field( $synonym );
 				if ( ! empty( $synonym ) ) {
 					$synonyms[] = $synonym;
