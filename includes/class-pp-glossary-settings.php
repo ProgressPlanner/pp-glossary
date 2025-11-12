@@ -23,48 +23,48 @@ class PP_Glossary_Settings {
 	/**
 	 * Initialize the settings
 	 */
-	public static function init() {
-		add_action( 'admin_menu', array( __CLASS__, 'add_settings_page' ) );
-		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
+	public static function init(): void {
+		add_action( 'admin_menu', [ __CLASS__, 'add_settings_page' ] );
+		add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
 	}
 
 	/**
 	 * Add settings page to Glossary menu
 	 */
-	public static function add_settings_page() {
+	public static function add_settings_page(): void {
 		add_submenu_page(
 			'edit.php?post_type=pp_glossary',
 			__( 'Glossary Settings', 'pp-glossary' ),
 			__( 'Settings', 'pp-glossary' ),
 			'manage_options',
 			'pp-glossary-settings',
-			array( __CLASS__, 'render_settings_page' )
+			[ __CLASS__, 'render_settings_page' ]
 		);
 	}
 
 	/**
 	 * Register settings
 	 */
-	public static function register_settings() {
+	public static function register_settings(): void {
 		register_setting(
 			'pp_glossary_settings_group',
 			self::OPTION_NAME,
-			array(
-				'sanitize_callback' => array( __CLASS__, 'sanitize_settings' ),
-			)
+			[
+				'sanitize_callback' => [ __CLASS__, 'sanitize_settings' ],
+			]
 		);
 
 		add_settings_section(
 			'pp_glossary_display_section',
 			__( 'Display Settings', 'pp-glossary' ),
-			array( __CLASS__, 'render_display_section' ),
+			[ __CLASS__, 'render_display_section' ],
 			'pp-glossary-settings'
 		);
 
 		add_settings_field(
 			'glossary_page',
 			__( 'Glossary Page', 'pp-glossary' ),
-			array( __CLASS__, 'render_glossary_page_field' ),
+			[ __CLASS__, 'render_glossary_page_field' ],
 			'pp-glossary-settings',
 			'pp_glossary_display_section'
 		);
@@ -73,13 +73,13 @@ class PP_Glossary_Settings {
 	/**
 	 * Render settings page
 	 */
-	public static function render_settings_page() {
+	public static function render_settings_page(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
-		// Check if settings were saved
-		if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - Nonce check not needed here.
+		// Check if settings were saved.
+		if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Nonce check not needed here.
 			add_settings_error(
 				'pp_glossary_messages',
 				'pp_glossary_message',
@@ -106,24 +106,24 @@ class PP_Glossary_Settings {
 	/**
 	 * Render display section description
 	 */
-	public static function render_display_section() {
+	public static function render_display_section(): void {
 		echo '<p>' . esc_html__( 'Configure how and where the glossary is displayed on your site.', 'pp-glossary' ) . '</p>';
 	}
 
 	/**
 	 * Render glossary page field
 	 */
-	public static function render_glossary_page_field() {
+	public static function render_glossary_page_field(): void {
 		$settings = self::get_settings();
 		$page_id  = isset( $settings['glossary_page'] ) ? absint( $settings['glossary_page'] ) : 0;
 
 		wp_dropdown_pages(
-			array(
+			[
 				'name'              => esc_attr( self::OPTION_NAME ) . '[glossary_page]',
-				'selected'          => esc_attr( $page_id ),
+				'selected'          => esc_attr( (string) $page_id ),
 				'show_option_none'  => esc_html__( '— Select a Page —', 'pp-glossary' ),
 				'option_none_value' => '0',
-			)
+			]
 		);
 
 		echo '<p class="description">';
@@ -134,11 +134,11 @@ class PP_Glossary_Settings {
 	/**
 	 * Sanitize settings
 	 *
-	 * @param array $input Settings input.
-	 * @return array Sanitized settings.
+	 * @param array<string, mixed> $input Settings input.
+	 * @return array<string, mixed> Sanitized settings.
 	 */
-	public static function sanitize_settings( $input ) {
-		$sanitized = array();
+	public static function sanitize_settings( $input ): array {
+		$sanitized = [];
 
 		if ( isset( $input['glossary_page'] ) ) {
 			$sanitized['glossary_page'] = absint( $input['glossary_page'] );
@@ -150,14 +150,14 @@ class PP_Glossary_Settings {
 	/**
 	 * Get settings
 	 *
-	 * @return array Settings.
+	 * @return array<string, mixed> Settings.
 	 */
-	public static function get_settings() {
-		$defaults = array(
+	public static function get_settings(): array {
+		$defaults = [
 			'glossary_page' => 0,
-		);
+		];
 
-		$settings = get_option( self::OPTION_NAME, array() );
+		$settings = get_option( self::OPTION_NAME, [] );
 
 		return wp_parse_args( $settings, $defaults );
 	}
@@ -167,7 +167,7 @@ class PP_Glossary_Settings {
 	 *
 	 * @return int Page ID or 0 if not set.
 	 */
-	public static function get_glossary_page_id() {
+	public static function get_glossary_page_id(): int {
 		$settings = self::get_settings();
 		return absint( $settings['glossary_page'] );
 	}
@@ -177,13 +177,14 @@ class PP_Glossary_Settings {
 	 *
 	 * @return string Page URL or empty string if not set.
 	 */
-	public static function get_glossary_page_url() {
+	public static function get_glossary_page_url(): string {
 		$page_id = self::get_glossary_page_id();
 
 		if ( ! $page_id ) {
 			return '';
 		}
 
-		return get_permalink( $page_id );
+		$permalink = get_permalink( $page_id );
+		return $permalink ? $permalink : '';
 	}
 }

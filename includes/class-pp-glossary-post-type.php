@@ -18,15 +18,15 @@ class PP_Glossary_Post_Type {
 	/**
 	 * Initialize the post type
 	 */
-	public static function init() {
-		add_action( 'init', array( __CLASS__, 'register_post_type' ) );
+	public static function init(): void {
+		add_action( 'init', [ __CLASS__, 'register_post_type' ] );
 	}
 
 	/**
 	 * Register the Glossary post type
 	 */
-	public static function register_post_type() {
-		$labels = array(
+	public static function register_post_type(): void {
+		$labels = [
 			'name'                  => _x( 'Glossary', 'Post Type General Name', 'pp-glossary' ),
 			'singular_name'         => _x( 'Entry', 'Post Type Singular Name', 'pp-glossary' ),
 			'menu_name'             => __( 'Glossary', 'pp-glossary' ),
@@ -54,13 +54,13 @@ class PP_Glossary_Post_Type {
 			'items_list'            => __( 'Entries list', 'pp-glossary' ),
 			'items_list_navigation' => __( 'Entries list navigation', 'pp-glossary' ),
 			'filter_items_list'     => __( 'Filter entries list', 'pp-glossary' ),
-		);
+		];
 
-		$args = array(
+		$args = [
 			'label'               => __( 'Entry', 'pp-glossary' ),
 			'description'         => __( 'Glossary entries with definitions', 'pp-glossary' ),
 			'labels'              => $labels,
-			'supports'            => array( 'title', 'revisions' ),
+			'supports'            => [ 'title', 'revisions' ],
 			'hierarchical'        => false,
 			'public'              => true,
 			'show_ui'             => true,
@@ -76,7 +76,7 @@ class PP_Glossary_Post_Type {
 			'capability_type'     => 'post',
 			'show_in_rest'        => true,
 			'rewrite'             => false,
-		);
+		];
 
 		register_post_type( 'pp_glossary', $args );
 	}
