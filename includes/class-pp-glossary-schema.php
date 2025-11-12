@@ -21,18 +21,17 @@ class PP_Glossary_Schema {
 	public static function init() {
 		// Check if Yoast SEO is active.
 		if ( defined( 'WPSEO_VERSION' ) ) {
-			add_filter( 'wpseo_schema_graph', [ __CLASS__, 'add_to_yoast_schema_graph' ], 10, 2 );
+			add_filter( 'wpseo_schema_graph', [ __CLASS__, 'add_to_yoast_schema_graph' ], 10 );
 		}
 	}
 
 	/**
 	 * Add glossary entries to Yoast SEO schema graph
 	 *
-	 * @param array  $graph  The schema graph array.
-	 * @param object $context The schema context object.
+	 * @param array $graph  The schema graph array.
 	 * @return array Modified schema graph.
 	 */
-	public static function add_to_yoast_schema_graph( $graph, $context ) {
+	public static function add_to_yoast_schema_graph( $graph ) {
 		// Only add on the glossary page.
 		$glossary_page_id = PP_Glossary_Settings::get_glossary_page_id();
 		if ( ! $glossary_page_id || ! is_page( $glossary_page_id ) ) {
@@ -174,10 +173,9 @@ class PP_Glossary_Schema {
 	/**
 	 * Generate Microdata for a single glossary entry
 	 *
-	 * @param array $entry The glossary entry data.
 	 * @return string Microdata attributes.
 	 */
-	public static function get_entry_microdata_attributes( $entry ) {
+	public static function get_entry_microdata_attributes() {
 		// If Yoast SEO is active, don't output Microdata.
 		if ( defined( 'WPSEO_VERSION' ) ) {
 			return '';

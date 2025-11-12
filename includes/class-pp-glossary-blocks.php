@@ -48,10 +48,9 @@ class PP_Glossary_Blocks {
 	/**
 	 * Render glossary list block
 	 *
-	 * @param array $attributes Block attributes.
 	 * @return string Block HTML.
 	 */
-	public static function render_glossary_list_block( $attributes ) {
+	public static function render_glossary_list_block() {
 		$grouped_entries = self::get_grouped_entries();
 
 		// Get all entries for schema.
@@ -94,7 +93,7 @@ class PP_Glossary_Blocks {
 							<h3 class="glossary-letter-heading"><?php echo esc_html( $letter ); ?></h3>
 
 							<?php foreach ( $entries as $entry ) : ?>
-								<?php $entry_schema = PP_Glossary_Schema::get_entry_microdata_attributes( $entry ); ?>
+								<?php $entry_schema = PP_Glossary_Schema::get_entry_microdata_attributes(); ?>
 								<article id="<?php echo esc_attr( $entry['slug'] ); ?>" class="glossary-entry"<?php echo $entry_schema; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 									<?php
 									$glossary_url = PP_Glossary_Settings::get_glossary_page_url();

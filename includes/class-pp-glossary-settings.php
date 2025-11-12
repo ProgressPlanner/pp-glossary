@@ -79,7 +79,7 @@ class PP_Glossary_Settings {
 		}
 
 		// Check if settings were saved.
-		if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended - Nonce check not needed here.
+		if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Nonce check not needed here.
 			add_settings_error(
 				'pp_glossary_messages',
 				'pp_glossary_message',

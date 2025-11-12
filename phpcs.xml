@@ -108,7 +108,6 @@
 			<property name="prefixes" type="array">
 				<element value="PP_Glossary"/>
 				<element value="pp_glossary"/>
-				<element value="pp_"/>
 			</property>
 		</properties>
 	</rule>

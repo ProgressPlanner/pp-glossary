@@ -141,10 +141,9 @@ class PP_Glossary_Meta_Boxes {
 	/**
 	 * Save meta box data
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
+	 * @param int $post_id Post ID.
 	 */
-	public static function save_meta_boxes( $post_id, $post ) {
+	public static function save_meta_boxes( $post_id ) {
 		// Check nonce.
 		if ( ! isset( $_POST['pp_glossary_meta_box_nonce'] ) ) {
 			return;
