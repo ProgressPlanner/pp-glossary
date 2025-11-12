@@ -120,7 +120,7 @@ class PP_Glossary_Settings {
 		wp_dropdown_pages(
 			[
 				'name'              => esc_attr( self::OPTION_NAME ) . '[glossary_page]',
-				'selected'          => (string) $page_id,
+				'selected'          => esc_attr( (string) $page_id ),
 				'show_option_none'  => esc_html__( '— Select a Page —', 'pp-glossary' ),
 				'option_none_value' => '0',
 			]
