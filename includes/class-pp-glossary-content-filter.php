@@ -171,38 +171,69 @@ class PP_Glossary_Content_Filter {
 	 * @return string Modified content.
 	 */
 	private static function replace_first_occurrence( $content, $entry ): string {
+		// Define tags where terms should NOT be replaced.
+		$excluded_tags = [ 'a' ];
+
+		// Build the pattern for excluded tags only.
+		$excluded_pattern = '';
+		foreach ( $excluded_tags as $tag ) {
+			$excluded_pattern .= '<' . $tag . '\b[^>]*>.*?<\/' . $tag . '>|';
+		}
+		$excluded_pattern = rtrim( $excluded_pattern, '|' );
+
+		// Split content ONCE by excluded tags.
+		$parts = preg_split( '/(' . $excluded_pattern . ')/is', $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
+
+		// Now iterate through terms.
 		foreach ( $entry['terms'] as $term ) {
-			// Create a pattern that matches the term as a whole word, case-insensitive but not within HTML tags.
-			$pattern = '/\b(' . preg_quote( $term, '/' ) . ')\b(?![^<]*>)/iu';
+			$replaced  = false;
+			$new_parts = [];
 
-			// Check if term exists in content.
-			if ( preg_match( $pattern, $content, $matches, PREG_OFFSET_CAPTURE ) ) {
-				$matched_term = $matches[1][0];
-				$offset       = $matches[1][1];
+			foreach ( $parts as $part ) {
+				// If already replaced or this matches an excluded tag pattern, keep as-is.
+				if ( $replaced || preg_match( '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i', $part ) ) {
+					$new_parts[] = $part;
+					continue;
+				}
 
-				// Generate unique ID for this occurrence.
-				++self::$popover_counter;
-				$unique_id  = 'dfn-' . sanitize_title( $entry['title'] ) . '-' . self::$popover_counter;
-				$popover_id = 'pop-' . sanitize_title( $entry['title'] ) . '-' . self::$popover_counter;
+				// Try to match term in this text chunk, but avoid HTML attributes.
+				$pattern = '/\b(' . preg_quote( $term, '/' ) . ')\b(?![^<]*>)/iu';
 
-				// Create the replacement HTML.
-				$replacement = self::create_term_button( $matched_term, $unique_id, $popover_id );
+				if ( preg_match( $pattern, $part, $matches, PREG_OFFSET_CAPTURE ) ) {
+					$matched_term = $matches[1][0];
+					$offset       = $matches[1][1];
 
-				// Replace only the first occurrence.
-				$content = substr_replace( $content, $replacement, $offset, strlen( $matched_term ) );
+					// Generate unique ID for this occurrence.
+					++self::$popover_counter;
+					$unique_id  = 'dfn-' . sanitize_title( $entry['title'] ) . '-' . self::$popover_counter;
+					$popover_id = 'pop-' . sanitize_title( $entry['title'] ) . '-' . self::$popover_counter;
 
-				// Store the popover for later.
-				self::$popovers[] = self::create_popover( $entry, $unique_id, $popover_id );
+					// Create the replacement HTML.
+					$replacement = self::create_term_button( $matched_term, $unique_id, $popover_id );
 
-				// Mark that we need helper text.
-				self::$helper_added = true;
+					// Replace only this occurrence in this chunk.
+					$new_parts[] = substr_replace( $part, $replacement, $offset, strlen( $matched_term ) );
 
-				// Break after first replacement for this entry.
+					// Store the popover for later.
+					self::$popovers[] = self::create_popover( $entry, $unique_id, $popover_id );
+
+					// Mark that we need helper text.
+					self::$helper_added = true;
+
+					$replaced = true;
+				} else {
+					$new_parts[] = $part;
+				}
+			}
+
+			if ( $replaced ) {
+				// Update parts for next term iteration.
+				$parts = $new_parts;
 				break;
 			}
 		}
 
-		return $content;
+		return implode( '', $parts );
 	}
 
 	/**
