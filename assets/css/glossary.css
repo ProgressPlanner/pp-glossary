@@ -184,6 +184,7 @@ aside[popover] > p a:focus-visible {
 }
 
 .glossary-entry {
+	scroll-margin-top: 100px;
 	margin-bottom: 2rem;
 	padding: 1.5rem;
 	background-color: var(--glossary-entry-bg, #f9f9f9);
