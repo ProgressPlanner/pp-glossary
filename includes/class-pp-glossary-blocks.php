@@ -79,7 +79,7 @@ class PP_Glossary_Blocks {
 					<ul class="glossary-alphabet">
 						<?php foreach ( $grouped_entries as $letter => $entries ) : ?>
 							<li>
-								<a href="#letter-<?php echo esc_attr( strtolower( $letter ) ); ?>">
+								<a href="#letter-<?php echo esc_attr( pp_glossary_strtolower( $letter ) ); ?>">
 									<?php echo esc_html( $letter ); ?>
 								</a>
 							</li>
@@ -89,7 +89,7 @@ class PP_Glossary_Blocks {
 
 				<div class="glossary-entries">
 					<?php foreach ( $grouped_entries as $letter => $entries ) : ?>
-						<section class="glossary-letter-section" id="letter-<?php echo esc_attr( strtolower( $letter ) ); ?>">
+						<section class="glossary-letter-section" id="letter-<?php echo esc_attr( pp_glossary_strtolower( $letter ) ); ?>">
 							<h3 class="glossary-letter-heading"><?php echo esc_html( $letter ); ?></h3>
 
 							<?php foreach ( $entries as $entry ) : ?>
@@ -173,10 +173,11 @@ class PP_Glossary_Blocks {
 			while ( $query->have_posts() ) {
 				$query->the_post();
 				$title  = get_the_title();
-				$letter = strtoupper( substr( $title, 0, 1 ) );
+				$letter = pp_glossary_strtoupper( pp_glossary_substr( $title, 0, 1 ) );
 
 				// Handle numbers and special characters.
-				if ( ! preg_match( '/[A-Z]/', $letter ) ) {
+				// Match Latin (including extended), Cyrillic, and Greek letters.
+				if ( ! preg_match( '/[\p{Latin}\p{Cyrillic}\p{Greek}]/u', $letter ) ) {
 					$letter = '#';
 				}
 

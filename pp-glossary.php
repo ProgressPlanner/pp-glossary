@@ -24,6 +24,8 @@ define( 'PP_GLOSSARY_VERSION', '1.0.0' );
 define( 'PP_GLOSSARY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PP_GLOSSARY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
+require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/functions.php';
+
 /**
  * Initialize the plugin.
  */

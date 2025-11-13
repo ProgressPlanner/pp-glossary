@@ -205,8 +205,8 @@ class PP_Glossary_Content_Filter {
 
 					// Generate unique ID for this occurrence.
 					++self::$popover_counter;
-					$unique_id  = 'dfn-' . sanitize_title( $entry['title'] ) . '-' . self::$popover_counter;
-					$popover_id = 'pop-' . sanitize_title( $entry['title'] ) . '-' . self::$popover_counter;
+					$unique_id  = 'dfn-' . md5( sanitize_title( $entry['title'] ) ) . '-' . self::$popover_counter;
+					$popover_id = 'pop-' . md5( sanitize_title( $entry['title'] ) ) . '-' . self::$popover_counter;
 
 					// Create the replacement HTML.
 					$replacement = self::create_term_button( $matched_term, $unique_id, $popover_id );
