@@ -29,6 +29,12 @@ class PP_Glossary_Assets {
 	 * Enqueue frontend assets.
 	 */
 	public static function enqueue_assets(): void {
+
+		// Only enqueue assets if terms have been found in the post content or on Glossary page.
+		if ( ! class_exists( 'PP_Glossary_Content_Filter' ) || ! PP_Glossary_Content_Filter::$terms_found_on_page ) {
+			return;
+		}
+
 		wp_enqueue_style(
 			'pp-glossary',
 			PP_GLOSSARY_PLUGIN_URL . 'assets/css/glossary.css',

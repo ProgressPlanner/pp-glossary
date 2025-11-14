@@ -37,6 +37,13 @@ class PP_Glossary_Content_Filter {
 	private static $helper_added = false;
 
 	/**
+	 * Flag to track if the term(s) have been found in the content.
+	 *
+	 * @var bool
+	 */
+	public static $terms_found_on_page = false;
+
+	/**
 	 * Initialize the content filter
 	 */
 	public static function init(): void {
@@ -72,6 +79,7 @@ class PP_Glossary_Content_Filter {
 		// Don't process on the glossary page.
 		$glossary_page_id = PP_Glossary_Settings::get_glossary_page_id();
 		if ( $glossary_page_id && is_page( $glossary_page_id ) ) {
+			self::$terms_found_on_page = true; // Set to true on glossary page.
 			return $content;
 		}
 
@@ -95,6 +103,9 @@ class PP_Glossary_Content_Filter {
 			if ( self::$helper_added ) { // @phpstan-ignore-line -- self::$helper_added is set to true in the replace_first_occurrence method.
 				$content .= self::get_helper_text();
 			}
+
+			// Set to true if terms have been found in the content.
+			self::$terms_found_on_page = true;
 		}
 
 		return $content;

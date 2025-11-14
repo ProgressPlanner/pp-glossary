@@ -1,5 +1,6 @@
 .distignore
 .git
+.github
 .gitignore
 .wordpress-org
 composer.json
