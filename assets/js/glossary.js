@@ -18,7 +18,7 @@
 	function init() {
 		setupHoverPopovers();
 		setupSmoothScrolling();
-		checkPopoverSupport();
+		maybeScrollOnPageLoad();
 	}
 
 	/**
@@ -147,14 +147,7 @@
 
 				if (targetElement) {
 					// Smooth scroll to the target.
-					targetElement.scrollIntoView({
-						behavior: 'smooth',
-						block: 'start',
-					});
-
-					// Update focus for keyboard navigation.
-					targetElement.setAttribute('tabindex', '-1');
-					targetElement.focus();
+					scrollToTarget(targetElement);
 
 					// Update URL without triggering scroll.
 					if (history.pushState) {
@@ -163,6 +156,48 @@
 				}
 			});
 		});
+	}
+
+	/**
+	 * Scroll to the target element on page load.
+	 */
+	function maybeScrollOnPageLoad() {
+		const alphabetContainer = document.querySelector(
+			'.glossary-alphabet'
+		);
+
+		// We are not on a glossary page or there are no alphabet links, so we don't need to scroll.
+		if ( ! alphabetContainer || ! window.location.hash ) {
+			return;
+		}
+
+		const hash = window.location.hash.substring( 1 );
+		const targetElement = document.getElementById( hash );
+
+		if ( targetElement ) {
+			// Smooth scroll to the target.
+			scrollToTarget( targetElement );
+		}
+	}
+
+	/**
+	 * Scroll to the target element.
+	 *
+	 * @param {HTMLElement} targetElement The target element.
+	 */
+	function scrollToTarget( targetElement ) {
+		if ( ! targetElement ) {
+			return;
+		}
+
+		targetElement.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		} );
+
+		// Update focus for keyboard navigation.
+		targetElement.setAttribute( 'tabindex', '-1' );
+		targetElement.focus();
 	}
 
 	// Initialize when DOM is ready
