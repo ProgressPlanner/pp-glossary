@@ -5,15 +5,17 @@
  * @package PP_Glossary
  */
 
+namespace PP_Glossary;
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
 /**
- * Class PP_Glossary_Blocks
+ * Class Blocks
  */
-class PP_Glossary_Blocks {
+class Blocks {
 
 	/**
 	 * Initialize blocks
@@ -60,10 +62,10 @@ class PP_Glossary_Blocks {
 		}
 
 		// Get glossary page ID for schema.
-		$glossary_page_id = PP_Glossary_Settings::get_glossary_page_id();
+		$glossary_page_id = Settings::get_glossary_page_id();
 
 		// Get schema microdata attributes (empty if Yoast SEO is active).
-		$schema_attrs = PP_Glossary_Schema::get_microdata_attributes( $all_entries, $glossary_page_id );
+		$schema_attrs = Schema::get_microdata_attributes( $all_entries, $glossary_page_id );
 
 		ob_start();
 		?>
@@ -93,17 +95,17 @@ class PP_Glossary_Blocks {
 							<h3 class="glossary-letter-heading"><?php echo esc_html( $letter ); ?></h3>
 
 							<?php foreach ( $entries as $entry ) : ?>
-								<?php $entry_schema = PP_Glossary_Schema::get_entry_microdata_attributes(); ?>
+								<?php $entry_schema = Schema::get_entry_microdata_attributes(); ?>
 								<article id="<?php echo esc_attr( $entry['slug'] ); ?>" class="glossary-entry"<?php echo $entry_schema; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 									<?php
-									$glossary_url = PP_Glossary_Settings::get_glossary_page_url();
+									$glossary_url = Settings::get_glossary_page_url();
 									$entry_url    = $glossary_url . '#' . $entry['slug'];
 									?>
 									<?php if ( ! defined( 'WPSEO_VERSION' ) ) : ?>
 										<link itemprop="url" href="<?php echo esc_url( $entry_url ); ?>">
 									<?php endif; ?>
 
-									<h4 class="glossary-entry-title"<?php echo PP_Glossary_Schema::get_itemprop( 'name' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+									<h4 class="glossary-entry-title"<?php echo Schema::get_itemprop( 'name' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 										<?php echo esc_html( $entry['title'] ); ?>
 									</h4>
 
@@ -133,7 +135,7 @@ class PP_Glossary_Blocks {
 									<?php endif; ?>
 
 									<?php if ( ! empty( $entry['long_description'] ) ) : ?>
-										<div class="glossary-long-description" <?php echo PP_Glossary_Schema::get_itemprop( 'description' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+										<div class="glossary-long-description" <?php echo Schema::get_itemprop( 'description' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 											<?php echo wp_kses_post( $entry['long_description'] ); ?>
 										</div>
 									<?php endif; ?>
@@ -159,7 +161,7 @@ class PP_Glossary_Blocks {
 	private static function get_grouped_entries(): array {
 		$grouped = [];
 
-		$query = new WP_Query(
+		$query = new \WP_Query(
 			[
 				'post_type'      => 'pp_glossary',
 				'posts_per_page' => -1,

@@ -5,15 +5,17 @@
  * @package PP_Glossary
  */
 
+namespace PP_Glossary;
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
 /**
- * Class PP_Glossary_Meta_Boxes
+ * Class Meta_Boxes
  */
-class PP_Glossary_Meta_Boxes {
+class Meta_Boxes {
 
 	/**
 	 * Initialize the meta boxes
@@ -41,7 +43,7 @@ class PP_Glossary_Meta_Boxes {
 	/**
 	 * Render the meta box content
 	 *
-	 * @param WP_Post $post The post object.
+	 * @param \WP_Post $post The post object.
 	 */
 	public static function render_meta_box( $post ): void {
 		// Add nonce for security.

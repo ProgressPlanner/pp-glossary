@@ -5,15 +5,17 @@
  * @package PP_Glossary
  */
 
+namespace PP_Glossary;
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
 /**
- * Class PP_Glossary_Schema
+ * Class Schema
  */
-class PP_Glossary_Schema {
+class Schema {
 
 	/**
 	 * Initialize the schema integration
@@ -33,7 +35,7 @@ class PP_Glossary_Schema {
 	 */
 	public static function add_to_yoast_schema_graph( $graph ): array {
 		// Only add on the glossary page.
-		$glossary_page_id = PP_Glossary_Settings::get_glossary_page_id();
+		$glossary_page_id = Settings::get_glossary_page_id();
 		if ( ! $glossary_page_id || ! is_page( $glossary_page_id ) ) {
 			return $graph;
 		}
@@ -82,7 +84,7 @@ class PP_Glossary_Schema {
 	private static function get_glossary_entries_for_schema(): array {
 		$entries = [];
 
-		$query = new WP_Query(
+		$query = new \WP_Query(
 			[
 				'post_type'      => 'pp_glossary',
 				'posts_per_page' => -1,
