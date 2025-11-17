@@ -1,5 +1,10 @@
 parameters:
   level: 7
   paths:
-    - ./pp-glossary.php
-    - ./includes
+    - pp-glossary.php
+    - includes
+  scanDirectories:
+    - .
+  ignoreErrors:
+    # Constants are defined in main plugin file which is scanned
+    - '#Constant PP_GLOSSARY_(VERSION|PLUGIN_DIR|PLUGIN_URL) not found#'

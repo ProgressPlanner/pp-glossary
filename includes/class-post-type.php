@@ -5,15 +5,17 @@
  * @package PP_Glossary
  */
 
+namespace PP_Glossary;
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
 /**
- * Class PP_Glossary_Post_Type
+ * Class Post_Type
  */
-class PP_Glossary_Post_Type {
+class Post_Type {
 
 	/**
 	 * Initialize the post type

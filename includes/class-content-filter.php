@@ -5,15 +5,17 @@
  * @package PP_Glossary
  */
 
+namespace PP_Glossary;
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
 /**
- * Class PP_Glossary_Content_Filter
+ * Class Content_Filter
  */
-class PP_Glossary_Content_Filter {
+class Content_Filter {
 
 	/**
 	 * Counter for unique IDs
@@ -77,7 +79,7 @@ class PP_Glossary_Content_Filter {
 		}
 
 		// Don't process on the glossary page.
-		$glossary_page_id = PP_Glossary_Settings::get_glossary_page_id();
+		$glossary_page_id = Settings::get_glossary_page_id();
 		if ( $glossary_page_id && is_page( $glossary_page_id ) ) {
 			self::$terms_found_on_page = true; // Set to true on glossary page.
 			return $content;
@@ -119,7 +121,7 @@ class PP_Glossary_Content_Filter {
 	private static function get_glossary_entries(): array {
 		$entries = [];
 
-		$query = new WP_Query(
+		$query = new \WP_Query(
 			[
 				'post_type'      => 'pp_glossary',
 				'posts_per_page' => -1,
@@ -194,6 +196,11 @@ class PP_Glossary_Content_Filter {
 
 		// Split content ONCE by excluded tags.
 		$parts = preg_split( '/(' . $excluded_pattern . ')/is', $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
+
+		// If preg_split fails, return content unchanged.
+		if ( false === $parts ) {
+			return $content;
+		}
 
 		// Now iterate through terms.
 		foreach ( $entry['terms'] as $term ) {
@@ -293,7 +300,7 @@ class PP_Glossary_Content_Filter {
 
 		if ( ! empty( $entry['long_description'] ) ) {
 			// Get glossary page URL from settings.
-			$glossary_page_url = PP_Glossary_Settings::get_glossary_page_url();
+			$glossary_page_url = Settings::get_glossary_page_url();
 
 			if ( $glossary_page_url ) {
 				// Create anchor link to specific entry using slug.

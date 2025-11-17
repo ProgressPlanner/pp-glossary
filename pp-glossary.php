@@ -27,26 +27,53 @@ define( 'PP_GLOSSARY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/functions.php';
 
 /**
+ * Autoloader for PP_Glossary classes.
+ *
+ * @param string $class_name The fully qualified class name to load.
+ *
+ * @return void
+ */
+function pp_glossary_autoloader( string $class_name ): void {
+	// Only handle PP_Glossary namespace classes.
+	if ( strpos( $class_name, 'PP_Glossary\\' ) !== 0 ) {
+		return;
+	}
+
+	// Remove the PP_Glossary\ namespace prefix.
+	$class_name = substr( $class_name, strlen( 'PP_Glossary\\' ) );
+
+	// Convert class name to file name format.
+	// PP_Glossary\Settings -> class-settings.php -> includes/class-settings.php.
+	$file_name = 'class-' . str_replace( '_', '-', strtolower( $class_name ) ) . '.php';
+	$file_path = PP_GLOSSARY_PLUGIN_DIR . 'includes/' . $file_name;
+
+	// Load the file if it exists.
+	if ( file_exists( $file_path ) ) {
+		require_once $file_path;
+	}
+}
+
+// Register the autoloader.
+spl_autoload_register( 'pp_glossary_autoloader' );
+
+/**
  * Initialize the plugin.
  */
 function pp_glossary_init(): void {
-	// Load required files.
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-post-type.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-meta-boxes.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-content-filter.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-settings.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-blocks.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-schema.php';
-	require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/class-pp-glossary-assets.php';
-
 	// Initialize components.
-	PP_Glossary_Post_Type::init();
-	PP_Glossary_Meta_Boxes::init();
-	PP_Glossary_Content_Filter::init();
-	PP_Glossary_Settings::init();
-	PP_Glossary_Blocks::init();
-	PP_Glossary_Schema::init();
-	PP_Glossary_Assets::init();
+	\PP_Glossary\Settings::init();
+	\PP_Glossary\Post_Type::init();
+	\PP_Glossary\Blocks::init();
+	\PP_Glossary\Schema::init();
+
+	if ( is_admin() ) {
+		\PP_Glossary\Meta_Boxes::init();
+	}
+
+	if ( ! is_admin() ) {
+		\PP_Glossary\Content_Filter::init();
+		\PP_Glossary\Assets::init();
+	}
 }
 add_action( 'plugins_loaded', 'pp_glossary_init' );
 
