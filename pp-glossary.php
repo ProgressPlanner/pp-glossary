@@ -11,6 +11,7 @@
  * GitHub Plugin URI: https://github.com/progressplanner/pp-glossary
  * GitHub Branch: main
  * Text Domain: pp-glossary
+ * Plugin ID: did:plc:m5tfrwxd3btacxlstcvop2ib
  * Requires at least: 6.0
  * Requires PHP: 7.4
  *
