@@ -10,6 +10,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * GitHub Plugin URI: https://github.com/progressplanner/pp-glossary
  * GitHub Branch: main
+ * Release Asset: true
  * Text Domain: pp-glossary
  * Plugin ID: did:plc:m5tfrwxd3btacxlstcvop2ib
  * Requires at least: 6.0
