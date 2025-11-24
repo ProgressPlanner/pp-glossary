@@ -286,7 +286,7 @@ class Content_Filter {
 		$anchor_name = '--' . $unique_id;
 
 		$popover_html = sprintf(
-			'<aside id="%s" popover="manual" role="tooltip" aria-labelledby="%s" style="position-anchor: %s;">',
+			'<aside id="%s" popover="auto" role="tooltip" aria-labelledby="%s" style="position-anchor: %s;">',
 			esc_attr( $popover_id ),
 			esc_attr( $unique_id ),
 			esc_attr( $anchor_name )
