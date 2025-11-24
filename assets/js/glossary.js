@@ -1,7 +1,7 @@
 /**
  * Glossary JavaScript
  *
- * Handles click-based popover display and accessibility features.
+ * Handles click and keyboard-based popover display and accessibility features.
  *
  * @package PP_Glossary
  */
