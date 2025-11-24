@@ -292,12 +292,7 @@ class Content_Filter {
 			esc_attr( $anchor_name )
 		);
 
-		$popover_html .= sprintf( '<strong class="glossary-title">%s</strong>', $title );
-
-		if ( ! empty( $entry['short_description'] ) ) {
-			$popover_html .= sprintf( '<p>%s</p>', esc_html( $entry['short_description'] ) );
-		}
-
+		// Add "Read more" link first for better screen reader accessibility.
 		if ( ! empty( $entry['long_description'] ) ) {
 			// Get glossary page URL from settings.
 			$glossary_page_url = Settings::get_glossary_page_url();
@@ -314,6 +309,12 @@ class Content_Filter {
 					esc_html( $title )
 				);
 			}
+		}
+
+		$popover_html .= sprintf( '<strong class="glossary-title">%s</strong>', $title );
+
+		if ( ! empty( $entry['short_description'] ) ) {
+			$popover_html .= sprintf( '<p>%s</p>', esc_html( $entry['short_description'] ) );
 		}
 
 		$popover_html .= '</aside>';
