@@ -19,7 +19,7 @@ dfn.pp-glossary-term span {
 	text-decoration-thickness: 1px;
 	text-decoration-color: var(--glossary-underline-color, rgba(0, 0, 0, 0.4));
 	text-underline-offset: 3px;
-	cursor: help;
+	cursor: pointer;
 	font-weight: inherit;
 	font-size: inherit;
 	line-height: inherit;

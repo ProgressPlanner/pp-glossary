@@ -32,13 +32,6 @@ class Content_Filter {
 	private static $popovers = [];
 
 	/**
-	 * Flag to track if helper text has been added
-	 *
-	 * @var bool
-	 */
-	private static $helper_added = false;
-
-	/**
 	 * Flag to track if the term(s) have been found in the content.
 	 *
 	 * @var bool
@@ -67,7 +60,6 @@ class Content_Filter {
 		// Reset counters and storage for each content piece.
 		self::$popover_counter = 0;
 		self::$popovers        = [];
-		self::$helper_added    = false;
 
 		// Check if content filtering is disabled for this post type.
 		$disabled_post_types = apply_filters( 'pp_glossary_disabled_post_types', [] );
@@ -100,11 +92,6 @@ class Content_Filter {
 		// Append all popovers at the end.
 		if ( ! empty( self::$popovers ) ) {
 			$content .= "\n" . implode( "\n", self::$popovers );
-
-			// Add helper text once if we have any popovers.
-			if ( self::$helper_added ) { // @phpstan-ignore-line -- self::$helper_added is set to true in the replace_first_occurrence method.
-				$content .= self::get_helper_text();
-			}
 
 			// Set to true if terms have been found in the content.
 			self::$terms_found_on_page = true;
@@ -235,9 +222,6 @@ class Content_Filter {
 					// Store the popover for later.
 					self::$popovers[] = self::create_popover( $entry, $unique_id, $popover_id );
 
-					// Mark that we need helper text.
-					self::$helper_added = true;
-
 					$replaced = true;
 				} else {
 					$new_parts[] = $part;
@@ -265,7 +249,7 @@ class Content_Filter {
 	private static function create_term_button( $term, $unique_id, $popover_id ): string {
 		$anchor_name = '--' . $unique_id;
 		return sprintf(
-			'<dfn id="%s" class="pp-glossary-term" style="anchor-name: %s;"><span data-glossary-popover="%s" aria-describedby="help-def" tabindex="0" role="button" aria-expanded="false">%s</span></dfn>',
+			'<dfn id="%s" class="pp-glossary-term" style="anchor-name: %s;"><span data-glossary-popover="%s" tabindex="0" role="button" aria-expanded="false">%s</span></dfn>',
 			esc_attr( $unique_id ),
 			esc_attr( $anchor_name ),
 			esc_attr( $popover_id ),
@@ -321,12 +305,4 @@ class Content_Filter {
 		return $popover_html;
 	}
 
-	/**
-	 * Get the helper text for screen readers
-	 *
-	 * @return string HTML for helper text.
-	 */
-	private static function get_helper_text(): string {
-		return '<p id="help-def" hidden>' . esc_html__( 'Hover or focus to see the definition of the term.', 'pp-glossary' ) . '</p>';
-	}
 }
