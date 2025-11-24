@@ -13,6 +13,7 @@
  * Release Asset: true
  * Text Domain: pp-glossary
  * Plugin ID: did:plc:m5tfrwxd3btacxlstcvop2ib
+ * Security: security@progressplanner.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
  *
