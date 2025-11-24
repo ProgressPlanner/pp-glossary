@@ -304,5 +304,4 @@ class Content_Filter {
 
 		return $popover_html;
 	}
-
 }
