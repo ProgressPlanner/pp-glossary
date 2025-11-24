@@ -23,7 +23,7 @@ class Assets {
 	public static function init(): void {
 		// Only load assets on the frontend, not in admin.
 		if ( ! is_admin() ) {
-			add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue_assets' ] );
+			add_action( 'wp_footer', [ __CLASS__, 'enqueue_assets' ], 1 );
 		}
 	}
 
