@@ -1,7 +1,7 @@
 /**
  * Glossary JavaScript
  *
- * Handles hover-based popover display and accessibility features.
+ * Handles click and keyboard-based popover display and accessibility features.
  *
  * @package PP_Glossary
  */
@@ -9,22 +9,19 @@
 (function () {
 	'use strict';
 
-	let hideTimeout = null;
-	const HIDE_DELAY = 500;
-
 	/**
 	 * Initialize glossary functionality when DOM is ready.
 	 */
 	function init() {
-		setupHoverPopovers();
+		setupClickPopovers();
 		setupSmoothScrolling();
 		maybeScrollOnPageLoad();
 	}
 
 	/**
-	 * Setup hover-based popovers for glossary terms.
+	 * Setup click-based popovers for glossary terms.
 	 */
-	function setupHoverPopovers() {
+	function setupClickPopovers() {
 		// Get all glossary term spans.
 		const termSpans = document.querySelectorAll('[data-glossary-popover]');
 
@@ -36,42 +33,14 @@
 				return;
 			}
 
-			// Show popover on hover.
-			span.addEventListener('mouseenter', () => {
-				clearTimeout(hideTimeout);
-				showPopover(popover, span);
-			});
-
-			// Hide popover when mouse leaves (with delay).
-			span.addEventListener('mouseleave', () => {
-				hideTimeout = setTimeout(() => {
+			// Toggle popover on click.
+			span.addEventListener('click', () => {
+				const isOpen = popover.matches(':popover-open');
+				if (isOpen) {
 					hidePopover(popover, span);
-				}, HIDE_DELAY);
-			});
-
-			// Show popover on focus (keyboard navigation).
-			span.addEventListener('focus', () => {
-				clearTimeout(hideTimeout);
-				showPopover(popover, span);
-			});
-
-			// Hide popover on blur.
-			span.addEventListener('blur', () => {
-				hideTimeout = setTimeout(() => {
-					hidePopover(popover, span);
-				}, HIDE_DELAY);
-			});
-
-			// Keep popover open when mouse is over it.
-			popover.addEventListener('mouseenter', () => {
-				clearTimeout(hideTimeout);
-			});
-
-			// Hide when mouse leaves popover.
-			popover.addEventListener('mouseleave', () => {
-				hideTimeout = setTimeout(() => {
-					hidePopover(popover, span);
-				}, HIDE_DELAY);
+				} else {
+					showPopover(popover, span);
+				}
 			});
 
 			// Handle keyboard interactions.
