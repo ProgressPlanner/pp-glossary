@@ -4,7 +4,7 @@ Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.1.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,13 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 5. Settings page for configuring the glossary page
 
 == Changelog ==
+
+= 1.1.0 =
+
+* Added case sensitive option for glossary entries - only matches terms when case matches exactly.
+* Added disable auto-linking option - allows entries to appear in the glossary without being automatically linked in content.
+* Consolidated glossary entry meta data into a single database field for improved performance.
+* Added automatic migration system for seamless upgrades.
 
 = 1.0.3 =
 

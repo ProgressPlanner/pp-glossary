@@ -188,13 +188,14 @@ class Blocks {
 				}
 
 				$post_id              = (int) get_the_ID();
+				$data                 = Meta_Boxes::get_entry_data( $post_id );
 				$grouped[ $letter ][] = [
 					'id'                => $post_id,
 					'slug'              => sanitize_title( $title ),
 					'title'             => $title,
-					'short_description' => get_post_meta( $post_id, '_pp_glossary_short_description', true ),
-					'long_description'  => get_post_meta( $post_id, '_pp_glossary_long_description', true ),
-					'synonyms'          => get_post_meta( $post_id, '_pp_glossary_synonyms', true ),
+					'short_description' => $data['short_description'],
+					'long_description'  => $data['long_description'],
+					'synonyms'          => $data['synonyms'],
 				];
 			}
 			wp_reset_postdata();

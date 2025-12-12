@@ -136,15 +136,18 @@ class Content_Filter {
 				$query->the_post();
 				$post_id = (int) get_the_ID();
 
-				$short_description = get_post_meta( $post_id, '_pp_glossary_short_description', true );
-				$long_description  = get_post_meta( $post_id, '_pp_glossary_long_description', true );
-				$synonyms          = get_post_meta( $post_id, '_pp_glossary_synonyms', true );
+				$data = Meta_Boxes::get_entry_data( $post_id );
+
+				// Skip entries that have auto-linking disabled.
+				if ( $data['disable_autolink'] ) {
+					continue;
+				}
 
 				// Build array of terms (title + synonyms).
 				$terms = [ get_the_title() ];
 
-				if ( $synonyms && is_array( $synonyms ) ) {
-					foreach ( $synonyms as $synonym ) {
+				if ( ! empty( $data['synonyms'] ) && is_array( $data['synonyms'] ) ) {
+					foreach ( $data['synonyms'] as $synonym ) {
 						if ( ! empty( $synonym ) ) {
 							$terms[] = $synonym;
 						}
@@ -156,8 +159,9 @@ class Content_Filter {
 					'slug'              => sanitize_title( get_the_title() ),
 					'title'             => get_the_title(),
 					'terms'             => $terms,
-					'short_description' => $short_description,
-					'long_description'  => $long_description,
+					'short_description' => $data['short_description'],
+					'long_description'  => $data['long_description'],
+					'case_sensitive'    => $data['case_sensitive'],
 				];
 			}
 			wp_reset_postdata();
@@ -215,7 +219,9 @@ class Content_Filter {
 				}
 
 				// Try to match term in this text chunk, but avoid HTML attributes.
-				$pattern = '/\b(' . preg_quote( $term, '/' ) . ')\b(?![^<]*>)/iu';
+				// Use case-insensitive matching unless the entry is marked as case sensitive.
+				$flags   = $entry['case_sensitive'] ? 'u' : 'iu';
+				$pattern = '/\b(' . preg_quote( $term, '/' ) . ')\b(?![^<]*>)/' . $flags;
 
 				if ( preg_match( $pattern, $part, $matches, PREG_OFFSET_CAPTURE ) ) {
 					$matched_term = $matches[1][0];

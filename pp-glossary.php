@@ -3,7 +3,7 @@
  * Plugin Name: Glossary by Progress Planner
  * Plugin URI: https://progressplanner.com
  * Description: A semantic, accessible glossary plugin that automatically links terms to popover definitions.
- * Version: 1.0.3
+ * Version: 1.1.0
  * Author: Joost de Valk
  * Author URI: https://joost.blog
  * License: GPL v3 or later
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'PP_GLOSSARY_VERSION', '1.0.3' );
+define( 'PP_GLOSSARY_VERSION', '1.1.0' );
 define( 'PP_GLOSSARY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PP_GLOSSARY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -73,6 +73,7 @@ function pp_glossary_init(): void {
 
 	if ( is_admin() ) {
 		\PP_Glossary\Meta_Boxes::init();
+		\PP_Glossary\Migrations::init();
 	}
 
 	if ( ! is_admin() ) {

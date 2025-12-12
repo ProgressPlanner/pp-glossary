@@ -157,11 +157,24 @@ class Settings {
 	public static function get_settings(): array {
 		$defaults = [
 			'glossary_page' => 0,
+			'db_version'    => PP_GLOSSARY_VERSION,
 		];
 
 		$settings = get_option( self::OPTION_NAME, [] );
 
 		return wp_parse_args( $settings, $defaults );
+	}
+
+	/**
+	 * Update a single setting.
+	 *
+	 * @param string $key   The setting key.
+	 * @param mixed  $value The setting value.
+	 */
+	public static function update_setting( string $key, $value ): void {
+		$settings         = self::get_settings();
+		$settings[ $key ] = $value;
+		update_option( self::OPTION_NAME, $settings );
 	}
 
 	/**
