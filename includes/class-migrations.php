@@ -51,9 +51,9 @@ class Migrations {
 		}
 
 		// Migration to 1.0.4: Consolidate meta fields into single array.
-		if ( version_compare( $current_version, '1.0.4', '<' ) ) {
+		if ( version_compare( $current_version, '1.1.0', '<' ) ) {
 			self::migrate_to_1_0_4();
-			Settings::update_setting( 'db_version', '1.0.4' );
+			Settings::update_setting( 'db_version', '1.1.0' );
 		}
 	}
 
@@ -129,8 +129,6 @@ class Migrations {
 			delete_post_meta( $post_id, '_pp_glossary_short_description' );
 			delete_post_meta( $post_id, '_pp_glossary_long_description' );
 			delete_post_meta( $post_id, '_pp_glossary_synonyms' );
-			delete_post_meta( $post_id, '_pp_glossary_case_sensitive' );
-			delete_post_meta( $post_id, '_pp_glossary_disable_autolink' );
 		}
 	}
 }
