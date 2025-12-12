@@ -86,7 +86,7 @@ jobs:
         curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
     - name: Generate SBOM
-      run: syft . -o cyclonedx-json=sbom-${{ env.TAG_NAME }}.json
+      run: syft . -o cyclonedx-json=sbom-${{ github.event.release.tag_name }}.json
 
     # === Build plugin ===
     - name: Install latest version of dist-archive-command
@@ -99,18 +99,39 @@ jobs:
     # === Check that the SBOM was generated ===
     - name: Verify SBOM exists
       run: |
-        if [ ! -f "sbom-${{ env.TAG_NAME }}.json" ]; then
+        if [ ! -f "sbom-${{ github.event.release.tag_name }}.json" ]; then
           echo "SBOM generation failed"
           exit 1
         fi
+
+    # === Get existing release body and append SBOM info ===
+    - name: Get existing release body
+      id: release-body
+      run: |
+        EXISTING_BODY=$(curl -s \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.event.release.tag_name }}" \
+          | jq -r '.body // ""')
+        
+        # Append SBOM information to existing body
+        SBOM_INFO=$'SBOM Format: CycloneDX JSON\nGenerated with: Syft'
+        
+        if [ -z "$EXISTING_BODY" ]; then
+          COMBINED_BODY="$SBOM_INFO"
+        else
+          COMBINED_BODY="$EXISTING_BODY"$'\n\n'"$SBOM_INFO"
+        fi
+        
+        # Write to file for body_path
+        echo "$COMBINED_BODY" > release-body.txt
+        echo "body_path=release-body.txt" >> $GITHUB_OUTPUT
 
     # === Upload both artifact and SBOM to release ===
     - name: Upload artifact to release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          sbom-${{ env.TAG_NAME }}.json
+          sbom-${{ github.event.release.tag_name }}.json
           ${{ github.event.repository.name }}.zip
-        body: |
-          SBOM Format: CycloneDX JSON
-          Generated with: Syft
+        body_path: ${{ steps.release-body.outputs.body_path }}
