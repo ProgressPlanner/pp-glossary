@@ -79,7 +79,7 @@ jobs:
           set -euxo pipefail
           ARTIFACT_URL="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/${{ github.event.repository.name }}.zip"
           XML_URL="https://nightly.link/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}/.wordpress-org/blueprints/blueprint.xml"
-          echo "XML URL: $GITHUB_BRANCH_URL"
+          echo "XML URL: $XML_URL"
 
           # Use Node.js to parse, modify, and stringify the JSON
           BLUEPRINT=$(node -e "
