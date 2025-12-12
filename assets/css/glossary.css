@@ -200,6 +200,21 @@ aside[popover] > p a:focus-visible {
 	color: var(--glossary-heading-color, #000);
 }
 
+.glossary-edit-link {
+	margin: 0 0 0.75rem 0;
+	font-size: 0.85rem;
+}
+
+.glossary-edit-link a {
+	color: var(--glossary-link-color, #0073aa);
+	text-decoration: none;
+}
+
+.glossary-edit-link a:hover,
+.glossary-edit-link a:focus {
+	text-decoration: underline;
+}
+
 .glossary-synonyms {
 	font-size: 0.9rem;
 	color: var(--glossary-meta-color, #666);

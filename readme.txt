@@ -146,6 +146,7 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 * Added case sensitive option for glossary entries - only matches terms when case matches exactly.
 * Added disable auto-linking option - allows entries to appear in the glossary without being automatically linked in content.
 * Glossary block now falls back to short description when long description is empty.
+* Added edit link in glossary block for logged-in users with edit permissions.
 * Consolidated glossary entry meta data into a single database field for improved performance.
 * Added automatic migration system for seamless upgrades.
 

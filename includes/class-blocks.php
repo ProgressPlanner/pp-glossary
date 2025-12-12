@@ -109,6 +109,14 @@ class Blocks {
 										<?php echo esc_html( $entry['title'] ); ?>
 									</h4>
 
+									<?php if ( current_user_can( 'edit_post', $entry['id'] ) ) : ?>
+										<p class="glossary-edit-link">
+											<a href="<?php echo esc_url( get_edit_post_link( $entry['id'] ) ); ?>">
+												<?php esc_html_e( 'Edit', 'pp-glossary' ); ?>
+											</a>
+										</p>
+									<?php endif; ?>
+
 									<?php if ( ! empty( $entry['synonyms'] ) && is_array( $entry['synonyms'] ) ) : ?>
 										<div class="glossary-synonyms">
 											<span class="synonyms-label"><?php esc_html_e( 'Also known as:', 'pp-glossary' ); ?></span>
