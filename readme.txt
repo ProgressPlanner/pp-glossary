@@ -4,7 +4,7 @@ Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,18 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 5. Settings page for configuring the glossary page
 
 == Changelog ==
+
+= 1.0.3 =
+
+* Fix non-bumped version number.
+
+= 1.0.2 =
+
+* Asset fixes.
+
+= 1.0.1 =
+
+* Minor bug fixes.
 
 = 1.0.0 =
 * Initial release
