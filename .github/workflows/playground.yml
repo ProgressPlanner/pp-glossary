@@ -88,7 +88,7 @@ jobs:
             blueprint.plugins = blueprint.plugins.map(plugin =>
               plugin === '${{ github.event.repository.name }}' ? '$ARTIFACT_URL' : plugin
             );
-            blueprint.replace( 'https://progressplanner.com/research/pp-glossary.xml', '$XML_URL' );
+            blueprint.steps[1].file.url = '$XML_URL';
             console.log(JSON.stringify(blueprint));
           ")
 
