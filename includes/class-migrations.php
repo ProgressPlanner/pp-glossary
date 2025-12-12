@@ -21,7 +21,7 @@ class Migrations {
 	 * Initialize migrations.
 	 */
 	public static function init(): void {
-		add_action( 'admin_init', [ __CLASS__, 'run_migrations' ] );
+		add_action( 'init', [ __CLASS__, 'run_migrations' ] );
 	}
 
 	/**
