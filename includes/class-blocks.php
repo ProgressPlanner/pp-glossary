@@ -134,9 +134,12 @@ class Blocks {
 										</div>
 									<?php endif; ?>
 
-									<?php if ( ! empty( $entry['long_description'] ) ) : ?>
+									<?php
+								$description = ! empty( $entry['long_description'] ) ? $entry['long_description'] : $entry['short_description'];
+								if ( ! empty( $description ) ) :
+									?>
 										<div class="glossary-long-description" <?php echo Schema::get_itemprop( 'description' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-											<?php echo wp_kses_post( $entry['long_description'] ); ?>
+											<?php echo wp_kses_post( $description ); ?>
 										</div>
 									<?php endif; ?>
 								</article>
