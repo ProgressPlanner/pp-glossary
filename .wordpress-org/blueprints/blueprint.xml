@@ -51,8 +51,8 @@
 		<wp:post_id>7</wp:post_id>
 		<wp:post_date><![CDATA[2025-11-11 13:20:06]]></wp:post_date>
 		<wp:post_date_gmt><![CDATA[2025-11-11 13:20:06]]></wp:post_date_gmt>
-		<wp:post_modified><![CDATA[2025-12-12 13:54:35]]></wp:post_modified>
-		<wp:post_modified_gmt><![CDATA[2025-12-12 13:54:35]]></wp:post_modified_gmt>
+		<wp:post_modified><![CDATA[2025-12-12 14:38:02]]></wp:post_modified>
+		<wp:post_modified_gmt><![CDATA[2025-12-12 14:38:02]]></wp:post_modified_gmt>
 		<wp:comment_status><![CDATA[closed]]></wp:comment_status>
 		<wp:ping_status><![CDATA[closed]]></wp:ping_status>
 		<wp:post_name><![CDATA[fair]]></wp:post_name>
@@ -64,13 +64,7 @@
 		<wp:is_sticky>0</wp:is_sticky>
 		<wp:postmeta>
 			<wp:meta_key><![CDATA[_pp_glossary_data]]></wp:meta_key>
-			<wp:meta_value><![CDATA[a:5:{s:14:"case_sensitive";b:1;s:16:"disable_autolink";b:0;s:17:"short_description";s:38:"Federated and Independent Repositories";s:16:"long_description";s:170:"Federated and Independent Repositories
-
-You can learn more about FAIR, how to use it, install it, and how to contribute to it, at <a href="https://fair.pm">fair.pm</a>.";s:8:"synonyms";a:0:{}}]]></wp:meta_value>
-		</wp:postmeta>
-		<wp:postmeta>
-			<wp:meta_key><![CDATA[_edit_last]]></wp:meta_key>
-			<wp:meta_value><![CDATA[1]]></wp:meta_value>
+			<wp:meta_value><![CDATA[a:5:{s:14:"case_sensitive";b:1;s:16:"disable_autolink";b:0;s:17:"short_description";s:36:"Federated and Indepent Repositories.";s:16:"long_description";s:261:"FAIR stands for Federated And Independent Repositories. It is a groundbreaking new way of distributing (WordPress) software like plugins and themes from a decentralized group of repositories. You can read all about it at <a href="https://fair.pm/">fair.pm</a>.";s:8:"synonyms";a:0:{}}]]></wp:meta_value>
 		</wp:postmeta>
 	</item>
 	<item>
