@@ -32,8 +32,8 @@ class Migrations {
 		$raw_settings = get_option( Settings::OPTION_NAME, [] );
 
 		// If db_version is not stored, this is either:
-		// - A fresh install (no option at all, or empty option) -> no migration needed
-		// - An upgrade from pre-1.0.4 (has glossary_page but no db_version) -> needs migration from 1.0.0
+		// - A fresh install (no option at all, or empty option) -> no migration needed.
+		// - An upgrade from pre-1.0.4 (has glossary_page but no db_version) -> needs migration from 1.0.0.
 		if ( ! isset( $raw_settings['db_version'] ) ) {
 			// Check if this is an existing install by looking for glossary_page or any glossary posts.
 			$is_existing_install = ! empty( $raw_settings['glossary_page'] ) || self::has_glossary_posts();
@@ -115,8 +115,8 @@ class Migrations {
 
 			// Build new consolidated data array.
 			$data = [
-				'short_description' => $short_description ?: '',
-				'long_description'  => $long_description ?: '',
+				'short_description' => ! empty( $short_description ) ? $short_description : '',
+				'long_description'  => ! empty( $long_description ) ? $long_description : '',
 				'synonyms'          => is_array( $synonyms ) ? $synonyms : [],
 				'case_sensitive'    => '1' === $case_sensitive,
 				'disable_autolink'  => '1' === $disable_autolink,
