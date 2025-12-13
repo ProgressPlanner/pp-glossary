@@ -4,8 +4,8 @@
  * Plugin URI: https://progressplanner.com
  * Description: A semantic, accessible glossary plugin that automatically links terms to popover definitions.
  * Version: 1.1.0
- * Author: Joost de Valk
- * Author URI: https://joost.blog
+ * Author: Team Progress Planner
+ * Author URI: https://progressplanner.com
  * License: GPL v3 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * GitHub Plugin URI: https://github.com/progressplanner/pp-glossary
