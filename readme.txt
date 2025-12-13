@@ -150,6 +150,11 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 * Glossary block improvements:
    * Now falls back to short description when long description is empty.
    * Now shows an edit link for logged in users per glossary item.
+* Lots of accessibility fixes thanks to [@joedolson](https://github.com/joedolson):
+  * Popover now opens on click, not on hover, and no longer auto-closes. ([GH issue #15](https://github.com/ProgressPlanner/pp-glossary/issues/15)) & ([#16](https://github.com/ProgressPlanner/pp-glossary/issues/16))
+  * Removed redundant `aria-describedby` attribute. ([GH issue #16](https://github.com/ProgressPlanner/pp-glossary/issues/16))
+  * Link appears inside the popover before the definition, to give context to people using screen readers better. ([GH issue #17](https://github.com/ProgressPlanner/pp-glossary/issues/17))
+  * Popovers are now type `auto` instead of `manual` which means they dismiss other popovers so they don't overlap. ([GH issue #18](https://github.com/ProgressPlanner/pp-glossary/issues/18))
 
 = 1.0.3 =
 
