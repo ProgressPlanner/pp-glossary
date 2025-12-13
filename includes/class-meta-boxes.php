@@ -87,37 +87,6 @@ class Meta_Boxes {
 		?>
 		<div class="pp-glossary-meta-box">
 			<p>
-				<label>
-					<input
-						type="checkbox"
-						name="pp_glossary_case_sensitive"
-						value="1"
-						<?php checked( $case_sensitive ); ?>
-					>
-					<strong><?php esc_html_e( 'Case sensitive', 'pp-glossary' ); ?></strong>
-				</label>
-				<br>
-				<span class="description">
-					<?php esc_html_e( 'Only match terms when the case matches exactly.', 'pp-glossary' ); ?>
-				</span>
-			</p>
-			<p>
-				<label>
-					<input
-						type="checkbox"
-						name="pp_glossary_disable_autolink"
-						value="1"
-						<?php checked( $disable_autolink ); ?>
-					>
-					<strong><?php esc_html_e( 'Disable auto-linking', 'pp-glossary' ); ?></strong>
-				</label>
-				<br>
-				<span class="description">
-					<?php esc_html_e( 'This term will appear in the glossary but will not be automatically linked in content.', 'pp-glossary' ); ?>
-				</span>
-			</p>
-			<hr>
-			<p>
 				<label for="pp_glossary_short_description">
 					<strong><?php esc_html_e( 'Short Description', 'pp-glossary' ); ?></strong>
 					<span class="required">*</span>
@@ -193,6 +162,37 @@ class Meta_Boxes {
 				<button type="button" id="pp-glossary-add-synonym" class="button">
 					<?php esc_html_e( 'Add Synonym', 'pp-glossary' ); ?>
 				</button>
+			</p>
+			<hr>
+			<p>
+				<label>
+					<input
+						type="checkbox"
+						name="pp_glossary_case_sensitive"
+						value="1"
+						<?php checked( $case_sensitive ); ?>
+					>
+					<strong><?php esc_html_e( 'Case sensitive', 'pp-glossary' ); ?></strong>
+				</label>
+				<br>
+				<span class="description">
+					<?php esc_html_e( 'Only match terms when the case matches exactly.', 'pp-glossary' ); ?>
+				</span>
+			</p>
+			<p>
+				<label>
+					<input
+						type="checkbox"
+						name="pp_glossary_disable_autolink"
+						value="1"
+						<?php checked( $disable_autolink ); ?>
+					>
+					<strong><?php esc_html_e( 'Disable auto-linking', 'pp-glossary' ); ?></strong>
+				</label>
+				<br>
+				<span class="description">
+					<?php esc_html_e( 'This term will appear in the glossary but will not be automatically linked in content.', 'pp-glossary' ); ?>
+				</span>
 			</p>
 		</div>
 		<?php
