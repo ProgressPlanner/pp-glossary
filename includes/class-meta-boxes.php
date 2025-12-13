@@ -41,6 +41,30 @@ class Meta_Boxes {
 	}
 
 	/**
+	 * Get glossary entry data with defaults.
+	 *
+	 * @param int $post_id The post ID.
+	 * @return array<string, mixed> The glossary data.
+	 */
+	public static function get_entry_data( int $post_id ): array {
+		$defaults = [
+			'short_description' => '',
+			'long_description'  => '',
+			'synonyms'          => [],
+			'case_sensitive'    => false,
+			'disable_autolink'  => false,
+		];
+
+		$data = get_post_meta( $post_id, '_pp_glossary_data', true );
+
+		if ( ! is_array( $data ) ) {
+			return $defaults;
+		}
+
+		return wp_parse_args( $data, $defaults );
+	}
+
+	/**
 	 * Render the meta box content
 	 *
 	 * @param \WP_Post $post The post object.
@@ -50,9 +74,12 @@ class Meta_Boxes {
 		wp_nonce_field( 'pp_glossary_meta_box', 'pp_glossary_meta_box_nonce' );
 
 		// Get current values.
-		$short_description = get_post_meta( $post->ID, '_pp_glossary_short_description', true );
-		$long_description  = get_post_meta( $post->ID, '_pp_glossary_long_description', true );
-		$synonyms          = get_post_meta( $post->ID, '_pp_glossary_synonyms', true );
+		$data              = self::get_entry_data( $post->ID );
+		$short_description = $data['short_description'];
+		$long_description  = $data['long_description'];
+		$synonyms          = $data['synonyms'];
+		$case_sensitive    = $data['case_sensitive'];
+		$disable_autolink  = $data['disable_autolink'];
 
 		if ( ! is_array( $synonyms ) ) {
 			$synonyms = [];
@@ -136,6 +163,37 @@ class Meta_Boxes {
 					<?php esc_html_e( 'Add Synonym', 'pp-glossary' ); ?>
 				</button>
 			</p>
+			<hr>
+			<p>
+				<label>
+					<input
+						type="checkbox"
+						name="pp_glossary_case_sensitive"
+						value="1"
+						<?php checked( $case_sensitive ); ?>
+					>
+					<strong><?php esc_html_e( 'Case sensitive', 'pp-glossary' ); ?></strong>
+				</label>
+				<br>
+				<span class="description">
+					<?php esc_html_e( 'Only match terms when the case matches exactly.', 'pp-glossary' ); ?>
+				</span>
+			</p>
+			<p>
+				<label>
+					<input
+						type="checkbox"
+						name="pp_glossary_disable_autolink"
+						value="1"
+						<?php checked( $disable_autolink ); ?>
+					>
+					<strong><?php esc_html_e( 'Disable auto-linking', 'pp-glossary' ); ?></strong>
+				</label>
+				<br>
+				<span class="description">
+					<?php esc_html_e( 'This term will appear in the glossary but will not be automatically linked in content.', 'pp-glossary' ); ?>
+				</span>
+			</p>
 		</div>
 		<?php
 	}
@@ -165,35 +223,36 @@ class Meta_Boxes {
 			return;
 		}
 
-		// Save short description.
+		// Build data array.
+		$data = [
+			'case_sensitive'    => isset( $_POST['pp_glossary_case_sensitive'] ),
+			'disable_autolink'  => isset( $_POST['pp_glossary_disable_autolink'] ),
+			'short_description' => '',
+			'long_description'  => '',
+			'synonyms'          => [],
+		];
+
+		// Sanitize short description.
 		if ( isset( $_POST['pp_glossary_short_description'] ) ) {
-			update_post_meta(
-				$post_id,
-				'_pp_glossary_short_description',
-				sanitize_textarea_field( wp_unslash( $_POST['pp_glossary_short_description'] ) )
-			);
+			$data['short_description'] = sanitize_textarea_field( wp_unslash( $_POST['pp_glossary_short_description'] ) );
 		}
 
-		// Save long description.
+		// Sanitize long description.
 		if ( isset( $_POST['pp_glossary_long_description'] ) ) {
-			update_post_meta(
-				$post_id,
-				'_pp_glossary_long_description',
-				wp_kses_post( wp_unslash( $_POST['pp_glossary_long_description'] ) )
-			);
+			$data['long_description'] = wp_kses_post( wp_unslash( $_POST['pp_glossary_long_description'] ) );
 		}
 
-		// Save synonyms.
-		$synonyms = [];
+		// Sanitize synonyms.
 		if ( isset( $_POST['pp_glossary_synonyms'] ) && is_array( $_POST['pp_glossary_synonyms'] ) ) {
 			foreach ( wp_unslash( $_POST['pp_glossary_synonyms'] ) as $synonym ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization handled below.
 				$synonym = sanitize_text_field( $synonym );
 				if ( ! empty( $synonym ) ) {
-					$synonyms[] = $synonym;
+					$data['synonyms'][] = $synonym;
 				}
 			}
 		}
-		update_post_meta( $post_id, '_pp_glossary_synonyms', $synonyms );
+
+		update_post_meta( $post_id, '_pp_glossary_data', $data );
 	}
 
 	/**

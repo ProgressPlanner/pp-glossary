@@ -4,14 +4,16 @@
 
 ![Glossary](/.wordpress-org/github_banner_glossary_pp.png)
 
-A semantic, accessible WordPress glossary plugin that automatically links terms to hover-triggered popover definitions using native WordPress functionality.
+A semantic, accessible WordPress glossary plugin that automatically links terms to click-triggered popover definitions using native WordPress functionality.
 
 ## Features
 
 - **Custom Post Type**: Register glossary entries with custom fields (no content editor needed)
 - **Native WordPress Fields**: Uses WordPress custom meta boxes for field management (short description, long description, synonyms)
 - **Automatic Term Linking**: Automatically transforms the first mention of glossary terms in your content
-- **Hover-Triggered Popovers**: Display definitions on hover/focus using the native Popover API with CSS Anchor Positioning
+- **Click-Triggered Popovers**: Display definitions on click using the native Popover API with CSS Anchor Positioning
+- **Case Sensitive Matching**: Optionally match terms only when case matches exactly
+- **Disable Auto-Linking**: Allow entries to appear in the glossary without being automatically linked in content
 - **Semantic HTML**: Uses `<dfn>` and `<aside>` elements with proper ARIA attributes
 - **Schema.org Integration**: Full DefinedTerm and DefinedTermSet structured data support
   - Integrates with Yoast SEO schema graph when available
@@ -64,6 +66,8 @@ A semantic, accessible WordPress glossary plugin that automatically links terms 
    - **Short Description** (required): Brief definition (1-2 sentences) shown in popovers
    - **Long Description**: Detailed explanation shown on the glossary page
    - **Synonyms**: Alternative terms (e.g., "CLS", "layout shift") - click "Add Synonym" to add more
+   - **Case Sensitive**: Enable to only match terms when the case matches exactly
+   - **Disable Auto-Linking**: Enable to prevent this entry from being automatically linked in content
 4. Publish the entry
 
 ## Usage
@@ -72,9 +76,9 @@ A semantic, accessible WordPress glossary plugin that automatically links terms 
 
 Once you've added glossary entries, the plugin automatically:
 
-- Scans post and page content for mentions of glossary terms (case-insensitive)
-- Transforms the **first mention** of each term into an interactive element
-- Shows a popover with the short description when users hover over or focus on the term
+- Scans post and page content for mentions of glossary terms (case-insensitive by default, or case-sensitive if enabled)
+- Transforms the **first mention** of each term into an interactive element (unless auto-linking is disabled for that entry)
+- Shows a popover with the short description when users click on the term
 - Adds a "Read more" link to the full glossary entry
 
 ### The Glossary Block
@@ -86,12 +90,12 @@ The Glossary List block displays:
 - Short and long descriptions for each entry
 - Synonym listings
 
-### Hover Behavior
+### Click Behavior
 
-- **Mouse users**: Hover over a dotted underlined term to see the definition
-- **Keyboard users**: Tab to the term and it will show automatically
+- **Mouse users**: Click on a dotted underlined term to see the definition
+- **Keyboard users**: Tab to the term and press Enter or Space to open the popover
 - **Touch users**: Tap the term to toggle the popover
-- Popovers stay open when hovering over them (to click "Read more" links)
+- Press Escape or click elsewhere to close the popover
 
 ## HTML Structure
 
@@ -102,28 +106,22 @@ The plugin generates semantic, accessible HTML with CSS Anchor Positioning:
 <dfn id="dfn-term-1"
      class="pp-glossary-term"
      style="anchor-name: --dfn-term-1;">
-  <span data-glossary-popover="pop-term-1"
-        aria-describedby="help-def"
-        tabindex="0"
-        role="button"
-        aria-expanded="false">
+  <button data-glossary-popover="pop-term-1"
+          type="button"
+          aria-expanded="false">
     term
-  </span>
+  </button>
 </dfn>
 
 <!-- Popover anchored to the term -->
 <aside id="pop-term-1"
-       popover="manual"
+       popover="auto"
        role="tooltip"
        aria-labelledby="dfn-term-1"
        style="position-anchor: --dfn-term-1;">
-  <strong class="glossary-title">Term</strong>
-  <p>Short description of the term.</p>
   <p><a href="/glossary/#term-slug">Read more about <strong>Term</strong></a></p>
+  <p>Short description of the term.</p>
 </aside>
-
-<!-- Hidden helper text for accessibility -->
-<p id="help-def" hidden>Hover or focus to see the definition of the term.</p>
 ```
 
 The glossary block itself includes Schema.org structured data (Microdata when Yoast SEO is not active, JSON-LD when Yoast SEO is active):
@@ -255,8 +253,8 @@ The plugin follows WCAG 2.1 Level AA guidelines:
 - Semantic HTML elements (`<dfn>`, `<aside>`, proper roles)
 - Full keyboard navigation with visible focus indicators
 - ARIA attributes for screen readers
-- Hover delay to prevent accidental triggers
-- `cursor: help` to indicate interactive terms
+- Click-to-open behavior (not hover) for better accessibility
+- Auto-dismissing popovers that don't overlap
 - Color contrast ratios meet AA standards
 
 ## Development
@@ -286,6 +284,29 @@ GPL v2 or later
 Developed by Joost de Valk for Progress Planner.
 
 ## Changelog
+
+### 1.1.0
+- Added case sensitive option for glossary entries - only matches terms when case matches exactly
+- Added disable auto-linking option - allows entries to appear in the glossary without being automatically linked in content
+- Consolidated glossary entry meta data into a single database post meta field for improved performance
+- Added automatic migration system for seamless upgrades
+- Glossary block improvements:
+  - Now falls back to short description when long description is empty
+  - Now shows an edit link for logged in users per glossary item
+- Accessibility fixes:
+  - Popover now opens on click, not on hover, and no longer auto-closes
+  - Removed redundant `aria-describedby` attribute
+  - Link appears inside the popover before the definition for better screen reader context
+  - Popovers are now type `auto` instead of `manual` so they dismiss other popovers and don't overlap
+
+### 1.0.3
+- Fix non-bumped version number
+
+### 1.0.2
+- Asset fixes
+
+### 1.0.1
+- Minor bug fixes
 
 ### 1.0.0
 - Initial release

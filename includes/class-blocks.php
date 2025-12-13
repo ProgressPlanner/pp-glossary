@@ -109,6 +109,14 @@ class Blocks {
 										<?php echo esc_html( $entry['title'] ); ?>
 									</h4>
 
+									<?php if ( current_user_can( 'edit_post', $entry['id'] ) ) : ?>
+										<p class="glossary-edit-link">
+											<a href="<?php echo esc_url( get_edit_post_link( $entry['id'] ) ); ?>">
+												<?php esc_html_e( 'Edit', 'pp-glossary' ); ?>
+											</a>
+										</p>
+									<?php endif; ?>
+
 									<?php if ( ! empty( $entry['synonyms'] ) && is_array( $entry['synonyms'] ) ) : ?>
 										<div class="glossary-synonyms">
 											<span class="synonyms-label"><?php esc_html_e( 'Also known as:', 'pp-glossary' ); ?></span>
@@ -134,9 +142,12 @@ class Blocks {
 										</div>
 									<?php endif; ?>
 
-									<?php if ( ! empty( $entry['long_description'] ) ) : ?>
+									<?php
+									$description = ! empty( $entry['long_description'] ) ? $entry['long_description'] : $entry['short_description'];
+									if ( ! empty( $description ) ) :
+										?>
 										<div class="glossary-long-description" <?php echo Schema::get_itemprop( 'description' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-											<?php echo wp_kses_post( $entry['long_description'] ); ?>
+											<?php echo wp_kses_post( $description ); ?>
 										</div>
 									<?php endif; ?>
 								</article>
@@ -188,13 +199,14 @@ class Blocks {
 				}
 
 				$post_id              = (int) get_the_ID();
+				$data                 = Meta_Boxes::get_entry_data( $post_id );
 				$grouped[ $letter ][] = [
 					'id'                => $post_id,
 					'slug'              => sanitize_title( $title ),
 					'title'             => $title,
-					'short_description' => get_post_meta( $post_id, '_pp_glossary_short_description', true ),
-					'long_description'  => get_post_meta( $post_id, '_pp_glossary_long_description', true ),
-					'synonyms'          => get_post_meta( $post_id, '_pp_glossary_synonyms', true ),
+					'short_description' => $data['short_description'],
+					'long_description'  => $data['long_description'],
+					'synonyms'          => $data['synonyms'],
 				];
 			}
 			wp_reset_postdata();

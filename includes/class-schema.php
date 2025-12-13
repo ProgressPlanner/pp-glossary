@@ -98,14 +98,15 @@ class Schema {
 			while ( $query->have_posts() ) {
 				$query->the_post();
 				$post_id = (int) get_the_ID();
+				$data    = Meta_Boxes::get_entry_data( $post_id );
 
 				$entries[] = [
 					'id'                => $post_id,
 					'slug'              => sanitize_title( get_the_title() ),
 					'title'             => get_the_title(),
-					'short_description' => get_post_meta( $post_id, '_pp_glossary_short_description', true ),
-					'long_description'  => get_post_meta( $post_id, '_pp_glossary_long_description', true ),
-					'synonyms'          => get_post_meta( $post_id, '_pp_glossary_synonyms', true ),
+					'short_description' => $data['short_description'],
+					'long_description'  => $data['long_description'],
+					'synonyms'          => $data['synonyms'],
 				];
 			}
 			wp_reset_postdata();

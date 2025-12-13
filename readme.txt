@@ -4,7 +4,7 @@ Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.1.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,21 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 5. Settings page for configuring the glossary page
 
 == Changelog ==
+
+= 1.1.0 =
+
+* Added case sensitive option for glossary entries - only matches terms when case matches exactly. ([GH issue #23](https://github.com/ProgressPlanner/pp-glossary/issues/23))
+* Added disable auto-linking option - allows entries to appear in the glossary without being automatically linked in content. ([GH issue #19](https://github.com/ProgressPlanner/pp-glossary/issues/19))
+* Consolidated glossary entry meta data into a single database post meta field for improved performance.
+* Added automatic migration system for seamless upgrades.
+* Glossary block improvements:
+   * Now falls back to short description when long description is empty.
+   * Now shows an edit link for logged in users per glossary item.
+* Lots of accessibility fixes thanks to [@joedolson](https://github.com/joedolson):
+  * Popover now opens on click, not on hover, and no longer auto-closes. ([GH issue #15](https://github.com/ProgressPlanner/pp-glossary/issues/15)) & ([#16](https://github.com/ProgressPlanner/pp-glossary/issues/16))
+  * Removed redundant `aria-describedby` attribute. ([GH issue #16](https://github.com/ProgressPlanner/pp-glossary/issues/16))
+  * Link appears inside the popover before the definition, to give context to people using screen readers better. ([GH issue #17](https://github.com/ProgressPlanner/pp-glossary/issues/17))
+  * Popovers are now type `auto` instead of `manual` which means they dismiss other popovers so they don't overlap. ([GH issue #18](https://github.com/ProgressPlanner/pp-glossary/issues/18))
 
 = 1.0.3 =
 
