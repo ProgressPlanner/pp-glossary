@@ -64,14 +64,14 @@ class Settings {
 
 		add_settings_section(
 			'pp_glossary_display_section',
-			__( 'Display Settings', 'pp-glossary' ),
+			__( 'Display settings', 'pp-glossary' ),
 			[ __CLASS__, 'render_display_section' ],
 			'pp-glossary-settings'
 		);
 
 		add_settings_field(
 			'glossary_page',
-			__( 'Glossary Page', 'pp-glossary' ),
+			__( 'Glossary page', 'pp-glossary' ),
 			[ __CLASS__, 'render_glossary_page_field' ],
 			'pp-glossary-settings',
 			'pp_glossary_display_section'
@@ -79,8 +79,16 @@ class Settings {
 
 		add_settings_field(
 			'excluded_tags',
-			__( 'Excluded Tags', 'pp-glossary' ),
+			__( 'Excluded HTML tags', 'pp-glossary' ),
 			[ __CLASS__, 'render_excluded_tags_field' ],
+			'pp-glossary-settings',
+			'pp_glossary_display_section'
+		);
+
+		add_settings_field(
+			'excluded_post_types',
+			__( 'Excluded post types', 'pp-glossary' ),
+			[ __CLASS__, 'render_excluded_post_types_field' ],
 			'pp-glossary-settings',
 			'pp_glossary_display_section'
 		);
@@ -173,6 +181,47 @@ class Settings {
 	}
 
 	/**
+	 * Render excluded post types field
+	 */
+	public static function render_excluded_post_types_field(): void {
+		$settings            = self::get_settings();
+		$excluded_post_types = isset( $settings['excluded_post_types'] ) ? $settings['excluded_post_types'] : [];
+
+		// Get all public post types except the glossary itself.
+		$post_types = get_post_types(
+			[
+				'public' => true,
+			],
+			'objects'
+		);
+
+		// Remove the glossary post type from the list.
+		unset( $post_types['pp_glossary'] );
+
+		if ( empty( $post_types ) ) {
+			echo '<p>' . esc_html__( 'No public post types found.', 'pp-glossary' ) . '</p>';
+			return;
+		}
+
+		echo '<fieldset>';
+		foreach ( $post_types as $post_type ) {
+			$checked = in_array( $post_type->name, $excluded_post_types, true ) ? 'checked' : '';
+			printf(
+				'<label><input type="checkbox" name="%s[excluded_post_types][]" value="%s" %s /> %s</label><br>',
+				esc_attr( self::OPTION_NAME ),
+				esc_attr( $post_type->name ),
+				esc_attr( $checked ),
+				esc_html( $post_type->labels->name )
+			);
+		}
+		echo '</fieldset>';
+
+		echo '<p class="description">';
+		echo esc_html__( 'Glossary terms will not be highlighted in content from the selected post types.', 'pp-glossary' );
+		echo '</p>';
+	}
+
+	/**
 	 * Sanitize settings
 	 *
 	 * @param array<string, mixed> $input Settings input.
@@ -201,6 +250,13 @@ class Settings {
 			);
 		}
 
+		if ( isset( $input['excluded_post_types'] ) && is_array( $input['excluded_post_types'] ) ) {
+			$sanitized['excluded_post_types'] = array_map( 'sanitize_key', $input['excluded_post_types'] );
+		} else {
+			// If no checkboxes are checked, save an empty array.
+			$sanitized['excluded_post_types'] = [];
+		}
+
 		return $sanitized;
 	}
 
@@ -211,9 +267,10 @@ class Settings {
 	 */
 	public static function get_settings(): array {
 		$defaults = [
-			'glossary_page' => 0,
-			'excluded_tags' => self::DEFAULT_EXCLUDED_TAGS,
-			'db_version'    => PP_GLOSSARY_VERSION,
+			'glossary_page'       => 0,
+			'excluded_tags'       => self::DEFAULT_EXCLUDED_TAGS,
+			'excluded_post_types' => [],
+			'db_version'          => PP_GLOSSARY_VERSION,
 		];
 
 		$settings = get_option( self::OPTION_NAME, [] );
@@ -267,5 +324,15 @@ class Settings {
 	public static function get_excluded_tags(): array {
 		$settings = self::get_settings();
 		return isset( $settings['excluded_tags'] ) ? $settings['excluded_tags'] : self::DEFAULT_EXCLUDED_TAGS;
+	}
+
+	/**
+	 * Get excluded post types for term highlighting
+	 *
+	 * @return array<int, string> Array of excluded post type names.
+	 */
+	public static function get_excluded_post_types(): array {
+		$settings = self::get_settings();
+		return isset( $settings['excluded_post_types'] ) ? $settings['excluded_post_types'] : [];
 	}
 }
