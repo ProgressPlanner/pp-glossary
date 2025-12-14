@@ -57,6 +57,11 @@ class Content_Filter {
 	 */
 	public static function filter_content( $content ): string {
 
+		// No need to filter content in RSS feeds or REST API requests.
+		if ( is_feed() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+			return $content;
+		}
+
 		// Reset counters and storage for each content piece.
 		self::$popover_counter = 0;
 		self::$popovers        = [];
