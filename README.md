@@ -38,9 +38,7 @@ A semantic, accessible WordPress glossary plugin that automatically links terms 
    cd wp-content/plugins/
    git clone [repository-url] pp-glossary
    ```
-
-2. Activate the "Glossary by Progress Planner" plugin in your WordPress admin panel
-
+2. Activate the "Glossary" plugin in your WordPress admin panel
 3. Navigate to **Glossary** in the WordPress admin menu to start adding entries
 
 ## Setup

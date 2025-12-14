@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Glossary by Progress Planner
+ * Plugin Name: Glossary
  * Plugin URI: https://progressplanner.com
  * Description: A semantic, accessible glossary plugin that automatically links terms to popover definitions.
  * Version: 1.2.0

@@ -1,4 +1,4 @@
-=== Glossary by Progress Planner ===
+=== Glossary ===
 Contributors: joostdevalk, aristath, filipi
 Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
@@ -86,10 +86,11 @@ Each glossary entry includes:
 
 = Automatic Installation =
 
-1. Log in to your WordPress admin panel
-2. Navigate to Plugins > Add New
-3. Search for "Glossary by Progress Planner"
-4. Click "Install Now" and then "Activate"
+1. Make sure you have the [FAIR Connect plugin](https://fair.pm/packages/plugins/fair-plugin/) installed and activated
+2. Log in to your WordPress admin panel
+3. Navigate to Plugins > Add New
+4. Search for "Glossary by Progress Planner"
+5. Click "Install Now" and then "Activate"
 
 = Manual Installation =
 
@@ -180,6 +181,7 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 * Minor bug fixes.
 
 = 1.0.0 =
+
 * Initial release
 * Custom post type for glossary entries
 * Native WordPress custom fields (short description, long description, synonyms)
@@ -194,9 +196,3 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 * Responsive design with CSS custom properties
 * Full keyboard and screen reader support
 * No external plugin dependencies
-
-== Upgrade Notice ==
-
-= 1.0.0 =
-Initial release of Glossary by Progress Planner. Requires WordPress 6.0+ and PHP 7.4+.
-
