@@ -57,17 +57,29 @@ class Content_Filter {
 	 */
 	public static function filter_content( $content ): string {
 
+		// No need to filter content in RSS feeds or REST API requests.
+		if ( is_feed() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+			return $content;
+		}
+
 		// Reset counters and storage for each content piece.
 		self::$popover_counter = 0;
 		self::$popovers        = [];
 
 		// Check if content filtering is disabled for this post type.
-		$disabled_post_types = apply_filters( 'pp_glossary_disabled_post_types', [] );
-		if ( ! empty( $disabled_post_types ) && is_array( $disabled_post_types ) ) {
-			$current_post_type = get_post_type();
-			if ( $current_post_type && in_array( $current_post_type, $disabled_post_types, true ) ) {
-				return $content;
-			}
+		$disabled_post_types = Settings::get_excluded_post_types();
+
+		/**
+		 * Filter the disabled post types.
+		 *
+		 * @param array<int, string> $disabled_post_types The disabled post types.
+		 *
+		 * @return array<int, string> The disabled post types.
+		 */
+		$disabled_post_types = apply_filters( 'pp_glossary_disabled_post_types', $disabled_post_types );
+		$current_post_type   = get_post_type();
+		if ( $current_post_type && in_array( $current_post_type, $disabled_post_types, true ) ) {
+			return $content;
 		}
 
 		// Don't process on the glossary page.
@@ -175,8 +187,17 @@ class Content_Filter {
 	 * @return string Modified content.
 	 */
 	private static function replace_first_occurrence( $content, $entry ): string {
-		// Define tags where terms should NOT be replaced.
-		$excluded_tags = [ 'a' ];
+		// Get excluded tags from settings.
+		$excluded_tags = Settings::get_excluded_tags();
+
+		/**
+		 * Filter the excluded tags.
+		 *
+		 * @param array $excluded_tags The excluded tags.
+		 *
+		 * @return array The excluded tags.
+		 */
+		$excluded_tags = apply_filters( 'pp_glossary_excluded_tags', $excluded_tags );
 
 		// Build the pattern for excluded tags only.
 		$excluded_pattern = '';

@@ -32,7 +32,7 @@ class Meta_Boxes {
 	public static function add_meta_boxes(): void {
 		add_meta_box(
 			'pp_glossary_details',
-			__( 'Glossary Entry Details', 'pp-glossary' ),
+			__( 'Glossary entry', 'pp-glossary' ),
 			[ __CLASS__, 'render_meta_box' ],
 			'pp_glossary',
 			'normal',
@@ -88,7 +88,7 @@ class Meta_Boxes {
 		<div class="pp-glossary-meta-box">
 			<p>
 				<label for="pp_glossary_short_description">
-					<strong><?php esc_html_e( 'Short Description', 'pp-glossary' ); ?></strong>
+					<strong><?php esc_html_e( 'Short description', 'pp-glossary' ); ?></strong>
 					<span class="required">*</span>
 				</label>
 				<br>
@@ -107,7 +107,7 @@ class Meta_Boxes {
 
 			<p>
 				<label for="pp_glossary_long_description">
-					<strong><?php esc_html_e( 'Long Description', 'pp-glossary' ); ?></strong>
+					<strong><?php esc_html_e( 'Long description', 'pp-glossary' ); ?></strong>
 				</label>
 				<br>
 				<span class="description">
@@ -160,7 +160,7 @@ class Meta_Boxes {
 			</div>
 			<p>
 				<button type="button" id="pp-glossary-add-synonym" class="button">
-					<?php esc_html_e( 'Add Synonym', 'pp-glossary' ); ?>
+					<?php esc_html_e( 'Add synonym', 'pp-glossary' ); ?>
 				</button>
 			</p>
 			<hr>

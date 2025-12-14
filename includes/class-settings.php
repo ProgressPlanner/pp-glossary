@@ -23,6 +23,12 @@ class Settings {
 	const OPTION_NAME = 'pp_glossary_settings';
 
 	/**
+	 * Default excluded tags for term highlighting
+	 */
+	const DEFAULT_EXCLUDED_TAGS = [ 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+
+
+	/**
 	 * Initialize the settings
 	 */
 	public static function init(): void {
@@ -58,15 +64,31 @@ class Settings {
 
 		add_settings_section(
 			'pp_glossary_display_section',
-			__( 'Display Settings', 'pp-glossary' ),
+			__( 'Display settings', 'pp-glossary' ),
 			[ __CLASS__, 'render_display_section' ],
 			'pp-glossary-settings'
 		);
 
 		add_settings_field(
 			'glossary_page',
-			__( 'Glossary Page', 'pp-glossary' ),
+			__( 'Glossary page', 'pp-glossary' ),
 			[ __CLASS__, 'render_glossary_page_field' ],
+			'pp-glossary-settings',
+			'pp_glossary_display_section'
+		);
+
+		add_settings_field(
+			'excluded_tags',
+			__( 'Excluded HTML tags', 'pp-glossary' ),
+			[ __CLASS__, 'render_excluded_tags_field' ],
+			'pp-glossary-settings',
+			'pp_glossary_display_section'
+		);
+
+		add_settings_field(
+			'excluded_post_types',
+			__( 'Excluded post types', 'pp-glossary' ),
+			[ __CLASS__, 'render_excluded_post_types_field' ],
 			'pp-glossary-settings',
 			'pp_glossary_display_section'
 		);
@@ -134,6 +156,72 @@ class Settings {
 	}
 
 	/**
+	 * Render excluded tags field
+	 */
+	public static function render_excluded_tags_field(): void {
+		$settings      = self::get_settings();
+		$excluded_tags = isset( $settings['excluded_tags'] ) ? $settings['excluded_tags'] : self::DEFAULT_EXCLUDED_TAGS;
+		$tags_string   = implode( ', ', $excluded_tags );
+
+		printf(
+			'<input type="text" name="%s[excluded_tags]" value="%s" class="regular-text" />',
+			esc_attr( self::OPTION_NAME ),
+			esc_attr( $tags_string )
+		);
+
+		echo '<p class="description">';
+		echo esc_html__( 'HTML tags where glossary terms should not be highlighted (comma-separated, without angle brackets).', 'pp-glossary' );
+		echo '<br>';
+		printf(
+			/* translators: %s: default tags */
+			esc_html__( 'Default: %s', 'pp-glossary' ),
+			esc_html( implode( ', ', self::DEFAULT_EXCLUDED_TAGS ) )
+		);
+		echo '</p>';
+	}
+
+	/**
+	 * Render excluded post types field
+	 */
+	public static function render_excluded_post_types_field(): void {
+		$settings            = self::get_settings();
+		$excluded_post_types = isset( $settings['excluded_post_types'] ) ? $settings['excluded_post_types'] : [];
+
+		// Get all public post types except the glossary itself.
+		$post_types = get_post_types(
+			[
+				'public' => true,
+			],
+			'objects'
+		);
+
+		// Remove the glossary post type from the list.
+		unset( $post_types['pp_glossary'] );
+
+		if ( empty( $post_types ) ) {
+			echo '<p>' . esc_html__( 'No public post types found.', 'pp-glossary' ) . '</p>';
+			return;
+		}
+
+		echo '<fieldset>';
+		foreach ( $post_types as $post_type ) {
+			$checked = in_array( $post_type->name, $excluded_post_types, true ) ? 'checked' : '';
+			printf(
+				'<label><input type="checkbox" name="%s[excluded_post_types][]" value="%s" %s /> %s</label><br>',
+				esc_attr( self::OPTION_NAME ),
+				esc_attr( $post_type->name ),
+				esc_attr( $checked ),
+				esc_html( $post_type->labels->name )
+			);
+		}
+		echo '</fieldset>';
+
+		echo '<p class="description">';
+		echo esc_html__( 'Glossary terms will not be highlighted in content from the selected post types.', 'pp-glossary' );
+		echo '</p>';
+	}
+
+	/**
 	 * Sanitize settings
 	 *
 	 * @param array<string, mixed> $input Settings input.
@@ -146,6 +234,29 @@ class Settings {
 			$sanitized['glossary_page'] = absint( $input['glossary_page'] );
 		}
 
+		if ( isset( $input['excluded_tags'] ) ) {
+			$tags_string = sanitize_text_field( $input['excluded_tags'] );
+			$tags_array  = array_map( 'trim', explode( ',', $tags_string ) );
+			// Filter out empty values and sanitize each tag (lowercase, alphanumeric only).
+			$sanitized['excluded_tags'] = array_values(
+				array_filter(
+					array_map(
+						function ( $tag ) {
+							return preg_replace( '/[^a-z0-9]/', '', strtolower( $tag ) );
+						},
+						$tags_array
+					)
+				)
+			);
+		}
+
+		if ( isset( $input['excluded_post_types'] ) && is_array( $input['excluded_post_types'] ) ) {
+			$sanitized['excluded_post_types'] = array_map( 'sanitize_key', $input['excluded_post_types'] );
+		} else {
+			// If no checkboxes are checked, save an empty array.
+			$sanitized['excluded_post_types'] = [];
+		}
+
 		return $sanitized;
 	}
 
@@ -156,8 +267,10 @@ class Settings {
 	 */
 	public static function get_settings(): array {
 		$defaults = [
-			'glossary_page' => 0,
-			'db_version'    => PP_GLOSSARY_VERSION,
+			'glossary_page'       => 0,
+			'excluded_tags'       => self::DEFAULT_EXCLUDED_TAGS,
+			'excluded_post_types' => [],
+			'db_version'          => PP_GLOSSARY_VERSION,
 		];
 
 		$settings = get_option( self::OPTION_NAME, [] );
@@ -201,5 +314,25 @@ class Settings {
 
 		$permalink = get_permalink( $page_id );
 		return $permalink ? $permalink : '';
+	}
+
+	/**
+	 * Get excluded tags for term highlighting
+	 *
+	 * @return array<int, string> Array of excluded tag names.
+	 */
+	public static function get_excluded_tags(): array {
+		$settings = self::get_settings();
+		return isset( $settings['excluded_tags'] ) ? $settings['excluded_tags'] : self::DEFAULT_EXCLUDED_TAGS;
+	}
+
+	/**
+	 * Get excluded post types for term highlighting
+	 *
+	 * @return array<int, string> Array of excluded post type names.
+	 */
+	public static function get_excluded_post_types(): array {
+		$settings = self::get_settings();
+		return isset( $settings['excluded_post_types'] ) ? $settings['excluded_post_types'] : [];
 	}
 }

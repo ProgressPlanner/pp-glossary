@@ -1,25 +1,27 @@
 === Glossary by Progress Planner ===
-Contributors: joostdevalk
+Contributors: joostdevalk, aristath, filipi
 Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-A semantic, accessible WordPress glossary plugin that automatically links terms to hover-triggered popover definitions.
+A semantic, accessible WordPress glossary plugin that automatically links terms to click-triggered popover definitions.
 
 == Description ==
 
-Glossary by Progress Planner is a modern, accessible WordPress glossary plugin that automatically transforms glossary terms in your content into interactive elements with hover-triggered popover definitions.
+Glossary by Progress Planner is a modern, accessible WordPress glossary plugin that automatically transforms glossary terms in your content into interactive elements with click-triggered popover definitions.
 
 = Key Features =
 
 * **Custom Post Type**: Register glossary entries with custom fields (no content editor needed)
 * **Native WordPress Fields**: Uses WordPress custom meta boxes for field management (short description, long description, synonyms)
 * **Automatic Term Linking**: Automatically transforms the first mention of glossary terms in your content
-* **Hover-Triggered Popovers**: Display definitions on hover/focus using the native Popover API with CSS Anchor Positioning
+* **Click-Triggered Popovers**: Display definitions on click using the native Popover API with CSS Anchor Positioning
+* **Case Sensitive Matching**: Optionally match terms only when case matches exactly
+* **Disable Auto-Linking**: Allow entries to appear in the glossary without being automatically linked in content
 * **Semantic HTML**: Uses `<dfn>` and `<aside>` elements with proper ARIA attributes
 * **Schema.org Integration**: Full DefinedTerm and DefinedTermSet structured data support
   * Integrates with Yoast SEO schema graph when available
@@ -35,9 +37,9 @@ Glossary by Progress Planner is a modern, accessible WordPress glossary plugin t
 
 Once you've added glossary entries, the plugin automatically:
 
-* Scans post and page content for mentions of glossary terms (case-insensitive)
-* Transforms the **first mention** of each term into an interactive element
-* Shows a popover with the short description when users hover over or focus on the term
+* Scans post and page content for mentions of glossary terms (case-insensitive by default, or case-sensitive if enabled)
+* Transforms the **first mention** of each term into an interactive element (unless auto-linking is disabled for that entry)
+* Shows a popover with the short description when users click on the term
 * Adds a "Read more" link to the full glossary entry
 
 = Browser Support =
@@ -62,8 +64,8 @@ The plugin follows WCAG 2.1 Level AA guidelines:
 * Semantic HTML elements (`<dfn>`, `<aside>`, proper roles)
 * Full keyboard navigation with visible focus indicators
 * ARIA attributes for screen readers
-* Hover delay to prevent accidental triggers
-* `cursor: help` to indicate interactive terms
+* Click-to-open behavior (not hover) for better accessibility
+* Auto-dismissing popovers that don't overlap
 * Color contrast ratios meet AA standards
 
 = Schema.org Structured Data =
@@ -133,13 +135,22 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 
 == Screenshots ==
 
-1. Glossary entry editor with custom fields
-2. Glossary List block in the editor
-3. Hover popover showing term definition
-4. Full glossary page with alphabetical navigation
-5. Settings page for configuring the glossary page
+1. Glossary entry editor with custom fields.
+2. Glossary List block in the editor.
+3. Popover showing term definition.
+4. Full glossary page with alphabetical navigation.
+5. Settings page for configuring the glossary page.
 
 == Changelog ==
+
+= 1.2 =
+
+* Excluded glossary entries from Yoast SEO indexables and XML sitemaps (entries have no public pages).
+* Excluded glossary entries from WordPress search results.
+* Removed revision support (all data is in post meta, not tracked by revisions).
+* Added a setting to configure excluded HTML tags where glossary terms should not be highlighted.
+* Added a setting to exclude specific post types from glossary term highlighting.
+* Do not highlight glossary terms when doing feeds or REST requests.
 
 = 1.1.0 =
 

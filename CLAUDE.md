@@ -2,15 +2,46 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important: Code Quality & Documentation
+
+### Code Quality Checks
+
+Before completing any code changes, always run these three commands to verify code quality:
+
+```bash
+composer check-cs   # Check WordPress coding standards (PHPCS)
+composer lint       # Check for PHP syntax errors
+composer phpstan    # Static analysis for type errors
+```
+
+All three commands must pass without errors before changes are considered complete. Fix any issues found before proceeding.
+
+### Documentation Updates
+
+When making changes to this codebase, always update the relevant documentation:
+
+1. **Changelogs**: After implementing a feature or fix, update both:
+   - `README.md` - The GitHub changelog (under `## Changelog`)
+   - `readme.txt` - The WordPress.org changelog (under `== Changelog ==`)
+
+2. **This file (CLAUDE.md)**: After making significant changes, update this file to reflect:
+   - New or modified settings/options
+   - Changes to the architecture or file structure
+   - New methods or classes
+   - Updated testing tips
+   - Modified filters or hooks
+
+Keep documentation in sync with code changes to ensure accuracy for future development.
+
 ## Project Overview
 
-**Glossary by Progress Planner (pp-glossary)** is a WordPress plugin that automatically links glossary terms to accessible, semantic popovers that appear on hover/focus. Uses native WordPress custom fields for field management and includes a Gutenberg block for displaying the full glossary.
+**Glossary by Progress Planner (pp-glossary)** is a WordPress plugin that automatically links glossary terms to accessible, semantic popovers that appear on click. Uses native WordPress custom fields for field management and includes a Gutenberg block for displaying the full glossary.
 
 ### Core Functionality
 
 - Registers a custom post type (`pp_glossary`) for glossary entries (title + custom fields only, no editor)
 - Uses native WordPress meta boxes for field management (short description, long description, synonyms)
-- Automatically transforms first mentions of glossary terms in content into hover-triggered popovers
+- Automatically transforms first mentions of glossary terms in content into click-triggered popovers
 - Provides a Gutenberg block to display the full glossary with alphabetical navigation
 - Settings page to configure which page displays the glossary
 
@@ -22,59 +53,72 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 pp-glossary/
 ├── pp-glossary.php              # Main plugin file, initialization, hooks
 ├── includes/
-│   ├── post-type.php            # PP_Glossary_Post_Type class - CPT registration
-│   ├── meta-boxes.php           # PP_Glossary_Meta_Boxes class - Custom meta boxes
-│   ├── content-filter.php       # PP_Glossary_Content_Filter class - Term replacement
-│   ├── settings.php             # PP_Glossary_Settings class - Settings page
-│   ├── blocks.php               # PP_Glossary_Blocks class - Block registration
-│   └── schema.php               # PP_Glossary_Schema class - Schema.org integration
+│   ├── functions.php            # Helper functions
+│   ├── class-post-type.php      # Post_Type class - CPT registration
+│   ├── class-meta-boxes.php     # Meta_Boxes class - Custom meta boxes
+│   ├── class-content-filter.php # Content_Filter class - Term replacement
+│   ├── class-settings.php       # Settings class - Settings page
+│   ├── class-blocks.php         # Blocks class - Block registration
+│   ├── class-schema.php         # Schema class - Schema.org integration
+│   ├── class-assets.php         # Assets class - CSS/JS enqueuing
+│   └── class-migrations.php     # Migrations class - Data migration on upgrade
 ├── blocks/
 │   └── glossary-list/
 │       ├── block.json           # Block metadata
 │       └── editor.js            # Block editor interface (vanilla JS)
 └── assets/
     ├── css/glossary.css         # All plugin styles
-    └── js/glossary.js           # Hover behavior and accessibility
+    └── js/glossary.js           # Click behavior and accessibility
 ```
 
 ### Key Components
 
-1. **Post Type Registration** (`includes/post-type.php`)
+1. **Post Type Registration** (`includes/class-post-type.php`)
    - Post type slug: `pp_glossary`
-   - Supports: `title`, `revisions` (NO editor support)
+   - Supports: `title` only (no editor, no revisions - all data is in post meta)
    - `has_archive` set to `false` (uses block instead)
    - `publicly_queryable` set to `false` (no individual entry pages)
+   - `exclude_from_search` set to `true` (entries have no public pages)
+   - Excluded from Yoast SEO indexables and XML sitemaps
 
-2. **Meta Boxes** (`includes/meta-boxes.php`)
+2. **Meta Boxes** (`includes/class-meta-boxes.php`)
    - Native WordPress meta boxes (no external dependencies)
-   - Fields stored as post meta with `_pp_glossary_` prefix
-   - Fields:
-     - `_pp_glossary_short_description` (textarea, required)
-     - `_pp_glossary_long_description` (wp_editor)
-     - `_pp_glossary_synonyms` (array of strings)
+   - All fields stored in a single post meta key `_pp_glossary_data` (array)
+   - Fields (in display order):
+     - `short_description` (textarea, required)
+     - `long_description` (wp_editor)
+     - `synonyms` (array of strings)
+     - `case_sensitive` (boolean) - only match terms when case matches exactly
+     - `disable_autolink` (boolean) - entry appears in glossary but not auto-linked in content
    - JavaScript inline for adding/removing synonyms dynamically
 
-3. **Content Filter** (`includes/content-filter.php`)
+3. **Content Filter** (`includes/class-content-filter.php`)
    - Hooks into `the_content` at priority 20
-   - Finds first occurrence of each term (case-insensitive, whole word)
+   - Finds first occurrence of each term (case-insensitive by default, or case-sensitive if enabled per entry)
+   - Respects `disable_autolink` setting to skip entries that shouldn't be linked
    - Generates unique IDs for each popover instance
-   - Appends popovers and helper text at end of content
+   - Appends popovers at end of content
    - Uses settings page URL for "Read more" links (not individual permalinks)
    - Skips glossary page itself to prevent self-linking
 
-4. **Settings Page** (`includes/settings.php`)
+4. **Settings Page** (`includes/class-settings.php`)
    - Submenu under Glossary CPT menu
-   - Stores glossary page ID in `pp_glossary_settings` option
-   - Methods: `get_glossary_page_id()`, `get_glossary_page_url()`
+   - Stores settings in `pp_glossary_settings` option
+   - Settings fields:
+     - `glossary_page` (int) - ID of the page containing the glossary block
+     - `excluded_tags` (array) - HTML tags where terms should not be highlighted (default: `a`, `h1`-`h6`)
+     - `excluded_post_types` (array) - Post types where terms should not be highlighted
+   - Methods: `get_glossary_page_id()`, `get_glossary_page_url()`, `get_excluded_tags()`, `get_excluded_post_types()`
 
-5. **Block System** (`includes/blocks.php`, `blocks/glossary-list/`)
+5. **Block System** (`includes/class-blocks.php`, `blocks/glossary-list/`)
    - Server-side rendered block using `render_callback`
    - No block attributes (simplified interface)
    - Displays all entries grouped alphabetically with navigation
    - Supports wide and full alignment
-   - Shows only long description (short description only in popovers)
+   - Falls back to short description when long description is empty
+   - Shows edit link for logged-in users with edit capabilities per glossary item
 
-6. **Schema.org Integration** (`includes/schema.php`)
+6. **Schema.org Integration** (`includes/class-schema.php`)
    - Detects if Yoast SEO is active using `defined('WPSEO_VERSION')`
    - With Yoast SEO: Hooks into `wpseo_schema_graph` filter to add JSON-LD
    - Without Yoast SEO: Outputs Microdata markup in HTML
@@ -83,61 +127,66 @@ pp-glossary/
 
 ## Data Storage
 
-All custom field data is stored as WordPress post meta:
+All custom field data is stored in a single WordPress post meta key `_pp_glossary_data` as an associative array:
 
-- `_pp_glossary_short_description` (string)
-- `_pp_glossary_long_description` (string, HTML allowed)
-- `_pp_glossary_synonyms` (array of strings)
+```php
+[
+    'short_description' => '',      // string
+    'long_description'  => '',      // string, HTML allowed
+    'synonyms'          => [],      // array of strings
+    'case_sensitive'    => false,   // boolean
+    'disable_autolink'  => false,   // boolean
+]
+```
 
-Retrieved using `get_post_meta()` and saved using `update_post_meta()`.
+Retrieved using `Meta_Boxes::get_entry_data($post_id)` which handles defaults. Saved using `update_post_meta()`.
+
+**Migration**: The plugin includes an automatic migration system that converts old separate meta keys to the new consolidated format on upgrade.
 
 ## HTML Structure Pattern
 
-The plugin generates highly semantic, accessible HTML with hover triggers and CSS Anchor Positioning:
+The plugin generates highly semantic, accessible HTML with click triggers and CSS Anchor Positioning:
 
 ```html
 <dfn id="dfn-{term}-{counter}"
      class="pp-glossary-term"
      style="anchor-name: --dfn-{term}-{counter};">
-  <span data-glossary-popover="pop-{term}-{counter}"
-        aria-describedby="help-def"
-        tabindex="0"
-        role="button"
-        aria-expanded="false">
+  <button data-glossary-popover="pop-{term}-{counter}"
+          type="button"
+          aria-expanded="false">
     {matched term}
-  </span>
+  </button>
 </dfn>
 
 <aside id="pop-{term}-{counter}"
-       popover="manual"
+       popover="auto"
        role="tooltip"
        aria-labelledby="dfn-{term}-{counter}"
        style="position-anchor: --dfn-{term}-{counter};">
-  <strong>{Entry Title}</strong>
-  <p>{Short description}</p>
   <p><a href="{glossary_page_url}#{slug}">Read more about {term}</a></p>
+  <p>{Short description}</p>
 </aside>
-
-<p id="help-def" hidden>Hover or focus to see the definition of the term.</p>
 ```
 
-Key differences from typical popover implementations:
-- Uses `popover="manual"` for programmatic control
-- Uses `<span>` with `data-glossary-popover` attribute (not button)
-- Role is `tooltip` not `note`
-- Triggered by hover/focus, not click
+Key implementation details:
+- Uses `popover="auto"` for automatic light-dismiss and mutual exclusivity (only one popover open at a time)
+- Uses `<button>` element for proper accessibility (not span)
+- Role is `tooltip` for popovers
+- Triggered by click (not hover) for better accessibility
+- Link appears before description for better screen reader context
 - Popover positioned using CSS Anchor Positioning API
 - Each dfn defines an `anchor-name` that the popover references with `position-anchor`
 
-## JavaScript Hover Implementation
+## JavaScript Click Implementation
 
-The plugin uses manual popover control with hover events (`assets/js/glossary.js`):
+The plugin uses click-based popover control (`assets/js/glossary.js`):
 
-- **Hover**: Shows popover with 0ms delay, hides with 500ms delay
-- **Focus**: Shows popover immediately for keyboard users
-- **Popover hover**: Clears hide timeout so users can click "Read more" link
+- **Click**: Toggles popover visibility on button click
+- **Keyboard**: Enter/Space toggles popover, Escape closes
+- **Light dismiss**: Clicking outside popover closes it (handled by `popover="auto"`)
+- **Mutual exclusivity**: Opening one popover automatically closes others (handled by `popover="auto"`)
 - **Positioning**: Uses CSS Anchor Positioning API for automatic positioning
-- **Keyboard**: Enter/Space toggles, Escape closes and returns focus
+- **ARIA**: Updates `aria-expanded` attribute on toggle buttons
 
 ## CSS Anchor Positioning Implementation
 
@@ -304,10 +353,13 @@ composer run phpcbf   # Fix coding standards
 ### Term Matching Algorithm
 
 - Terms sorted by length (longest first) to handle overlapping terms
-- Uses regex pattern: `/\b({term})\b(?![^<]*>)/iu`
+- Entries with `disable_autolink` enabled are skipped entirely
+- Content inside excluded HTML tags is skipped (configurable via settings, default: `a`, `h1`-`h6`)
+- Post types in the excluded list are skipped entirely (configurable via settings)
+- Uses regex pattern: `/\b({term})\b(?![^<]*>)/u` (or `/iu` for case-insensitive)
   - `\b` = word boundaries
   - `(?![^<]*>)` = negative lookahead to avoid matching inside HTML tags
-  - `i` flag = case-insensitive
+  - `i` flag = case-insensitive (omitted when `case_sensitive` is enabled)
   - `u` flag = Unicode support
 - Only replaces first occurrence per entry per content piece
 
@@ -316,7 +368,6 @@ composer run phpcbf   # Fix coding standards
 `PP_Glossary_Content_Filter` uses static properties during filtering:
 - `$popover_counter` - ensures unique IDs
 - `$popovers` - stores popover HTML for end-of-content appending
-- `$helper_added` - tracks if helper text was added
 - These reset on each `filter_content()` call
 
 ### Settings Integration
@@ -324,25 +375,30 @@ composer run phpcbf   # Fix coding standards
 - `PP_Glossary_Settings::get_glossary_page_url()` returns the URL of the page containing the glossary block
 - "Read more" links use this URL + `#{slug}` anchor (slug-based, not ID-based)
 - If no glossary page is set, "Read more" link is omitted
+- `PP_Glossary_Settings::get_excluded_tags()` returns array of HTML tags to skip (default: `['a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']`)
+- `PP_Glossary_Settings::get_excluded_post_types()` returns array of post types to skip (default: `[]`)
 
 ### Block Registration
 
 - Block registered using `register_block_type()` with JSON file
 - `render_callback` points to `PP_Glossary_Blocks::render_glossary_list_block()`
 - Editor script uses vanilla JavaScript (no JSX, no build)
-- Block shows: entry title (H4), synonyms, long description only
+- Block shows: entry title (H4), synonyms, description (long description with fallback to short)
+- Shows edit link for logged-in users with edit capabilities
 - No H2 title at top of block
 
 ### Accessibility Features
 
-- Dotted underline (not solid) to indicate definitions without looking like regular links
-- `cursor: help` to indicate interactive glossary terms
-- `tabindex="0"` makes spans keyboard-focusable
+- Click-to-open behavior (not hover) for better accessibility
+- `<button>` element used for triggers (proper keyboard accessibility)
 - `aria-expanded` updated via JavaScript when popovers show/hide
-- `role="tooltip"` for popovers (appropriate for hover-triggered content)
-- 300ms delay on hide prevents accidental dismissal
-- Focus returns to trigger when Escape is pressed
-- Popover positioning accounts for viewport boundaries
+- `role="tooltip"` for popovers
+- `popover="auto"` ensures only one popover open at a time (no overlapping)
+- Light dismiss (click outside to close)
+- Escape key closes popover
+- Link appears before description in popover for better screen reader context
+- Dotted underline to indicate definitions without looking like regular links
+- Popover positioning accounts for viewport boundaries via CSS Anchor Positioning
 
 ## CSS Customization
 
@@ -379,12 +435,12 @@ JavaScript checks for both features and logs warnings if unavailable. Consider:
 
 ## Common Modification Points
 
-1. **Change hover delay**: Edit `HIDE_DELAY` constant in `assets/js/glossary.js`
-2. **Change term matching behavior**: Edit `PP_Glossary_Content_Filter::replace_first_occurrence()`
-3. **Modify popover HTML**: Edit `PP_Glossary_Content_Filter::create_popover()`
-4. **Adjust which content types are processed**: Add conditional logic in `PP_Glossary_Content_Filter::filter_content()`
+1. **Change term matching behavior**: Edit `PP_Glossary_Content_Filter::replace_first_occurrence()`
+2. **Modify popover HTML**: Edit `PP_Glossary_Content_Filter::create_popover()`
+3. **Adjust which content types are processed**: Use Settings page or `pp_glossary_disabled_post_types` filter
+4. **Adjust which HTML tags are excluded**: Use Settings page or `pp_glossary_excluded_tags` filter
 5. **Customize block output**: Edit `PP_Glossary_Blocks::render_glossary_list_block()`
-6. **Add more custom fields**: Modify `PP_Glossary_Meta_Boxes::render_meta_box()` and `save_meta_boxes()`
+6. **Add more custom fields**: Modify `Meta_Boxes::render_meta_box()` and `save_meta_boxes()`
 7. **Change popover positioning**: Modify CSS anchor positioning rules in `assets/css/glossary.css` (see `aside[popover]` and `@position-try` rules)
 
 ## Security Considerations
@@ -430,18 +486,16 @@ Without step 2, "Read more" links won't appear in popovers.
 
 ## Synonym Data Structure
 
-Synonyms changed from ACF repeater format to simple array:
+Synonyms are stored as a simple array of strings:
 
-**Old (ACF)**: `[['term' => 'CLS'], ['term' => 'layout shift']]`
-**New (Native)**: `['CLS', 'layout shift']`
-
-Code updated throughout to handle simple string array instead of nested associative arrays.
+```php
+['CLS', 'layout shift']
+```
 
 ## Testing Tips
 
 ### General Testing
 - Test with overlapping terms (e.g., "CLS" and "Cumulative Layout Shift")
-- Verify hover delay doesn't interfere with "Read more" clicks
 - Check keyboard navigation (Tab, Enter, Space, Escape)
 - Test with screen reader to verify ARIA attributes
 - Verify terms maintain surrounding text color
@@ -449,6 +503,12 @@ Code updated throughout to handle simple string array instead of nested associat
 - Test synonym functionality (add/remove in admin)
 - Verify glossary page doesn't highlight its own terms
 - Check popover positioning near viewport edges (CSS Anchor Positioning should handle this)
+- Test case-sensitive matching (enable on entry, verify exact case required)
+- Test disable auto-linking (enable on entry, verify it appears in glossary but not linked in content)
+- Verify only one popover can be open at a time
+- Verify clicking outside popover closes it (light dismiss)
+- Test excluded HTML tags setting (add/remove tags, verify terms are not highlighted within those tags)
+- Test excluded post types setting (enable for a post type, verify terms are not highlighted in that post type)
 
 ### Schema Testing
 
