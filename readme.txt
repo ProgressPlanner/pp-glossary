@@ -135,13 +135,17 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 
 == Screenshots ==
 
-1. Glossary entry editor with custom fields
-2. Glossary List block in the editor
-3. Hover popover showing term definition
-4. Full glossary page with alphabetical navigation
-5. Settings page for configuring the glossary page
+1. Glossary entry editor with custom fields.
+2. Glossary List block in the editor.
+3. Popover showing term definition.
+4. Full glossary page with alphabetical navigation.
+5. Settings page for configuring the glossary page.
 
 == Changelog ==
+
+= 1.1.2 =
+
+* Added a setting to disable automatic linking for specific HTML elements.
 
 = 1.1.1 =
 

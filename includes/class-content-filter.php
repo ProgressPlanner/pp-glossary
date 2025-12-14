@@ -175,8 +175,17 @@ class Content_Filter {
 	 * @return string Modified content.
 	 */
 	private static function replace_first_occurrence( $content, $entry ): string {
-		// Define tags where terms should NOT be replaced.
-		$excluded_tags = [ 'a' ];
+		// Get excluded tags from settings.
+		$excluded_tags = Settings::get_excluded_tags();
+
+		/**
+		 * Filter the excluded tags.
+		 *
+		 * @param array $excluded_tags The excluded tags.
+		 *
+		 * @return array The excluded tags.
+		 */
+		$excluded_tags = apply_filters( 'pp_glossary_excluded_tags', $excluded_tags );
 
 		// Build the pattern for excluded tags only.
 		$excluded_pattern = '';

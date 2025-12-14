@@ -23,6 +23,12 @@ class Settings {
 	const OPTION_NAME = 'pp_glossary_settings';
 
 	/**
+	 * Default excluded tags for term highlighting
+	 */
+	const DEFAULT_EXCLUDED_TAGS = [ 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+
+
+	/**
 	 * Initialize the settings
 	 */
 	public static function init(): void {
@@ -67,6 +73,14 @@ class Settings {
 			'glossary_page',
 			__( 'Glossary Page', 'pp-glossary' ),
 			[ __CLASS__, 'render_glossary_page_field' ],
+			'pp-glossary-settings',
+			'pp_glossary_display_section'
+		);
+
+		add_settings_field(
+			'excluded_tags',
+			__( 'Excluded Tags', 'pp-glossary' ),
+			[ __CLASS__, 'render_excluded_tags_field' ],
 			'pp-glossary-settings',
 			'pp_glossary_display_section'
 		);
@@ -134,6 +148,31 @@ class Settings {
 	}
 
 	/**
+	 * Render excluded tags field
+	 */
+	public static function render_excluded_tags_field(): void {
+		$settings      = self::get_settings();
+		$excluded_tags = isset( $settings['excluded_tags'] ) ? $settings['excluded_tags'] : self::DEFAULT_EXCLUDED_TAGS;
+		$tags_string   = implode( ', ', $excluded_tags );
+
+		printf(
+			'<input type="text" name="%s[excluded_tags]" value="%s" class="regular-text" />',
+			esc_attr( self::OPTION_NAME ),
+			esc_attr( $tags_string )
+		);
+
+		echo '<p class="description">';
+		echo esc_html__( 'HTML tags where glossary terms should not be highlighted (comma-separated, without angle brackets).', 'pp-glossary' );
+		echo '<br>';
+		printf(
+			/* translators: %s: default tags */
+			esc_html__( 'Default: %s', 'pp-glossary' ),
+			esc_html( implode( ', ', self::DEFAULT_EXCLUDED_TAGS ) )
+		);
+		echo '</p>';
+	}
+
+	/**
 	 * Sanitize settings
 	 *
 	 * @param array<string, mixed> $input Settings input.
@@ -144,6 +183,22 @@ class Settings {
 
 		if ( isset( $input['glossary_page'] ) ) {
 			$sanitized['glossary_page'] = absint( $input['glossary_page'] );
+		}
+
+		if ( isset( $input['excluded_tags'] ) ) {
+			$tags_string = sanitize_text_field( $input['excluded_tags'] );
+			$tags_array  = array_map( 'trim', explode( ',', $tags_string ) );
+			// Filter out empty values and sanitize each tag (lowercase, alphanumeric only).
+			$sanitized['excluded_tags'] = array_values(
+				array_filter(
+					array_map(
+						function ( $tag ) {
+							return preg_replace( '/[^a-z0-9]/', '', strtolower( $tag ) );
+						},
+						$tags_array
+					)
+				)
+			);
 		}
 
 		return $sanitized;
@@ -157,6 +212,7 @@ class Settings {
 	public static function get_settings(): array {
 		$defaults = [
 			'glossary_page' => 0,
+			'excluded_tags' => self::DEFAULT_EXCLUDED_TAGS,
 			'db_version'    => PP_GLOSSARY_VERSION,
 		];
 
@@ -201,5 +257,15 @@ class Settings {
 
 		$permalink = get_permalink( $page_id );
 		return $permalink ? $permalink : '';
+	}
+
+	/**
+	 * Get excluded tags for term highlighting
+	 *
+	 * @return array<int, string> Array of excluded tag names.
+	 */
+	public static function get_excluded_tags(): array {
+		$settings = self::get_settings();
+		return isset( $settings['excluded_tags'] ) ? $settings['excluded_tags'] : self::DEFAULT_EXCLUDED_TAGS;
 	}
 }
