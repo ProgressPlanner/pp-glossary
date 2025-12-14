@@ -298,6 +298,9 @@ Developed by Joost de Valk for Progress Planner.
   - Removed redundant `aria-describedby` attribute
   - Link appears inside the popover before the definition for better screen reader context
   - Popovers are now type `auto` instead of `manual` so they dismiss other popovers and don't overlap
+- Excluded glossary entries from Yoast SEO indexables and XML sitemaps (entries have no public pages)
+- Excluded glossary entries from WordPress search results
+- Removed revision support (all data is in post meta, not tracked by revisions)
 
 ### 1.0.3
 - Fix non-bumped version number
