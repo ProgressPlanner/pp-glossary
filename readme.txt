@@ -143,15 +143,13 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 
 == Changelog ==
 
-= 1.1.2 =
-
-* Added a setting to disable automatic linking for specific HTML elements.
-
-= 1.1.1 =
+= 1.2 =
 
 * Excluded glossary entries from Yoast SEO indexables and XML sitemaps (entries have no public pages).
 * Excluded glossary entries from WordPress search results.
 * Removed revision support (all data is in post meta, not tracked by revisions).
+* Added a setting to configure excluded HTML tags where glossary terms should not be highlighted.
+* Added a setting to exclude specific post types from glossary term highlighting.
 
 = 1.1.0 =
 
