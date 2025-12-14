@@ -2,6 +2,37 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important: Code Quality & Documentation
+
+### Code Quality Checks
+
+Before completing any code changes, always run these three commands to verify code quality:
+
+```bash
+composer check-cs   # Check WordPress coding standards (PHPCS)
+composer lint       # Check for PHP syntax errors
+composer phpstan    # Static analysis for type errors
+```
+
+All three commands must pass without errors before changes are considered complete. Fix any issues found before proceeding.
+
+### Documentation Updates
+
+When making changes to this codebase, always update the relevant documentation:
+
+1. **Changelogs**: After implementing a feature or fix, update both:
+   - `README.md` - The GitHub changelog (under `## Changelog`)
+   - `readme.txt` - The WordPress.org changelog (under `== Changelog ==`)
+
+2. **This file (CLAUDE.md)**: After making significant changes, update this file to reflect:
+   - New or modified settings/options
+   - Changes to the architecture or file structure
+   - New methods or classes
+   - Updated testing tips
+   - Modified filters or hooks
+
+Keep documentation in sync with code changes to ensure accuracy for future development.
+
 ## Project Overview
 
 **Glossary by Progress Planner (pp-glossary)** is a WordPress plugin that automatically links glossary terms to accessible, semantic popovers that appear on click. Uses native WordPress custom fields for field management and includes a Gutenberg block for displaying the full glossary.
@@ -72,8 +103,12 @@ pp-glossary/
 
 4. **Settings Page** (`includes/class-settings.php`)
    - Submenu under Glossary CPT menu
-   - Stores glossary page ID in `pp_glossary_settings` option
-   - Methods: `get_glossary_page_id()`, `get_glossary_page_url()`
+   - Stores settings in `pp_glossary_settings` option
+   - Settings fields:
+     - `glossary_page` (int) - ID of the page containing the glossary block
+     - `excluded_tags` (array) - HTML tags where terms should not be highlighted (default: `a`, `h1`-`h6`)
+     - `excluded_post_types` (array) - Post types where terms should not be highlighted
+   - Methods: `get_glossary_page_id()`, `get_glossary_page_url()`, `get_excluded_tags()`, `get_excluded_post_types()`
 
 5. **Block System** (`includes/class-blocks.php`, `blocks/glossary-list/`)
    - Server-side rendered block using `render_callback`
@@ -319,6 +354,8 @@ composer run phpcbf   # Fix coding standards
 
 - Terms sorted by length (longest first) to handle overlapping terms
 - Entries with `disable_autolink` enabled are skipped entirely
+- Content inside excluded HTML tags is skipped (configurable via settings, default: `a`, `h1`-`h6`)
+- Post types in the excluded list are skipped entirely (configurable via settings)
 - Uses regex pattern: `/\b({term})\b(?![^<]*>)/u` (or `/iu` for case-insensitive)
   - `\b` = word boundaries
   - `(?![^<]*>)` = negative lookahead to avoid matching inside HTML tags
@@ -338,6 +375,8 @@ composer run phpcbf   # Fix coding standards
 - `PP_Glossary_Settings::get_glossary_page_url()` returns the URL of the page containing the glossary block
 - "Read more" links use this URL + `#{slug}` anchor (slug-based, not ID-based)
 - If no glossary page is set, "Read more" link is omitted
+- `PP_Glossary_Settings::get_excluded_tags()` returns array of HTML tags to skip (default: `['a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']`)
+- `PP_Glossary_Settings::get_excluded_post_types()` returns array of post types to skip (default: `[]`)
 
 ### Block Registration
 
@@ -398,10 +437,11 @@ JavaScript checks for both features and logs warnings if unavailable. Consider:
 
 1. **Change term matching behavior**: Edit `PP_Glossary_Content_Filter::replace_first_occurrence()`
 2. **Modify popover HTML**: Edit `PP_Glossary_Content_Filter::create_popover()`
-3. **Adjust which content types are processed**: Add conditional logic in `PP_Glossary_Content_Filter::filter_content()`
-4. **Customize block output**: Edit `PP_Glossary_Blocks::render_glossary_list_block()`
-5. **Add more custom fields**: Modify `Meta_Boxes::render_meta_box()` and `save_meta_boxes()`
-6. **Change popover positioning**: Modify CSS anchor positioning rules in `assets/css/glossary.css` (see `aside[popover]` and `@position-try` rules)
+3. **Adjust which content types are processed**: Use Settings page or `pp_glossary_disabled_post_types` filter
+4. **Adjust which HTML tags are excluded**: Use Settings page or `pp_glossary_excluded_tags` filter
+5. **Customize block output**: Edit `PP_Glossary_Blocks::render_glossary_list_block()`
+6. **Add more custom fields**: Modify `Meta_Boxes::render_meta_box()` and `save_meta_boxes()`
+7. **Change popover positioning**: Modify CSS anchor positioning rules in `assets/css/glossary.css` (see `aside[popover]` and `@position-try` rules)
 
 ## Security Considerations
 
@@ -467,6 +507,8 @@ Synonyms are stored as a simple array of strings:
 - Test disable auto-linking (enable on entry, verify it appears in glossary but not linked in content)
 - Verify only one popover can be open at a time
 - Verify clicking outside popover closes it (light dismiss)
+- Test excluded HTML tags setting (add/remove tags, verify terms are not highlighted within those tags)
+- Test excluded post types setting (enable for a post type, verify terms are not highlighted in that post type)
 
 ### Schema Testing
 

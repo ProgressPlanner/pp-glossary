@@ -31,9 +31,9 @@ class Post_Type {
 	/**
 	 * Exclude glossary entries from Yoast SEO indexables.
 	 *
-	 * @param array $excluded_post_types Array of excluded post types.
+	 * @param array<int, string> $excluded_post_types Array of excluded post types.
 	 *
-	 * @return array Modified array of excluded post types.
+	 * @return array<int, string> Modified array of excluded post types.
 	 */
 	public static function exclude_from_yoast_indexables( array $excluded_post_types ): array {
 		$excluded_post_types[] = 'pp_glossary';

@@ -4,7 +4,7 @@ Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -135,19 +135,21 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 
 == Screenshots ==
 
-1. Glossary entry editor with custom fields
-2. Glossary List block in the editor
-3. Hover popover showing term definition
-4. Full glossary page with alphabetical navigation
-5. Settings page for configuring the glossary page
+1. Glossary entry editor with custom fields.
+2. Glossary List block in the editor.
+3. Popover showing term definition.
+4. Full glossary page with alphabetical navigation.
+5. Settings page for configuring the glossary page.
 
 == Changelog ==
 
-= 1.1.1 =
+= 1.2 =
 
 * Excluded glossary entries from Yoast SEO indexables and XML sitemaps (entries have no public pages).
 * Excluded glossary entries from WordPress search results.
 * Removed revision support (all data is in post meta, not tracked by revisions).
+* Added a setting to configure excluded HTML tags where glossary terms should not be highlighted.
+* Added a setting to exclude specific post types from glossary term highlighting.
 
 = 1.1.0 =
 

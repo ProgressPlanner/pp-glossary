@@ -52,7 +52,7 @@ class Migrations {
 
 		// Migration to 1.0.4: Consolidate meta fields into single array.
 		if ( version_compare( $current_version, '1.1.0', '<' ) ) {
-			self::migrate_to_1_0_4();
+			self::migrate_to_1_1_0();
 			Settings::update_setting( 'db_version', '1.1.0' );
 		}
 	}
@@ -78,7 +78,7 @@ class Migrations {
 	/**
 	 * Migrate to 1.0.4: Consolidate individual meta fields into single array.
 	 */
-	private static function migrate_to_1_0_4(): void {
+	private static function migrate_to_1_1_0(): void {
 		$query = new \WP_Query(
 			[
 				'post_type'      => 'pp_glossary',

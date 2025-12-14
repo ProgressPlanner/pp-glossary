@@ -240,7 +240,7 @@ When Yoast SEO is not active, the plugin outputs Microdata markup directly in th
 ### Schema Properties
 
 Each glossary entry includes:
-- **@type**: DefinedTerm
+- **@type**: `DefinedTerm`
 - **name**: The term title
 - **description**: Short description (shown in popovers)
 - **url**: Anchor link to the entry on the glossary page
@@ -279,13 +279,18 @@ composer run phpcs
 
 GPL v2 or later
 
-## Credits
-
-Developed by Joost de Valk for Progress Planner.
-
 ## Changelog
 
+### 1.2.0
+
+- Excluded glossary entries from Yoast SEO indexables and XML sitemaps (entries have no public pages)
+- Excluded glossary entries from WordPress search results
+- Removed revision support (all data is in post meta, not tracked by revisions)
+- Added a setting to configure excluded HTML tags where glossary terms should not be highlighted
+- Added a setting to exclude specific post types from glossary term highlighting
+
 ### 1.1.0
+
 - Added case sensitive option for glossary entries - only matches terms when case matches exactly
 - Added disable auto-linking option - allows entries to appear in the glossary without being automatically linked in content
 - Consolidated glossary entry meta data into a single database post meta field for improved performance
@@ -298,20 +303,21 @@ Developed by Joost de Valk for Progress Planner.
   - Removed redundant `aria-describedby` attribute
   - Link appears inside the popover before the definition for better screen reader context
   - Popovers are now type `auto` instead of `manual` so they dismiss other popovers and don't overlap
-- Excluded glossary entries from Yoast SEO indexables and XML sitemaps (entries have no public pages)
-- Excluded glossary entries from WordPress search results
-- Removed revision support (all data is in post meta, not tracked by revisions)
 
 ### 1.0.3
+
 - Fix non-bumped version number
 
 ### 1.0.2
+
 - Asset fixes
 
 ### 1.0.1
+
 - Minor bug fixes
 
 ### 1.0.0
+
 - Initial release
 - Custom post type for glossary entries
 - Native WordPress custom fields (short description, long description, synonyms)
