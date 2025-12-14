@@ -150,6 +150,7 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 * Removed revision support (all data is in post meta, not tracked by revisions).
 * Added a setting to configure excluded HTML tags where glossary terms should not be highlighted.
 * Added a setting to exclude specific post types from glossary term highlighting.
+* Do not highlight glossary terms when doing feeds or REST requests.
 
 = 1.1.0 =
 
