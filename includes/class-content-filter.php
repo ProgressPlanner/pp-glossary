@@ -293,8 +293,9 @@ class Content_Filter {
 	 * @return string HTML for the popover.
 	 */
 	private static function create_popover( $entry, $unique_id, $popover_id ): string {
-		$title       = esc_html( $entry['title'] );
-		$anchor_name = '--' . $unique_id;
+		$title             = esc_html( $entry['title'] );
+		$anchor_name       = '--' . $unique_id;
+		$glossary_page_url = Settings::get_glossary_page_url();
 
 		$popover_html = sprintf(
 			'<aside id="%s" popover="auto" role="tooltip" aria-labelledby="%s" style="position-anchor: %s;">',
@@ -303,29 +304,41 @@ class Content_Filter {
 			esc_attr( $anchor_name )
 		);
 
-		// Add "Read more" link first for better screen reader accessibility.
-		if ( ! empty( $entry['long_description'] ) ) {
-			// Get glossary page URL from settings.
-			$glossary_page_url = Settings::get_glossary_page_url();
-
-			if ( $glossary_page_url ) {
-				// Create anchor link to specific entry using slug.
-				$entry_anchor = $entry['slug'];
-				$full_url     = $glossary_page_url . '#' . $entry_anchor;
-
-				$popover_html .= sprintf(
-					'<p><a href="%s">%s <strong>%s</strong></a></p>',
-					esc_url( $full_url ),
-					esc_html__( 'Read more about', 'pp-glossary' ),
-					esc_html( $title )
-				);
-			}
+		// Screen reader context: announce what follows (definition, and link if available).
+		$has_read_more = ! empty( $entry['long_description'] ) && $glossary_page_url;
+		if ( $has_read_more ) {
+			$popover_html .= sprintf(
+				'<span class="pp-glossary-sr-only">%s</span>',
+				/* translators: %s: glossary term title */
+				esc_html( sprintf( __( 'Definition of %s. Link to full glossary entry follows the description.', 'pp-glossary' ), $entry['title'] ) )
+			);
+		} else {
+			$popover_html .= sprintf(
+				'<span class="pp-glossary-sr-only">%s</span>',
+				/* translators: %s: glossary term title */
+				esc_html( sprintf( __( 'Definition of %s.', 'pp-glossary' ), $entry['title'] ) )
+			);
 		}
 
-		$popover_html .= sprintf( '<strong class="glossary-title">%s</strong>', $title );
+		$popover_html .= sprintf( '<strong class="glossary-title" aria-hidden="true">%s</strong>', $title );
 
 		if ( ! empty( $entry['short_description'] ) ) {
 			$popover_html .= sprintf( '<p>%s</p>', esc_html( $entry['short_description'] ) );
+		}
+
+		if ( $has_read_more ) {
+			// Create anchor link to specific entry using slug.
+			$entry_anchor = $entry['slug'];
+			$full_url     = $glossary_page_url . '#' . $entry_anchor;
+
+			$popover_html .= sprintf(
+				'<p><a href="%s" aria-label="%s">%s <strong>%s</strong></a></p>',
+				esc_url( $full_url ),
+				/* translators: %s: glossary term title */
+				esc_attr( sprintf( __( 'Read more about %s on the glossary page', 'pp-glossary' ), $entry['title'] ) ),
+				esc_html__( 'Read more about', 'pp-glossary' ),
+				esc_html( $title )
+			);
 		}
 
 		$popover_html .= '</aside>';
