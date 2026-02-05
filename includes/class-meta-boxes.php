@@ -80,10 +80,6 @@ class Meta_Boxes {
 		$synonyms          = $data['synonyms'];
 		$case_sensitive    = $data['case_sensitive'];
 		$disable_autolink  = $data['disable_autolink'];
-
-		if ( ! is_array( $synonyms ) ) {
-			$synonyms = [];
-		}
 		?>
 		<div class="pp-glossary-meta-box">
 			<p>

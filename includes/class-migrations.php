@@ -76,7 +76,7 @@ class Migrations {
 	}
 
 	/**
-	 * Migrate to 1.0.4: Consolidate individual meta fields into single array.
+	 * Migrate to 1.1.0: Consolidate individual meta fields into single array.
 	 */
 	private static function migrate_to_1_1_0(): void {
 		$query = new \WP_Query(
@@ -115,8 +115,8 @@ class Migrations {
 
 			// Build new consolidated data array.
 			$data = [
-				'short_description' => ! empty( $short_description ) ? $short_description : '',
-				'long_description'  => ! empty( $long_description ) ? $long_description : '',
+				'short_description' => (string) $short_description,
+				'long_description'  => (string) $long_description,
 				'synonyms'          => is_array( $synonyms ) ? $synonyms : [],
 				'case_sensitive'    => '1' === $case_sensitive,
 				'disable_autolink'  => '1' === $disable_autolink,
