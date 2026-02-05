@@ -42,11 +42,7 @@ class Content_Filter {
 	 * Initialize the content filter
 	 */
 	public static function init(): void {
-
-		// No need to filter content in Dashboard.
-		if ( ! is_admin() ) {
-			add_filter( 'the_content', [ __CLASS__, 'filter_content' ], 20 );
-		}
+		add_filter( 'the_content', [ __CLASS__, 'filter_content' ], 20 );
 	}
 
 	/**

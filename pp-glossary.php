@@ -74,9 +74,7 @@ function pp_glossary_init(): void {
 	if ( is_admin() ) {
 		\PP_Glossary\Meta_Boxes::init();
 		\PP_Glossary\Migrations::init();
-	}
-
-	if ( ! is_admin() ) {
+	} else {
 		\PP_Glossary\Content_Filter::init();
 		\PP_Glossary\Assets::init();
 	}
