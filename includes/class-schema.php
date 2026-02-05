@@ -114,11 +114,10 @@ class Schema {
 	 *
 	 * This is used when Yoast SEO is not active
 	 *
-	 * @param array<int, array<string, mixed>> $entries          Array of glossary entries.
-	 * @param int                              $glossary_page_id The glossary page ID.
+	 * @param int $glossary_page_id The glossary page ID.
 	 * @return string Microdata attributes and invisible schema markup.
 	 */
-	public static function get_microdata_attributes( $entries, $glossary_page_id ): string {
+	public static function get_microdata_attributes( $glossary_page_id ): string {
 		// If Yoast SEO is active, don't output Microdata (use their JSON-LD instead).
 		if ( defined( 'WPSEO_VERSION' ) ) {
 			return '';

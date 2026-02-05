@@ -31,15 +31,15 @@ class Blocks {
 		// Register the editor script.
 		wp_register_script(
 			'pp-glossary-block-editor',
-			constant( 'PP_GLOSSARY_PLUGIN_URL' ) . 'blocks/glossary-list/editor.js',
+			PP_GLOSSARY_PLUGIN_URL . 'blocks/glossary-list/editor.js',
 			[ 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ],
-			constant( 'PP_GLOSSARY_VERSION' ),
+			PP_GLOSSARY_VERSION,
 			true
 		);
 
 		// Register the block type.
 		register_block_type(
-			constant( 'PP_GLOSSARY_PLUGIN_DIR' ) . 'blocks/glossary-list',
+			PP_GLOSSARY_PLUGIN_DIR . 'blocks/glossary-list',
 			[
 				'editor_script'   => 'pp-glossary-block-editor',
 				'render_callback' => [ __CLASS__, 'render_glossary_list_block' ],
@@ -55,17 +55,13 @@ class Blocks {
 	public static function render_glossary_list_block() {
 		$grouped_entries = self::get_grouped_entries();
 
-		// Get all entries for schema.
-		$all_entries = [];
-		foreach ( $grouped_entries as $letter => $entries ) {
-			$all_entries = array_merge( $all_entries, $entries );
-		}
-
 		// Get glossary page ID for schema.
 		$glossary_page_id = Settings::get_glossary_page_id();
+		$use_microdata    = ! defined( 'WPSEO_VERSION' );
+		$glossary_url     = Settings::get_glossary_page_url();
 
 		// Get schema microdata attributes (empty if Yoast SEO is active).
-		$schema_attrs = Schema::get_microdata_attributes( $all_entries, $glossary_page_id );
+		$schema_attrs = Schema::get_microdata_attributes( $glossary_page_id );
 
 		ob_start();
 		?>
@@ -73,7 +69,7 @@ class Blocks {
 			<?php if ( ! empty( $grouped_entries ) ) : ?>
 				<?php
 				// Hidden schema name for microdata.
-				if ( ! defined( 'WPSEO_VERSION' ) && $glossary_page_id ) {
+				if ( $use_microdata && $glossary_page_id ) {
 					echo '<meta itemprop="name" content="' . esc_attr( get_the_title( $glossary_page_id ) ) . '">';
 				}
 				?>
@@ -97,11 +93,8 @@ class Blocks {
 							<?php foreach ( $entries as $entry ) : ?>
 								<?php $entry_schema = Schema::get_entry_microdata_attributes(); ?>
 								<article id="<?php echo esc_attr( $entry['slug'] ); ?>" class="glossary-entry"<?php echo $entry_schema; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-									<?php
-									$glossary_url = Settings::get_glossary_page_url();
-									$entry_url    = $glossary_url . '#' . $entry['slug'];
-									?>
-									<?php if ( ! defined( 'WPSEO_VERSION' ) ) : ?>
+									<?php $entry_url = $glossary_url . '#' . $entry['slug']; ?>
+									<?php if ( $use_microdata ) : ?>
 										<link itemprop="url" href="<?php echo esc_url( $entry_url ); ?>">
 									<?php endif; ?>
 
@@ -123,7 +116,7 @@ class Blocks {
 											<span><?php echo esc_html( implode( ', ', $entry['synonyms'] ) ); ?></span>
 											<?php
 											// Output multiple meta tags for Microdata (array of alternateName).
-											if ( ! defined( 'WPSEO_VERSION' ) ) {
+											if ( $use_microdata ) {
 												foreach ( $entry['synonyms'] as $synonym ) {
 													echo '<meta itemprop="alternateName" content="' . esc_attr( $synonym ) . '">';
 												}
