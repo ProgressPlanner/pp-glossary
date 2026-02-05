@@ -139,7 +139,7 @@ class Settings {
 	 */
 	public static function render_glossary_page_field(): void {
 		$settings = self::get_settings();
-		$page_id  = isset( $settings['glossary_page'] ) ? absint( $settings['glossary_page'] ) : 0;
+		$page_id  = absint( $settings['glossary_page'] );
 
 		wp_dropdown_pages(
 			[
@@ -160,7 +160,7 @@ class Settings {
 	 */
 	public static function render_excluded_tags_field(): void {
 		$settings      = self::get_settings();
-		$excluded_tags = isset( $settings['excluded_tags'] ) ? $settings['excluded_tags'] : self::DEFAULT_EXCLUDED_TAGS;
+		$excluded_tags = $settings['excluded_tags'];
 		$tags_string   = implode( ', ', $excluded_tags );
 
 		printf(
@@ -185,7 +185,7 @@ class Settings {
 	 */
 	public static function render_excluded_post_types_field(): void {
 		$settings            = self::get_settings();
-		$excluded_post_types = isset( $settings['excluded_post_types'] ) ? $settings['excluded_post_types'] : [];
+		$excluded_post_types = $settings['excluded_post_types'];
 
 		// Get all public post types except the glossary itself.
 		$post_types = get_post_types(
@@ -314,7 +314,7 @@ class Settings {
 
 		$permalink = get_permalink( $page_id );
 
-		return $permalink ? $permalink : '';
+		return (string) $permalink;
 	}
 
 	/**
@@ -324,7 +324,7 @@ class Settings {
 	 */
 	public static function get_excluded_tags(): array {
 		$settings = self::get_settings();
-		return isset( $settings['excluded_tags'] ) ? $settings['excluded_tags'] : self::DEFAULT_EXCLUDED_TAGS;
+		return $settings['excluded_tags'];
 	}
 
 	/**
@@ -334,6 +334,6 @@ class Settings {
 	 */
 	public static function get_excluded_post_types(): array {
 		$settings = self::get_settings();
-		return isset( $settings['excluded_post_types'] ) ? $settings['excluded_post_types'] : [];
+		return $settings['excluded_post_types'];
 	}
 }
