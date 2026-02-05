@@ -120,8 +120,9 @@ class Content_Filter {
 	 * @return string Modified content.
 	 */
 	private static function replace_first_occurrence( $content, $entry ): string {
-		$excluded_tags = pp_glossary_get_excluded_tags();
-		$parts         = pp_glossary_split_by_excluded_tags( $content, $excluded_tags );
+		$excluded_tags    = pp_glossary_get_excluded_tags();
+		$parts            = pp_glossary_split_by_excluded_tags( $content, $excluded_tags );
+		$excluded_pattern = '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i';
 
 		if ( false === $parts ) {
 			return $content;
@@ -134,7 +135,7 @@ class Content_Filter {
 
 			foreach ( $parts as $part ) {
 				// If already replaced or this matches an excluded tag pattern, keep as-is.
-				if ( $replaced || preg_match( '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i', $part ) ) {
+				if ( $replaced || preg_match( $excluded_pattern, $part ) ) {
 					$new_parts[] = $part;
 					continue;
 				}
@@ -150,8 +151,9 @@ class Content_Filter {
 
 					// Generate unique ID for this occurrence.
 					++self::$popover_counter;
-					$unique_id  = 'dfn-' . md5( sanitize_title( $entry['title'] ) ) . '-' . self::$popover_counter;
-					$popover_id = 'pop-' . md5( sanitize_title( $entry['title'] ) ) . '-' . self::$popover_counter;
+					$hash       = md5( sanitize_title( $entry['title'] ) );
+					$unique_id  = 'dfn-' . $hash . '-' . self::$popover_counter;
+					$popover_id = 'pop-' . $hash . '-' . self::$popover_counter;
 
 					// Create the replacement HTML.
 					$replacement = self::create_term_button( $matched_term, $unique_id, $popover_id );
@@ -219,19 +221,13 @@ class Content_Filter {
 
 		// Screen reader context: announce what follows (definition, and link if available).
 		$has_read_more = ! empty( $entry['long_description'] ) && $glossary_page_url;
-		if ( $has_read_more ) {
-			$popover_html .= sprintf(
-				'<span class="pp-glossary-sr-only">%s</span>',
-				/* translators: %s: glossary term title */
-				esc_html( sprintf( __( 'Definition of %s. Link to full glossary entry follows the description.', 'pp-glossary' ), $entry['title'] ) )
-			);
-		} else {
-			$popover_html .= sprintf(
-				'<span class="pp-glossary-sr-only">%s</span>',
-				/* translators: %s: glossary term title */
-				esc_html( sprintf( __( 'Definition of %s.', 'pp-glossary' ), $entry['title'] ) )
-			);
-		}
+		$sr_text       = $has_read_more
+			/* translators: %s: glossary term title */
+			? sprintf( __( 'Definition of %s. Link to full glossary entry follows the description.', 'pp-glossary' ), $entry['title'] )
+			/* translators: %s: glossary term title */
+			: sprintf( __( 'Definition of %s.', 'pp-glossary' ), $entry['title'] );
+
+		$popover_html .= sprintf( '<span class="pp-glossary-sr-only">%s</span>', esc_html( $sr_text ) );
 
 		$popover_html .= sprintf( '<strong class="glossary-title" aria-hidden="true">%s</strong>', $title );
 
