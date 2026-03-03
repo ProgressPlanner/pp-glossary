@@ -1,5 +1,5 @@
 === Glossary ===
-Contributors: joostdevalk, aristath, filipi
+Contributors: joostdevalk, aristath, filipi, progressplanner
 Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
 Tested up to: 6.9
