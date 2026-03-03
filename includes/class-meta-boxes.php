@@ -273,26 +273,21 @@ class Meta_Boxes {
 		$placeholder = esc_js( __( 'e.g., CLS, layout shift', 'pp-glossary' ) );
 		$remove_text = esc_js( __( 'Remove', 'pp-glossary' ) );
 
-		$script = <<<JS
-jQuery(document).ready(function($) {
-	// Add synonym.
-	$('#pp-glossary-add-synonym').on('click', function(e) {
-		e.preventDefault();
-		var container = $('#pp-glossary-synonyms-container');
-		var row = $('<div class="pp-glossary-synonym-row" style="margin-bottom: 10px;display: flex;gap: 10px;">' +
-			'<input type="text" name="pp_glossary_synonyms[]" value="" class="regular-text" placeholder="{$placeholder}">' +
-			'<button type="button" class="button pp-glossary-remove-synonym">{$remove_text}</button>' +
-			'</div>');
-		container.append(row);
-	});
-
-	// Remove synonym (delegated event).
-	$(document).on('click', '.pp-glossary-remove-synonym', function(e) {
-		e.preventDefault();
-		$(this).closest('.pp-glossary-synonym-row').remove();
-	});
-});
-JS;
+		$script = 'jQuery(document).ready(function($) {'
+			. '$("#pp-glossary-add-synonym").on("click", function(e) {'
+			. 'e.preventDefault();'
+			. 'var container = $("#pp-glossary-synonyms-container");'
+			. 'var row = $("<div class=\"pp-glossary-synonym-row\" style=\"margin-bottom: 10px;display: flex;gap: 10px;\">'
+			. '<input type=\"text\" name=\"pp_glossary_synonyms[]\" value=\"\" class=\"regular-text\" placeholder=\"' . $placeholder . '\">'
+			. '<button type=\"button\" class=\"button pp-glossary-remove-synonym\">' . $remove_text . '</button>'
+			. '</div>");'
+			. 'container.append(row);'
+			. '});'
+			. '$(document).on("click", ".pp-glossary-remove-synonym", function(e) {'
+			. 'e.preventDefault();'
+			. '$(this).closest(".pp-glossary-synonym-row").remove();'
+			. '});'
+			. '});';
 
 		wp_add_inline_script( 'jquery', $script );
 	}
