@@ -144,6 +144,10 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 
 == Changelog ==
 
+= 1.3.1 =
+
+* Added uninstall.php to clean up plugin data (options and post meta) on deletion.
+
 = 1.3.0 =
 
 New:
