@@ -19,4 +19,5 @@ delete_option( 'pp_glossary_settings' );
 // Delete all glossary post meta.
 global $wpdb;
 
-$wpdb->delete( $wpdb->postmeta, [ 'meta_key' => '_pp_glossary_data' ] ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Bulk cleanup during uninstall, no caching needed.
+$wpdb->delete( $wpdb->postmeta, [ 'meta_key' => '_pp_glossary_data' ] );
