@@ -281,7 +281,7 @@ GPL v2 or later
 
 ### 1.3.1
 
-* Added uninstall.php to clean up plugin data (options and post meta) on deletion.
+* Added uninstall.php to clean up all plugin data (glossary posts, meta, and options) on deletion.
 
 ### 1.3.0
 
