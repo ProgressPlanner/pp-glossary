@@ -46,15 +46,9 @@ function pp_glossary_strtoupper( string $text ): string {
  */
 function pp_glossary_substr( string $text, int $start, ?int $length = null ): string {
 	if ( function_exists( 'mb_substr' ) ) {
-		if ( $length !== null ) {
-			return mb_substr( $text, $start, $length, 'UTF-8' );
-		}
-		return mb_substr( $text, $start, null, 'UTF-8' );
+		return mb_substr( $text, $start, $length, 'UTF-8' );
 	}
-	if ( $length !== null ) {
-		return substr( $text, $start, $length );
-	}
-	return substr( $text, $start );
+	return substr( $text, $start, $length );
 }
 
 /**
@@ -89,11 +83,15 @@ function pp_glossary_get_excluded_tags(): array {
  * @return array<int, string>|false Array of parts, or false on regex failure.
  */
 function pp_glossary_split_by_excluded_tags( string $text, array $excluded_tags ) {
-	$excluded_pattern = '';
-	foreach ( $excluded_tags as $tag ) {
-		$excluded_pattern .= '<' . $tag . '\b[^>]*>.*?<\/' . $tag . '>|';
-	}
-	$excluded_pattern = rtrim( $excluded_pattern, '|' );
+	$excluded_pattern = implode(
+		'|',
+		array_map(
+			function ( $tag ) {
+				return '<' . $tag . '\b[^>]*>.*?<\/' . $tag . '>';
+			},
+			$excluded_tags
+		)
+	);
 
 	return preg_split( '/(' . $excluded_pattern . ')/is', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 }
@@ -125,31 +123,27 @@ function pp_glossary_get_entries(): array {
 		]
 	);
 
-	if ( $query->have_posts() ) {
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$post_id = (int) get_the_ID();
-			$title   = get_the_title();
-			$data    = PP_Glossary\Meta_Boxes::get_entry_data( $post_id );
+	foreach ( $query->posts as $post ) {
+		$post_id = ( $post instanceof \WP_Post ) ? $post->ID : (int) $post;
+		$title   = ( $post instanceof \WP_Post ) ? $post->post_title : get_the_title( $post_id );
+		$data    = PP_Glossary\Meta_Boxes::get_entry_data( $post_id );
 
-			// Build array of terms (title + non-empty synonyms).
-			$terms    = [ $title ];
-			$synonyms = pp_glossary_filter_synonyms( $data['synonyms'] );
-			$terms    = array_merge( $terms, $synonyms );
+		// Build array of terms (title + non-empty synonyms).
+		$terms    = [ $title ];
+		$synonyms = pp_glossary_filter_synonyms( $data['synonyms'] );
+		$terms    = array_merge( $terms, $synonyms );
 
-			$entries[] = [
-				'id'                => $post_id,
-				'slug'              => sanitize_title( $title ),
-				'title'             => $title,
-				'terms'             => $terms,
-				'short_description' => $data['short_description'],
-				'long_description'  => $data['long_description'],
-				'synonyms'          => $synonyms,
-				'case_sensitive'    => $data['case_sensitive'],
-				'disable_autolink'  => $data['disable_autolink'],
-			];
-		}
-		wp_reset_postdata();
+		$entries[] = [
+			'id'                => $post_id,
+			'slug'              => sanitize_title( $title ),
+			'title'             => $title,
+			'terms'             => $terms,
+			'short_description' => $data['short_description'],
+			'long_description'  => $data['long_description'],
+			'synonyms'          => $synonyms,
+			'case_sensitive'    => $data['case_sensitive'],
+			'disable_autolink'  => $data['disable_autolink'],
+		];
 	}
 
 	$cache = $entries;
@@ -168,14 +162,7 @@ function pp_glossary_filter_synonyms( $synonyms ): array {
 		return [];
 	}
 
-	return array_values(
-		array_filter(
-			$synonyms,
-			function ( $synonym ) {
-				return ! empty( $synonym );
-			}
-		)
-	);
+	return array_values( array_filter( $synonyms ) );
 }
 
 /**

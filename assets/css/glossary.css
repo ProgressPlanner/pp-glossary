@@ -150,17 +150,6 @@ aside[popover] > p a:focus-visible {
 	margin: 2rem 0;
 }
 
-.pp-glossary-block .glossary-header {
-	margin-bottom: 2rem;
-	padding-bottom: 1rem;
-	border-bottom: 2px solid var(--glossary-border-color, #ddd);
-}
-
-.pp-glossary-block .glossary-title {
-	font-size: 2.5rem;
-	margin-bottom: 0.5rem;
-}
-
 .glossary-navigation {
 	margin: 2rem 0;
 	position: sticky;
@@ -266,12 +255,6 @@ aside[popover] > p a:focus-visible {
 	font-style: normal;
 }
 
-.glossary-short-description {
-	font-weight: 500;
-	color: var(--glossary-text-color, #333);
-	margin-bottom: 1rem;
-}
-
 .glossary-long-description {
 	color: var(--glossary-text-color, #555);
 }
@@ -305,10 +288,6 @@ aside[popover] > p a:focus-visible {
 
 	.glossary-entry-title {
 		font-size: 1.25rem;
-	}
-
-	.pp-glossary-block .glossary-title {
-		font-size: 2rem;
 	}
 }
 

@@ -35,24 +35,14 @@
 
 			// Toggle popover on click.
 			span.addEventListener('click', () => {
-				const isOpen = popover.matches(':popover-open');
-				if (isOpen) {
-					hidePopover(popover, span);
-				} else {
-					showPopover(popover, span);
-				}
+				togglePopover(popover, span);
 			});
 
 			// Handle keyboard interactions.
 			span.addEventListener('keydown', (event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
 					event.preventDefault();
-					const isOpen = popover.matches(':popover-open');
-					if (isOpen) {
-						hidePopover(popover, span);
-					} else {
-						showPopover(popover, span);
-					}
+					togglePopover(popover, span);
 				} else if (event.key === 'Escape') {
 					hidePopover(popover, span);
 				}
@@ -103,6 +93,20 @@
 	}
 
 	/**
+	 * Toggle a popover open or closed.
+	 *
+	 * @param {HTMLElement} popover The popover element.
+	 * @param {HTMLElement} trigger The trigger element.
+	 */
+	function togglePopover(popover, trigger) {
+		if (popover.matches(':popover-open')) {
+			hidePopover(popover, trigger);
+		} else {
+			showPopover(popover, trigger);
+		}
+	}
+
+	/**
 	 * Setup smooth scrolling for alphabet navigation.
 	 */
 	function setupSmoothScrolling() {
@@ -131,21 +135,19 @@
 	 * Scroll to the target element on page load.
 	 */
 	function maybeScrollOnPageLoad() {
-		const alphabetContainer = document.querySelector(
-			'.glossary-alphabet'
-		);
+		const alphabetContainer = document.querySelector('.glossary-alphabet');
 
 		// We are not on a glossary page or there are no alphabet links, so we don't need to scroll.
-		if ( ! alphabetContainer || ! window.location.hash ) {
+		if (!alphabetContainer || !window.location.hash) {
 			return;
 		}
 
-		const hash = window.location.hash.substring( 1 );
-		const targetElement = document.getElementById( hash );
+		const hash = window.location.hash.substring(1);
+		const targetElement = document.getElementById(hash);
 
-		if ( targetElement ) {
+		if (targetElement) {
 			// Smooth scroll to the target.
-			scrollToTarget( targetElement );
+			scrollToTarget(targetElement);
 		}
 	}
 
@@ -154,18 +156,18 @@
 	 *
 	 * @param {HTMLElement} targetElement The target element.
 	 */
-	function scrollToTarget( targetElement ) {
-		if ( ! targetElement ) {
+	function scrollToTarget(targetElement) {
+		if (!targetElement) {
 			return;
 		}
 
 		targetElement.scrollIntoView({
 			behavior: 'smooth',
 			block: 'start',
-		} );
+		});
 
 		// Update focus for keyboard navigation.
-		targetElement.setAttribute( 'tabindex', '-1' );
+		targetElement.setAttribute('tabindex', '-1');
 		targetElement.focus();
 	}
 

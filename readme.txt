@@ -1,10 +1,10 @@
 === Glossary ===
-Contributors: joostdevalk, aristath, filipi
+Contributors: joostdevalk, aristath, filipi, progressplanner
 Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -143,6 +143,10 @@ Yes, the plugin includes a Glossary List block that you can add to any page or p
 5. Settings page for configuring the glossary page.
 
 == Changelog ==
+
+= 1.3.1 =
+
+* Added uninstall.php to clean up all plugin data (glossary posts, meta, and options) on deletion.
 
 = 1.3.0 =
 

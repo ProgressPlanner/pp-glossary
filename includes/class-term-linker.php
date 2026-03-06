@@ -64,8 +64,9 @@ class Term_Linker {
 	 * @return string Modified text.
 	 */
 	private static function replace_first_term_occurrence( string $text, array $entry, string $glossary_url ): string {
-		$excluded_tags = pp_glossary_get_excluded_tags();
-		$parts         = pp_glossary_split_by_excluded_tags( $text, $excluded_tags );
+		$excluded_tags    = pp_glossary_get_excluded_tags();
+		$parts            = pp_glossary_split_by_excluded_tags( $text, $excluded_tags );
+		$excluded_pattern = '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i';
 
 		if ( false === $parts ) {
 			return $text;
@@ -80,7 +81,7 @@ class Term_Linker {
 
 			foreach ( $parts as $part ) {
 				// If already replaced or this is an excluded tag, keep as-is.
-				if ( $replaced || preg_match( '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i', $part ) ) {
+				if ( $replaced || preg_match( $excluded_pattern, $part ) ) {
 					$new_parts[] = $part;
 					continue;
 				}

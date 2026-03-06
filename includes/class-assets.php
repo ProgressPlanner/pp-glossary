@@ -21,10 +21,7 @@ class Assets {
 	 * Initialize assets.
 	 */
 	public static function init(): void {
-		// Only load assets on the frontend, not in admin.
-		if ( ! is_admin() ) {
-			add_action( 'wp_footer', [ __CLASS__, 'enqueue_assets' ], 1 );
-		}
+		add_action( 'wp_footer', [ __CLASS__, 'enqueue_assets' ], 1 );
 	}
 
 	/**

@@ -3,11 +3,11 @@
  * Plugin Name: Glossary
  * Plugin URI: https://progressplanner.com
  * Description: A semantic, accessible glossary plugin that automatically links terms to popover definitions.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: Team Progress Planner
  * Author URI: https://progressplanner.com
  * License: GPL v3 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * GitHub Plugin URI: https://github.com/progressplanner/pp-glossary
  * Primary Branch: main
  * Release Asset: true
@@ -74,9 +74,7 @@ function pp_glossary_init(): void {
 	if ( is_admin() ) {
 		\PP_Glossary\Meta_Boxes::init();
 		\PP_Glossary\Migrations::init();
-	}
-
-	if ( ! is_admin() ) {
+	} else {
 		\PP_Glossary\Content_Filter::init();
 		\PP_Glossary\Assets::init();
 	}
