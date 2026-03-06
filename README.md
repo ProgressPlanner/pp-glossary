@@ -279,6 +279,10 @@ GPL v2 or later
 
 ## Changelog
 
+### 1.3.1
+
+* Added uninstall.php to clean up all plugin data (glossary posts, meta, and options) on deletion.
+
 ### 1.3.0
 
 New:
