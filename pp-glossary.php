@@ -7,7 +7,7 @@
  * Author: Team Progress Planner
  * Author URI: https://progressplanner.com
  * License: GPL v3 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * GitHub Plugin URI: https://github.com/progressplanner/pp-glossary
  * Primary Branch: main
  * Release Asset: true
