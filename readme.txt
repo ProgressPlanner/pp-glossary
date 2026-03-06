@@ -1,8 +1,8 @@
 === Glossary ===
-Contributors: joostdevalk, aristath, filipi
+Contributors: joostdevalk, aristath, filipi, progressplanner
 Tags: glossary, definitions, terms, dictionary
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 1.3.0
 License: GPLv3 or later

@@ -155,7 +155,13 @@ class Meta_Boxes {
 				<?php endif; ?>
 			</div>
 			<p>
-				<button type="button" id="pp-glossary-add-synonym" class="button">
+				<button
+					type="button"
+					id="pp-glossary-add-synonym"
+					class="button"
+					data-placeholder="<?php esc_attr_e( 'e.g., CLS, layout shift', 'pp-glossary' ); ?>"
+					data-remove-text="<?php esc_attr_e( 'Remove', 'pp-glossary' ); ?>"
+				>
 					<?php esc_html_e( 'Add synonym', 'pp-glossary' ); ?>
 				</button>
 			</p>
@@ -267,38 +273,13 @@ class Meta_Boxes {
 			return;
 		}
 
-		// Enqueue jQuery.
-		wp_enqueue_script( 'jquery' );
-
-		// Add inline script for adding/removing synonyms.
-		add_action( 'admin_footer', [ __CLASS__, 'render_synonyms_script' ] );
-	}
-
-	/**
-	 * Render the synonyms JavaScript in the footer
-	 */
-	public static function render_synonyms_script(): void {
-		?>
-		<script type="text/javascript">
-		jQuery(document).ready(function($) {
-			// Add synonym.
-			$('#pp-glossary-add-synonym').on('click', function(e) {
-				e.preventDefault();
-				var container = $('#pp-glossary-synonyms-container');
-				var row = $('<div class="pp-glossary-synonym-row" style="margin-bottom: 10px;display: flex;gap: 10px;">' +
-					'<input type="text" name="pp_glossary_synonyms[]" value="" class="regular-text" placeholder="<?php echo esc_js( __( 'e.g., CLS, layout shift', 'pp-glossary' ) ); ?>">' +
-					'<button type="button" class="button pp-glossary-remove-synonym"><?php echo esc_js( __( 'Remove', 'pp-glossary' ) ); ?></button>' +
-					'</div>');
-				container.append(row);
-			});
-
-			// Remove synonym (delegated event).
-			$(document).on('click', '.pp-glossary-remove-synonym', function(e) {
-				e.preventDefault();
-				$(this).closest('.pp-glossary-synonym-row').remove();
-			});
-		});
-		</script>
-		<?php
+		// Enqueue admin script for synonyms management.
+		wp_enqueue_script(
+			'pp-glossary-admin',
+			PP_GLOSSARY_PLUGIN_URL . 'assets/js/admin.js',
+			[],
+			PP_GLOSSARY_VERSION,
+			true
+		);
 	}
 }
