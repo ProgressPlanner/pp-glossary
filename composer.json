@@ -1,6 +1,6 @@
 {
 	"name": "progress-planner/glossary",
-	"description": "A semantic, accessible glossary plugin for WordPress using ACF",
+	"description": "An accessible WordPress glossary plugin with auto-linking definitions, popovers, and structured data.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"authors": [

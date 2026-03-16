@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'PP_GLOSSARY_VERSION', '1.3.0' );
+define( 'PP_GLOSSARY_VERSION', '1.3.1' );
 define( 'PP_GLOSSARY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PP_GLOSSARY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
