@@ -2,7 +2,7 @@
 /**
  * Functions for Glossary.
  *
- * @package PP_Glossary
+ * @package Your_Glossary
  */
 
 // If this file is called directly, abort.
@@ -16,7 +16,7 @@ if ( ! defined( 'WPINC' ) ) {
  * @param string $text The string to convert to lowercase.
  * @return string Lowercase string.
  */
-function pp_glossary_strtolower( string $text ): string {
+function your_glossary_strtolower( string $text ): string {
 	if ( function_exists( 'mb_strtolower' ) ) {
 		return mb_strtolower( $text, 'UTF-8' );
 	}
@@ -29,7 +29,7 @@ function pp_glossary_strtolower( string $text ): string {
  * @param string $text The string to convert to uppercase.
  * @return string Uppercase string.
  */
-function pp_glossary_strtoupper( string $text ): string {
+function your_glossary_strtoupper( string $text ): string {
 	if ( function_exists( 'mb_strtoupper' ) ) {
 		return mb_strtoupper( $text, 'UTF-8' );
 	}
@@ -44,7 +44,7 @@ function pp_glossary_strtoupper( string $text ): string {
  * @param int|null $length Optional. Maximum length of the substring.
  * @return string The substring.
  */
-function pp_glossary_substr( string $text, int $start, ?int $length = null ): string {
+function your_glossary_substr( string $text, int $start, ?int $length = null ): string {
 	if ( function_exists( 'mb_substr' ) ) {
 		return mb_substr( $text, $start, $length, 'UTF-8' );
 	}
@@ -54,12 +54,12 @@ function pp_glossary_substr( string $text, int $start, ?int $length = null ): st
 /**
  * Get the HTML tags that should be excluded from glossary term linking.
  *
- * Retrieves the configured excluded tags and applies the pp_glossary_excluded_tags filter.
+ * Retrieves the configured excluded tags and applies the your_glossary_excluded_tags filter.
  *
  * @return array<int, string> Array of HTML tag names.
  */
-function pp_glossary_get_excluded_tags(): array {
-	$excluded_tags = PP_Glossary\Settings::get_excluded_tags();
+function your_glossary_get_excluded_tags(): array {
+	$excluded_tags = Your_Glossary\Settings::get_excluded_tags();
 
 	/**
 	 * Filter the excluded tags.
@@ -68,7 +68,7 @@ function pp_glossary_get_excluded_tags(): array {
 	 *
 	 * @return array<int, string> The excluded tags.
 	 */
-	return apply_filters( 'pp_glossary_excluded_tags', $excluded_tags );
+	return apply_filters( 'your_glossary_excluded_tags', $excluded_tags );
 }
 
 /**
@@ -82,7 +82,7 @@ function pp_glossary_get_excluded_tags(): array {
  * @param array<int,string> $excluded_tags Array of HTML tag names to split on.
  * @return array<int, string>|false Array of parts, or false on regex failure.
  */
-function pp_glossary_split_by_excluded_tags( string $text, array $excluded_tags ) {
+function your_glossary_split_by_excluded_tags( string $text, array $excluded_tags ) {
 	$excluded_pattern = implode(
 		'|',
 		array_map(
@@ -104,7 +104,7 @@ function pp_glossary_split_by_excluded_tags( string $text, array $excluded_tags 
  *
  * @return array<int, array<string, mixed>> Array of glossary entries with full metadata.
  */
-function pp_glossary_get_entries(): array {
+function your_glossary_get_entries(): array {
 	static $cache = null;
 
 	if ( null !== $cache ) {
@@ -126,11 +126,11 @@ function pp_glossary_get_entries(): array {
 	foreach ( $query->posts as $post ) {
 		$post_id = ( $post instanceof \WP_Post ) ? $post->ID : (int) $post;
 		$title   = ( $post instanceof \WP_Post ) ? $post->post_title : get_the_title( $post_id );
-		$data    = PP_Glossary\Meta_Boxes::get_entry_data( $post_id );
+		$data    = Your_Glossary\Meta_Boxes::get_entry_data( $post_id );
 
 		// Build array of terms (title + non-empty synonyms).
 		$terms    = [ $title ];
-		$synonyms = pp_glossary_filter_synonyms( $data['synonyms'] );
+		$synonyms = your_glossary_filter_synonyms( $data['synonyms'] );
 		$terms    = array_merge( $terms, $synonyms );
 
 		$entries[] = [
@@ -157,7 +157,7 @@ function pp_glossary_get_entries(): array {
  * @param mixed $synonyms The synonyms array (or other value).
  * @return array<int, string> Filtered array of non-empty synonym strings.
  */
-function pp_glossary_filter_synonyms( $synonyms ): array {
+function your_glossary_filter_synonyms( $synonyms ): array {
 	if ( ! is_array( $synonyms ) ) {
 		return [];
 	}
@@ -173,7 +173,7 @@ function pp_glossary_filter_synonyms( $synonyms ): array {
  * @param array<int, array<string, mixed>> $entries Array of glossary entries.
  * @return array<int, array<string, mixed>> Sorted array of glossary entries.
  */
-function pp_glossary_sort_by_term_length( array $entries ): array {
+function your_glossary_sort_by_term_length( array $entries ): array {
 	usort(
 		$entries,
 		function ( $a, $b ) {
@@ -199,14 +199,14 @@ function pp_glossary_sort_by_term_length( array $entries ): array {
  *
  * @return array<int, array<string, mixed>> Array of linkable glossary entries.
  */
-function pp_glossary_get_linkable_entries(): array {
+function your_glossary_get_linkable_entries(): array {
 	static $cache = null;
 
 	if ( null !== $cache ) {
 		return $cache;
 	}
 
-	$all_entries = pp_glossary_get_entries();
+	$all_entries = your_glossary_get_entries();
 
 	// Filter out entries with auto-linking disabled.
 	$linkable_entries = array_filter(
@@ -217,7 +217,7 @@ function pp_glossary_get_linkable_entries(): array {
 	);
 
 	// Sort by longest term first.
-	$cache = pp_glossary_sort_by_term_length( array_values( $linkable_entries ) );
+	$cache = your_glossary_sort_by_term_length( array_values( $linkable_entries ) );
 
 	return $cache;
 }

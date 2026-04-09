@@ -2,10 +2,10 @@
 /**
  * Content Filter for Glossary Terms
  *
- * @package PP_Glossary
+ * @package Your_Glossary
  */
 
-namespace PP_Glossary;
+namespace Your_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -72,7 +72,7 @@ class Content_Filter {
 		 *
 		 * @return array<int, string> The disabled post types.
 		 */
-		$disabled_post_types = apply_filters( 'pp_glossary_disabled_post_types', $disabled_post_types );
+		$disabled_post_types = apply_filters( 'your_glossary_disabled_post_types', $disabled_post_types );
 		$current_post_type   = get_post_type();
 		if ( $current_post_type && in_array( $current_post_type, $disabled_post_types, true ) ) {
 			return $content;
@@ -86,7 +86,7 @@ class Content_Filter {
 		}
 
 		// Get all glossary entries.
-		$glossary_entries = pp_glossary_get_linkable_entries();
+		$glossary_entries = your_glossary_get_linkable_entries();
 
 		if ( empty( $glossary_entries ) ) {
 			return $content;
@@ -116,8 +116,8 @@ class Content_Filter {
 	 * @return string Modified content.
 	 */
 	private static function replace_first_occurrence( $content, $entry ): string {
-		$excluded_tags    = pp_glossary_get_excluded_tags();
-		$parts            = pp_glossary_split_by_excluded_tags( $content, $excluded_tags );
+		$excluded_tags    = your_glossary_get_excluded_tags();
+		$parts            = your_glossary_split_by_excluded_tags( $content, $excluded_tags );
 		$excluded_pattern = '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i';
 
 		if ( false === $parts ) {
@@ -187,7 +187,7 @@ class Content_Filter {
 	private static function create_term_button( $term, $unique_id, $popover_id ): string {
 		$anchor_name = '--' . $unique_id;
 		return sprintf(
-			'<dfn id="%s" class="pp-glossary-term" style="anchor-name: %s;"><span data-glossary-popover="%s" tabindex="0" role="button" aria-expanded="false">%s</span></dfn>',
+			'<dfn id="%s" class="your-glossary-term" style="anchor-name: %s;"><span data-glossary-popover="%s" tabindex="0" role="button" aria-expanded="false">%s</span></dfn>',
 			esc_attr( $unique_id ),
 			esc_attr( $anchor_name ),
 			esc_attr( $popover_id ),
@@ -219,11 +219,11 @@ class Content_Filter {
 		$has_read_more = ! empty( $entry['long_description'] ) && $glossary_page_url;
 		$sr_text       = $has_read_more
 			/* translators: %s: glossary term title */
-			? sprintf( __( 'Definition of %s. Link to full glossary entry follows the description.', 'pp-glossary' ), $entry['title'] )
+			? sprintf( __( 'Definition of %s. Link to full glossary entry follows the description.', 'your-glossary' ), $entry['title'] )
 			/* translators: %s: glossary term title */
-			: sprintf( __( 'Definition of %s.', 'pp-glossary' ), $entry['title'] );
+			: sprintf( __( 'Definition of %s.', 'your-glossary' ), $entry['title'] );
 
-		$popover_html .= sprintf( '<span class="pp-glossary-sr-only">%s</span>', esc_html( $sr_text ) );
+		$popover_html .= sprintf( '<span class="your-glossary-sr-only">%s</span>', esc_html( $sr_text ) );
 
 		$popover_html .= sprintf( '<strong class="glossary-title" aria-hidden="true">%s</strong>', $title );
 
@@ -245,8 +245,8 @@ class Content_Filter {
 				'<p><a href="%s" aria-label="%s">%s <strong>%s</strong></a></p>',
 				esc_url( $full_url ),
 				/* translators: %s: glossary term title */
-				esc_attr( sprintf( __( 'Read more about %s on the glossary page', 'pp-glossary' ), $entry['title'] ) ),
-				esc_html__( 'Read more about', 'pp-glossary' ),
+				esc_attr( sprintf( __( 'Read more about %s on the glossary page', 'your-glossary' ), $entry['title'] ) ),
+				esc_html__( 'Read more about', 'your-glossary' ),
 				esc_html( $title )
 			);
 		}

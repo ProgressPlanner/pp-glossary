@@ -7,7 +7,7 @@
 	"icon": "book-alt",
 	"description": "Display an alphabetical list of all glossary entries.",
 	"keywords": ["glossary", "terms", "definitions", "dictionary"],
-	"textdomain": "pp-glossary",
+	"textdomain": "your-glossary",
 	"supports": {
 		"html": false,
 		"align": ["wide", "full"]

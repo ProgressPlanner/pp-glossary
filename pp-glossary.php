@@ -8,16 +8,16 @@
  * Author URI: https://progressplanner.com
  * License: GPL v3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
- * GitHub Plugin URI: https://github.com/progressplanner/pp-glossary
+ * GitHub Plugin URI: https://github.com/progressplanner/your-glossary
  * Primary Branch: main
  * Release Asset: true
- * Text Domain: pp-glossary
+ * Text Domain: your-glossary
  * Plugin ID: did:plc:m5tfrwxd3btacxlstcvop2ib
  * Security: security@progressplanner.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
  *
- * @package PP_Glossary
+ * @package Your_Glossary
  */
 
 // If this file is called directly, abort.
@@ -25,32 +25,32 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'PP_GLOSSARY_VERSION', '1.3.2' );
-define( 'PP_GLOSSARY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'PP_GLOSSARY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'YOUR_GLOSSARY_VERSION', '1.3.2' );
+define( 'YOUR_GLOSSARY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'YOUR_GLOSSARY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-require_once PP_GLOSSARY_PLUGIN_DIR . 'includes/functions.php';
+require_once YOUR_GLOSSARY_PLUGIN_DIR . 'includes/functions.php';
 
 /**
- * Autoloader for PP_Glossary classes.
+ * Autoloader for Your_Glossary classes.
  *
  * @param string $class_name The fully qualified class name to load.
  *
  * @return void
  */
-function pp_glossary_autoloader( string $class_name ): void {
-	// Only handle PP_Glossary namespace classes.
-	if ( strpos( $class_name, 'PP_Glossary\\' ) !== 0 ) {
+function your_glossary_autoloader( string $class_name ): void {
+	// Only handle Your_Glossary namespace classes.
+	if ( strpos( $class_name, 'Your_Glossary\\' ) !== 0 ) {
 		return;
 	}
 
-	// Remove the PP_Glossary\ namespace prefix.
-	$class_name = substr( $class_name, strlen( 'PP_Glossary\\' ) );
+	// Remove the Your_Glossary\ namespace prefix.
+	$class_name = substr( $class_name, strlen( 'Your_Glossary\\' ) );
 
 	// Convert class name to file name format.
-	// PP_Glossary\Settings -> class-settings.php -> includes/class-settings.php.
+	// Your_Glossary\Settings -> class-settings.php -> includes/class-settings.php.
 	$file_name = 'class-' . str_replace( '_', '-', strtolower( $class_name ) ) . '.php';
-	$file_path = PP_GLOSSARY_PLUGIN_DIR . 'includes/' . $file_name;
+	$file_path = YOUR_GLOSSARY_PLUGIN_DIR . 'includes/' . $file_name;
 
 	// Load the file if it exists.
 	if ( file_exists( $file_path ) ) {
@@ -59,42 +59,42 @@ function pp_glossary_autoloader( string $class_name ): void {
 }
 
 // Register the autoloader.
-spl_autoload_register( 'pp_glossary_autoloader' );
+spl_autoload_register( 'your_glossary_autoloader' );
 
 /**
  * Initialize the plugin.
  */
-function pp_glossary_init(): void {
+function your_glossary_init(): void {
 	// Initialize components.
-	\PP_Glossary\Settings::init();
-	\PP_Glossary\Post_Type::init();
-	\PP_Glossary\Blocks::init();
-	\PP_Glossary\Schema::init();
+	\Your_Glossary\Settings::init();
+	\Your_Glossary\Post_Type::init();
+	\Your_Glossary\Blocks::init();
+	\Your_Glossary\Schema::init();
 
 	if ( is_admin() ) {
-		\PP_Glossary\Meta_Boxes::init();
-		\PP_Glossary\Migrations::init();
+		\Your_Glossary\Meta_Boxes::init();
+		\Your_Glossary\Migrations::init();
 	} else {
-		\PP_Glossary\Content_Filter::init();
-		\PP_Glossary\Assets::init();
+		\Your_Glossary\Content_Filter::init();
+		\Your_Glossary\Assets::init();
 	}
 }
-add_action( 'plugins_loaded', 'pp_glossary_init' );
+add_action( 'plugins_loaded', 'your_glossary_init' );
 
 /**
  * Activation hook
  */
-function pp_glossary_activate(): void {
+function your_glossary_activate(): void {
 	// Flush rewrite rules.
-	pp_glossary_init();
+	your_glossary_init();
 	flush_rewrite_rules();
 }
-register_activation_hook( __FILE__, 'pp_glossary_activate' );
+register_activation_hook( __FILE__, 'your_glossary_activate' );
 
 /**
  * Deactivation hook
  */
-function pp_glossary_deactivate(): void {
+function your_glossary_deactivate(): void {
 	flush_rewrite_rules();
 }
-register_deactivation_hook( __FILE__, 'pp_glossary_deactivate' );
+register_deactivation_hook( __FILE__, 'your_glossary_deactivate' );

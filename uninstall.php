@@ -4,7 +4,7 @@
  *
  * Cleans up all plugin data including glossary posts, post meta, and options.
  *
- * @package PP_Glossary
+ * @package Your_Glossary
  */
 
 // If uninstall not called from WordPress, abort.
@@ -13,7 +13,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Delete all glossary posts and their meta.
-$pp_glossary_posts = get_posts(
+$your_glossary_posts = get_posts(
 	[
 		'post_type'      => 'pp_glossary',
 		'posts_per_page' => -1,
@@ -22,8 +22,8 @@ $pp_glossary_posts = get_posts(
 	]
 );
 
-foreach ( $pp_glossary_posts as $pp_glossary_post_id ) {
-	wp_delete_post( $pp_glossary_post_id, true );
+foreach ( $your_glossary_posts as $your_glossary_post_id ) {
+	wp_delete_post( $your_glossary_post_id, true );
 }
 
 // Delete plugin options.

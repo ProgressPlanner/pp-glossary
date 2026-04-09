@@ -2,10 +2,10 @@
 /**
  * Migrations for Glossary
  *
- * @package PP_Glossary
+ * @package Your_Glossary
  */
 
-namespace PP_Glossary;
+namespace Your_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -43,7 +43,7 @@ class Migrations {
 				$current_version = '1.0.0';
 			} else {
 				// Fresh install - set to current version and skip migrations.
-				Settings::update_setting( 'db_version', PP_GLOSSARY_VERSION );
+				Settings::update_setting( 'db_version', YOUR_GLOSSARY_VERSION );
 				return;
 			}
 		} else {
