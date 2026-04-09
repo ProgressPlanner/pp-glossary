@@ -73,7 +73,18 @@ class Content_Filter {
 		 * @return array<int, string> The disabled post types.
 		 */
 		$disabled_post_types = apply_filters( 'your_glossary_disabled_post_types', $disabled_post_types );
-		$current_post_type   = get_post_type();
+
+		// Backwards compatibility: apply old filter name with deprecation notice.
+		if ( has_filter( 'pp_glossary_disabled_post_types' ) ) {
+			_doing_it_wrong(
+				'pp_glossary_disabled_post_types',
+				esc_html__( 'The pp_glossary_disabled_post_types filter has been renamed to your_glossary_disabled_post_types.', 'your-glossary' ),
+				'1.4.0'
+			);
+			$disabled_post_types = apply_filters( 'pp_glossary_disabled_post_types', $disabled_post_types ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Deprecated hook for backwards compatibility.
+		}
+
+		$current_post_type = get_post_type();
 		if ( $current_post_type && in_array( $current_post_type, $disabled_post_types, true ) ) {
 			return $content;
 		}

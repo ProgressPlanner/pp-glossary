@@ -68,7 +68,19 @@ function your_glossary_get_excluded_tags(): array {
 	 *
 	 * @return array<int, string> The excluded tags.
 	 */
-	return apply_filters( 'your_glossary_excluded_tags', $excluded_tags );
+	$excluded_tags = apply_filters( 'your_glossary_excluded_tags', $excluded_tags );
+
+	// Backwards compatibility: apply old filter name with deprecation notice.
+	if ( has_filter( 'pp_glossary_excluded_tags' ) ) {
+		_doing_it_wrong(
+			'pp_glossary_excluded_tags',
+			esc_html__( 'The pp_glossary_excluded_tags filter has been renamed to your_glossary_excluded_tags.', 'your-glossary' ),
+			'1.4.0'
+		);
+		$excluded_tags = apply_filters( 'pp_glossary_excluded_tags', $excluded_tags ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Deprecated hook for backwards compatibility.
+	}
+
+	return $excluded_tags;
 }
 
 /**

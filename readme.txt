@@ -131,6 +131,7 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 * Plugin renamed to Your Glossary with new slug (your-glossary).
 * Renamed all internal identifiers (namespace, constants, functions, text domain).
 * Added migration to rename database identifiers (post type, meta key, option, block name).
+* Deprecated `pp_glossary_excluded_tags` and `pp_glossary_disabled_post_types` filters — use `your_glossary_excluded_tags` and `your_glossary_disabled_post_types` instead. Old filters still work but trigger a `_doing_it_wrong` notice.
 * Plugin reactivation required after update due to file/directory rename.
 
 = 1.3.1 =
