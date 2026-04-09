@@ -4,7 +4,7 @@ Tags: glossary, definitions, popover, accessibility, schema
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -125,6 +125,10 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 5. Choose the glossary page and control where glossary term linking appears.
 
 == Changelog ==
+
+= 1.3.2 =
+
+* Plugin name changed to Your Glossary.
 
 = 1.3.1 =
 
