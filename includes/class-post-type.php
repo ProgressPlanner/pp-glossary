@@ -36,7 +36,7 @@ class Post_Type {
 	 * @return array<int, string> Modified array of excluded post types.
 	 */
 	public static function exclude_from_yoast_indexables( array $excluded_post_types ): array {
-		$excluded_post_types[] = 'pp_glossary';
+		$excluded_post_types[] = 'your_glossary';
 		return $excluded_post_types;
 	}
 
@@ -49,7 +49,7 @@ class Post_Type {
 	 * @return bool Whether to exclude this post type.
 	 */
 	public static function exclude_from_yoast_sitemap( bool $exclude, string $post_type ): bool {
-		if ( 'pp_glossary' === $post_type ) {
+		if ( 'your_glossary' === $post_type ) {
 			return true;
 		}
 		return $exclude;
@@ -106,6 +106,6 @@ class Post_Type {
 			'rewrite'             => false,
 		];
 
-		register_post_type( 'pp_glossary', $args );
+		register_post_type( 'your_glossary', $args );
 	}
 }

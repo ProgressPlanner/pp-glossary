@@ -115,7 +115,7 @@ function your_glossary_get_entries(): array {
 
 	$query = new WP_Query(
 		[
-			'post_type'      => 'pp_glossary',
+			'post_type'      => 'your_glossary',
 			'posts_per_page' => -1,
 			'post_status'    => 'publish',
 			'orderby'        => 'title',

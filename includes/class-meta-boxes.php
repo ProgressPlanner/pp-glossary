@@ -22,7 +22,7 @@ class Meta_Boxes {
 	 */
 	public static function init(): void {
 		add_action( 'add_meta_boxes', [ __CLASS__, 'add_meta_boxes' ] );
-		add_action( 'save_post_pp_glossary', [ __CLASS__, 'save_meta_boxes' ], 10 );
+		add_action( 'save_post_your_glossary', [ __CLASS__, 'save_meta_boxes' ], 10 );
 		add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_admin_scripts' ] );
 	}
 
@@ -34,7 +34,7 @@ class Meta_Boxes {
 			'your_glossary_details',
 			__( 'Glossary entry', 'your-glossary' ),
 			[ __CLASS__, 'render_meta_box' ],
-			'pp_glossary',
+			'your_glossary',
 			'normal',
 			'high'
 		);
@@ -55,7 +55,7 @@ class Meta_Boxes {
 			'disable_autolink'  => false,
 		];
 
-		$data = get_post_meta( $post_id, '_pp_glossary_data', true );
+		$data = get_post_meta( $post_id, '_your_glossary_data', true );
 
 		if ( ! is_array( $data ) ) {
 			return $defaults;
@@ -254,7 +254,7 @@ class Meta_Boxes {
 			}
 		}
 
-		update_post_meta( $post_id, '_pp_glossary_data', $data );
+		update_post_meta( $post_id, '_your_glossary_data', $data );
 	}
 
 	/**
@@ -269,7 +269,7 @@ class Meta_Boxes {
 		}
 
 		$screen = get_current_screen();
-		if ( ! $screen || 'pp_glossary' !== $screen->post_type ) {
+		if ( ! $screen || 'your_glossary' !== $screen->post_type ) {
 			return;
 		}
 

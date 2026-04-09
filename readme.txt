@@ -4,7 +4,7 @@ Tags: glossary, definitions, popover, accessibility, schema
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -126,9 +126,12 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 == Changelog ==
 
-= 1.3.2 =
+= 1.4.0 =
 
-* Plugin name changed to Your Glossary.
+* Plugin renamed to Your Glossary with new slug (your-glossary).
+* Renamed all internal identifiers (namespace, constants, functions, text domain).
+* Added migration to rename database identifiers (post type, meta key, option, block name).
+* Plugin reactivation required after update due to file/directory rename.
 
 = 1.3.1 =
 

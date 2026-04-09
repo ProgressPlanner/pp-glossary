@@ -20,7 +20,7 @@ class Settings {
 	/**
 	 * Option name for settings
 	 */
-	const OPTION_NAME = 'pp_glossary_settings';
+	const OPTION_NAME = 'your_glossary_settings';
 
 	/**
 	 * Default excluded tags for term highlighting
@@ -196,7 +196,7 @@ class Settings {
 		);
 
 		// Remove the glossary post type from the list.
-		unset( $post_types['pp_glossary'] );
+		unset( $post_types['your_glossary'] );
 
 		if ( empty( $post_types ) ) {
 			echo '<p>' . esc_html__( 'No public post types found.', 'your-glossary' ) . '</p>';

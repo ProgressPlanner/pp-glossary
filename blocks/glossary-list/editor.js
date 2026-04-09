@@ -7,7 +7,7 @@
 	const { __ } = wp.i18n;
 	const { createElement: el } = wp.element;
 
-	registerBlockType('pp-glossary/glossary-list', {
+	registerBlockType('your-glossary/glossary-list', {
 		edit: function (props) {
 			return el(
 				'div',
