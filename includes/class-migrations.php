@@ -2,10 +2,10 @@
 /**
  * Migrations for Glossary
  *
- * @package PP_Glossary
+ * @package Inline_Glossary
  */
 
-namespace PP_Glossary;
+namespace Inline_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -43,7 +43,7 @@ class Migrations {
 				$current_version = '1.0.0';
 			} else {
 				// Fresh install - set to current version and skip migrations.
-				Settings::update_setting( 'db_version', PP_GLOSSARY_VERSION );
+				Settings::update_setting( 'db_version', INLINE_GLOSSARY_VERSION );
 				return;
 			}
 		} else {
@@ -65,7 +65,7 @@ class Migrations {
 	private static function has_glossary_posts(): bool {
 		$query = new \WP_Query(
 			[
-				'post_type'      => 'pp_glossary',
+				'post_type'      => 'inline_glossary',
 				'posts_per_page' => 1,
 				'post_status'    => 'any',
 				'fields'         => 'ids',
@@ -81,7 +81,7 @@ class Migrations {
 	private static function migrate_to_1_1_0(): void {
 		$query = new \WP_Query(
 			[
-				'post_type'      => 'pp_glossary',
+				'post_type'      => 'inline_glossary',
 				'posts_per_page' => -1,
 				'post_status'    => 'any',
 				'fields'         => 'ids',
@@ -96,17 +96,17 @@ class Migrations {
 			$post_id = $post instanceof \WP_Post ? $post->ID : (int) $post;
 
 			// Check if already migrated (new data exists).
-			$existing_data = get_post_meta( $post_id, '_pp_glossary_data', true );
+			$existing_data = get_post_meta( $post_id, '_inline_glossary_data', true );
 			if ( is_array( $existing_data ) && ! empty( $existing_data ) ) {
 				continue;
 			}
 
 			// Get old individual meta values.
-			$short_description = get_post_meta( $post_id, '_pp_glossary_short_description', true );
-			$long_description  = get_post_meta( $post_id, '_pp_glossary_long_description', true );
-			$synonyms          = get_post_meta( $post_id, '_pp_glossary_synonyms', true );
-			$case_sensitive    = get_post_meta( $post_id, '_pp_glossary_case_sensitive', true );
-			$disable_autolink  = get_post_meta( $post_id, '_pp_glossary_disable_autolink', true );
+			$short_description = get_post_meta( $post_id, '_inline_glossary_short_description', true );
+			$long_description  = get_post_meta( $post_id, '_inline_glossary_long_description', true );
+			$synonyms          = get_post_meta( $post_id, '_inline_glossary_synonyms', true );
+			$case_sensitive    = get_post_meta( $post_id, '_inline_glossary_case_sensitive', true );
+			$disable_autolink  = get_post_meta( $post_id, '_inline_glossary_disable_autolink', true );
 
 			// Only migrate if there's actually old data.
 			if ( empty( $short_description ) && empty( $long_description ) && empty( $synonyms ) ) {
@@ -123,12 +123,12 @@ class Migrations {
 			];
 
 			// Save new format.
-			update_post_meta( $post_id, '_pp_glossary_data', $data );
+			update_post_meta( $post_id, '_inline_glossary_data', $data );
 
 			// Delete old meta keys.
-			delete_post_meta( $post_id, '_pp_glossary_short_description' );
-			delete_post_meta( $post_id, '_pp_glossary_long_description' );
-			delete_post_meta( $post_id, '_pp_glossary_synonyms' );
+			delete_post_meta( $post_id, '_inline_glossary_short_description' );
+			delete_post_meta( $post_id, '_inline_glossary_long_description' );
+			delete_post_meta( $post_id, '_inline_glossary_synonyms' );
 		}
 	}
 }

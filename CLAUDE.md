@@ -35,11 +35,11 @@ Keep documentation in sync with code changes to ensure accuracy for future devel
 
 ## Project Overview
 
-**Glossary by Progress Planner (pp-glossary)** is a WordPress plugin that automatically links glossary terms to accessible, semantic popovers that appear on click. Uses native WordPress custom fields for field management and includes a Gutenberg block for displaying the full glossary.
+**Inline Glossary by Progress Planner (inline-glossary)** is a WordPress plugin that automatically links glossary terms to accessible, semantic popovers that appear on click. Uses native WordPress custom fields for field management and includes a Gutenberg block for displaying the full glossary.
 
 ### Core Functionality
 
-- Registers a custom post type (`pp_glossary`) for glossary entries (title + custom fields only, no editor)
+- Registers a custom post type (`inline_glossary`) for glossary entries (title + custom fields only, no editor)
 - Uses native WordPress meta boxes for field management (short description, long description, synonyms)
 - Automatically transforms first mentions of glossary terms in content into click-triggered popovers
 - Provides a Gutenberg block to display the full glossary with alphabetical navigation
@@ -50,8 +50,8 @@ Keep documentation in sync with code changes to ensure accuracy for future devel
 ### File Structure
 
 ```
-pp-glossary/
-├── pp-glossary.php              # Main plugin file, initialization, hooks
+inline-glossary/
+├── inline-glossary.php              # Main plugin file, initialization, hooks
 ├── includes/
 │   ├── functions.php            # Helper functions
 │   ├── class-post-type.php      # Post_Type class - CPT registration
@@ -74,7 +74,7 @@ pp-glossary/
 ### Key Components
 
 1. **Post Type Registration** (`includes/class-post-type.php`)
-   - Post type slug: `pp_glossary`
+   - Post type slug: `inline_glossary`
    - Supports: `title` only (no editor, no revisions - all data is in post meta)
    - `has_archive` set to `false` (uses block instead)
    - `publicly_queryable` set to `false` (no individual entry pages)
@@ -83,7 +83,7 @@ pp-glossary/
 
 2. **Meta Boxes** (`includes/class-meta-boxes.php`)
    - Native WordPress meta boxes (no external dependencies)
-   - All fields stored in a single post meta key `_pp_glossary_data` (array)
+   - All fields stored in a single post meta key `_inline_glossary_data` (array)
    - Fields (in display order):
      - `short_description` (textarea, required)
      - `long_description` (wp_editor)
@@ -103,7 +103,7 @@ pp-glossary/
 
 4. **Settings Page** (`includes/class-settings.php`)
    - Submenu under Glossary CPT menu
-   - Stores settings in `pp_glossary_settings` option
+   - Stores settings in `inline_glossary_settings` option
    - Settings fields:
      - `glossary_page` (int) - ID of the page containing the glossary block
      - `excluded_tags` (array) - HTML tags where terms should not be highlighted (default: `a`, `h1`-`h6`)
@@ -127,7 +127,7 @@ pp-glossary/
 
 ## Data Storage
 
-All custom field data is stored in a single WordPress post meta key `_pp_glossary_data` as an associative array:
+All custom field data is stored in a single WordPress post meta key `_inline_glossary_data` as an associative array:
 
 ```php
 [
@@ -149,7 +149,7 @@ The plugin generates highly semantic, accessible HTML with click triggers and CS
 
 ```html
 <dfn id="dfn-{term}-{counter}"
-     class="pp-glossary-term"
+     class="inline-glossary-term"
      style="anchor-name: --dfn-{term}-{counter};">
   <button data-glossary-popover="pop-{term}-{counter}"
           type="button"
@@ -263,7 +263,7 @@ When Yoast SEO is NOT active:
 
 **HTML Output (Microdata):**
 ```html
-<div class="pp-glossary-block" itemscope itemtype="https://schema.org/DefinedTermSet" itemid="...">
+<div class="inline-glossary-block" itemscope itemtype="https://schema.org/DefinedTermSet" itemid="...">
   <meta itemprop="name" content="Glossary Title">
 
   <article itemscope itemtype="https://schema.org/DefinedTerm" itemprop="hasDefinedTerm">
@@ -284,25 +284,25 @@ When Yoast SEO is NOT active:
 | Schema Property | WordPress Data | Location |
 |----------------|----------------|----------|
 | `name` | Entry title | `get_the_title()` |
-| `description` | Short description or Long description | `_pp_glossary_short_description` or `_pp_glossary_long_description` meta |
+| `description` | Short description or Long description | `_inline_glossary_short_description` or `_inline_glossary_long_description` meta |
 | `url` | Anchor link | `{glossary_page_url}#{slug}` |
-| `alternateName` | Array of synonyms | `_pp_glossary_synonyms` meta |
+| `alternateName` | Array of synonyms | `_inline_glossary_synonyms` meta |
 
 ### Key Methods
 
-**`PP_Glossary_Schema::add_to_yoast_schema_graph($graph, $context)`**
+**`Inline_Glossary_Schema::add_to_yoast_schema_graph($graph, $context)`**
 - Adds glossary to Yoast's schema graph
 - Returns modified `$graph` array with DefinedTermSet added
 
-**`PP_Glossary_Schema::get_microdata_attributes($entries, $page_id)`**
+**`Inline_Glossary_Schema::get_microdata_attributes($entries, $page_id)`**
 - Returns microdata attributes for glossary container
 - Empty string if Yoast SEO is active
 
-**`PP_Glossary_Schema::get_entry_microdata_attributes($entry)`**
+**`Inline_Glossary_Schema::get_entry_microdata_attributes($entry)`**
 - Returns microdata attributes for individual entry
 - Empty string if Yoast SEO is active
 
-**`PP_Glossary_Schema::get_itemprop($prop)`**
+**`Inline_Glossary_Schema::get_itemprop($prop)`**
 - Returns itemprop attribute for a property name
 - Empty string if Yoast SEO is active
 
@@ -365,23 +365,23 @@ composer run phpcbf   # Fix coding standards
 
 ### State Management
 
-`PP_Glossary_Content_Filter` uses static properties during filtering:
+`Inline_Glossary_Content_Filter` uses static properties during filtering:
 - `$popover_counter` - ensures unique IDs
 - `$popovers` - stores popover HTML for end-of-content appending
 - These reset on each `filter_content()` call
 
 ### Settings Integration
 
-- `PP_Glossary_Settings::get_glossary_page_url()` returns the URL of the page containing the glossary block
+- `Inline_Glossary_Settings::get_glossary_page_url()` returns the URL of the page containing the glossary block
 - "Read more" links use this URL + `#{slug}` anchor (slug-based, not ID-based)
 - If no glossary page is set, "Read more" link is omitted
-- `PP_Glossary_Settings::get_excluded_tags()` returns array of HTML tags to skip (default: `['a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']`)
-- `PP_Glossary_Settings::get_excluded_post_types()` returns array of post types to skip (default: `[]`)
+- `Inline_Glossary_Settings::get_excluded_tags()` returns array of HTML tags to skip (default: `['a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']`)
+- `Inline_Glossary_Settings::get_excluded_post_types()` returns array of post types to skip (default: `[]`)
 
 ### Block Registration
 
 - Block registered using `register_block_type()` with JSON file
-- `render_callback` points to `PP_Glossary_Blocks::render_glossary_list_block()`
+- `render_callback` points to `Inline_Glossary_Blocks::render_glossary_list_block()`
 - Editor script uses vanilla JavaScript (no JSX, no build)
 - Block shows: entry title (H4), synonyms, description (long description with fallback to short)
 - Shows edit link for logged-in users with edit capabilities
@@ -435,11 +435,11 @@ JavaScript checks for both features and logs warnings if unavailable. Consider:
 
 ## Common Modification Points
 
-1. **Change term matching behavior**: Edit `PP_Glossary_Content_Filter::replace_first_occurrence()`
-2. **Modify popover HTML**: Edit `PP_Glossary_Content_Filter::create_popover()`
-3. **Adjust which content types are processed**: Use Settings page or `pp_glossary_disabled_post_types` filter
-4. **Adjust which HTML tags are excluded**: Use Settings page or `pp_glossary_excluded_tags` filter
-5. **Customize block output**: Edit `PP_Glossary_Blocks::render_glossary_list_block()`
+1. **Change term matching behavior**: Edit `Inline_Glossary_Content_Filter::replace_first_occurrence()`
+2. **Modify popover HTML**: Edit `Inline_Glossary_Content_Filter::create_popover()`
+3. **Adjust which content types are processed**: Use Settings page or `inline_glossary_disabled_post_types` filter
+4. **Adjust which HTML tags are excluded**: Use Settings page or `inline_glossary_excluded_tags` filter
+5. **Customize block output**: Edit `Inline_Glossary_Blocks::render_glossary_list_block()`
 6. **Add more custom fields**: Modify `Meta_Boxes::render_meta_box()` and `save_meta_boxes()`
 7. **Change popover positioning**: Modify CSS anchor positioning rules in `assets/css/glossary.css` (see `aside[popover]` and `@position-try` rules)
 
@@ -463,7 +463,7 @@ JavaScript checks for both features and logs warnings if unavailable. Consider:
 - `plugins_loaded` - Initialize plugin components
 - `init` (via post-type) - Register post type and block
 - `add_meta_boxes` - Register custom meta boxes
-- `save_post_pp_glossary` - Save custom field data
+- `save_post_inline_glossary` - Save custom field data
 - `admin_enqueue_scripts` - Load admin JavaScript for synonyms
 - `the_content` (priority 20) - Filter content for term replacement
 - `wp_enqueue_scripts` - Load CSS and JavaScript
