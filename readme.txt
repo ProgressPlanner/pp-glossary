@@ -4,7 +4,7 @@ Tags: glossary, definitions, popover, accessibility, schema
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -125,6 +125,11 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 5. Choose the glossary page and control where glossary term linking appears.
 
 == Changelog ==
+
+= 1.4.0 =
+
+* Added a migration that renames the stored database identifiers (post type, meta key, option, and the block name in post content) from the old pp_glossary names to the new inline_glossary names, so existing entries and settings are preserved on upgrade.
+* Deprecated the `pp_glossary_excluded_tags` and `pp_glossary_disabled_post_types` filters — use `inline_glossary_excluded_tags` and `inline_glossary_disabled_post_types` instead. The old filters still work but trigger a `_doing_it_wrong` notice.
 
 = 1.3.1 =
 
