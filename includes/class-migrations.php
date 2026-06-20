@@ -18,6 +18,31 @@ if ( ! defined( 'WPINC' ) ) {
 class Migrations {
 
 	/**
+	 * Old option name before the 1.4.0 rename.
+	 */
+	const OLD_OPTION_NAME = 'pp_glossary_settings';
+
+	/**
+	 * Old post type slug before the 1.4.0 rename.
+	 */
+	const OLD_POST_TYPE = 'pp_glossary';
+
+	/**
+	 * Old consolidated meta key before the 1.4.0 rename.
+	 */
+	const OLD_META_KEY = '_pp_glossary_data';
+
+	/**
+	 * Old block name (in post content) before the 1.4.0 rename.
+	 */
+	const OLD_BLOCK_NAME = 'wp:pp-glossary/glossary-list';
+
+	/**
+	 * New block name (in post content) after the 1.4.0 rename.
+	 */
+	const NEW_BLOCK_NAME = 'wp:inline-glossary/glossary-list';
+
+	/**
 	 * Initialize migrations.
 	 */
 	public static function init(): void {
@@ -28,8 +53,11 @@ class Migrations {
 	 * Run necessary migrations based on stored version.
 	 */
 	public static function run_migrations(): void {
-		// Get raw option to check if db_version is actually stored.
+		// Check the new option first, then fall back to the old option name (pre-1.4.0).
 		$raw_settings = get_option( Settings::OPTION_NAME, [] );
+		if ( empty( $raw_settings ) ) {
+			$raw_settings = get_option( self::OLD_OPTION_NAME, [] );
+		}
 
 		// If db_version is not stored, this is either:
 		// - A fresh install (no option at all, or empty option) -> no migration needed.
@@ -50,63 +78,76 @@ class Migrations {
 			$current_version = $raw_settings['db_version'];
 		}
 
-		// Migration to 1.0.4: Consolidate meta fields into single array.
+		// Migration to 1.1.0: Consolidate meta fields into single array.
 		if ( version_compare( $current_version, '1.1.0', '<' ) ) {
 			self::migrate_to_1_1_0();
 			Settings::update_setting( 'db_version', '1.1.0' );
 		}
+
+		// Migration to 1.4.0: Rename all DB identifiers from pp_glossary to inline_glossary.
+		if ( version_compare( $current_version, '1.4.0', '<' ) ) {
+			self::migrate_to_1_4_0();
+			Settings::update_setting( 'db_version', '1.4.0' );
+		}
 	}
 
 	/**
-	 * Check if there are any glossary posts.
+	 * Check if there are any glossary posts (checks both old and new post type slugs).
 	 *
 	 * @return bool True if glossary posts exist.
 	 */
 	private static function has_glossary_posts(): bool {
-		$query = new \WP_Query(
-			[
-				'post_type'      => 'inline_glossary',
-				'posts_per_page' => 1,
-				'post_status'    => 'any',
-				'fields'         => 'ids',
-			]
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$count = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type IN (%s, %s) LIMIT 1",
+				self::OLD_POST_TYPE,
+				'inline_glossary'
+			)
 		);
 
-		return ! empty( $query->posts );
+		return (int) $count > 0;
 	}
 
 	/**
 	 * Migrate to 1.1.0: Consolidate individual meta fields into single array.
+	 *
+	 * This migration predates the 1.4.0 rename, so it operates entirely on the
+	 * legacy pp_glossary identifiers.
 	 */
 	private static function migrate_to_1_1_0(): void {
-		$query = new \WP_Query(
-			[
-				'post_type'      => 'inline_glossary',
-				'posts_per_page' => -1,
-				'post_status'    => 'any',
-				'fields'         => 'ids',
-			]
+		global $wpdb;
+
+		// Use a direct query to find posts regardless of whether the post type is registered.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$post_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT ID FROM {$wpdb->posts} WHERE post_type = %s",
+				self::OLD_POST_TYPE
+			)
 		);
 
-		if ( empty( $query->posts ) ) {
+		if ( empty( $post_ids ) ) {
 			return;
 		}
 
-		foreach ( $query->posts as $post ) {
-			$post_id = $post instanceof \WP_Post ? $post->ID : (int) $post;
+		foreach ( $post_ids as $post_id ) {
+			$post_id = (int) $post_id;
 
 			// Check if already migrated (new data exists).
-			$existing_data = get_post_meta( $post_id, '_inline_glossary_data', true );
+			$existing_data = get_post_meta( $post_id, self::OLD_META_KEY, true );
 			if ( is_array( $existing_data ) && ! empty( $existing_data ) ) {
 				continue;
 			}
 
 			// Get old individual meta values.
-			$short_description = get_post_meta( $post_id, '_inline_glossary_short_description', true );
-			$long_description  = get_post_meta( $post_id, '_inline_glossary_long_description', true );
-			$synonyms          = get_post_meta( $post_id, '_inline_glossary_synonyms', true );
-			$case_sensitive    = get_post_meta( $post_id, '_inline_glossary_case_sensitive', true );
-			$disable_autolink  = get_post_meta( $post_id, '_inline_glossary_disable_autolink', true );
+			$short_description = get_post_meta( $post_id, '_pp_glossary_short_description', true );
+			$long_description  = get_post_meta( $post_id, '_pp_glossary_long_description', true );
+			$synonyms          = get_post_meta( $post_id, '_pp_glossary_synonyms', true );
+			$case_sensitive    = get_post_meta( $post_id, '_pp_glossary_case_sensitive', true );
+			$disable_autolink  = get_post_meta( $post_id, '_pp_glossary_disable_autolink', true );
 
 			// Only migrate if there's actually old data.
 			if ( empty( $short_description ) && empty( $long_description ) && empty( $synonyms ) ) {
@@ -123,12 +164,62 @@ class Migrations {
 			];
 
 			// Save new format.
-			update_post_meta( $post_id, '_inline_glossary_data', $data );
+			update_post_meta( $post_id, self::OLD_META_KEY, $data );
 
 			// Delete old meta keys.
-			delete_post_meta( $post_id, '_inline_glossary_short_description' );
-			delete_post_meta( $post_id, '_inline_glossary_long_description' );
-			delete_post_meta( $post_id, '_inline_glossary_synonyms' );
+			delete_post_meta( $post_id, '_pp_glossary_short_description' );
+			delete_post_meta( $post_id, '_pp_glossary_long_description' );
+			delete_post_meta( $post_id, '_pp_glossary_synonyms' );
 		}
+	}
+
+	/**
+	 * Migrate to 1.4.0: Rename all DB identifiers from pp_glossary to inline_glossary.
+	 *
+	 * Renames:
+	 * - Post type: pp_glossary -> inline_glossary
+	 * - Meta key: _pp_glossary_data -> _inline_glossary_data
+	 * - Option name: pp_glossary_settings -> inline_glossary_settings
+	 * - Block name in post content: wp:pp-glossary/glossary-list -> wp:inline-glossary/glossary-list
+	 */
+	private static function migrate_to_1_4_0(): void {
+		global $wpdb;
+
+		// 1. Rename post type.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->update(
+			$wpdb->posts,
+			[ 'post_type' => 'inline_glossary' ],
+			[ 'post_type' => self::OLD_POST_TYPE ]
+		);
+
+		// 2. Rename meta key.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->update(
+			$wpdb->postmeta,
+			[ 'meta_key' => '_inline_glossary_data' ], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			[ 'meta_key' => self::OLD_META_KEY ] // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+		);
+
+		// 3. Rename option.
+		$old_settings = get_option( self::OLD_OPTION_NAME, [] );
+		if ( ! empty( $old_settings ) ) {
+			update_option( Settings::OPTION_NAME, $old_settings );
+			delete_option( self::OLD_OPTION_NAME );
+		}
+
+		// 4. Rename block name in post content.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$wpdb->posts} SET post_content = REPLACE(post_content, %s, %s) WHERE post_content LIKE %s",
+				self::OLD_BLOCK_NAME,
+				self::NEW_BLOCK_NAME,
+				'%' . $wpdb->esc_like( self::OLD_BLOCK_NAME ) . '%'
+			)
+		);
+
+		// Flush rewrite rules since the post type slug changed.
+		flush_rewrite_rules();
 	}
 }
