@@ -42,7 +42,8 @@ jobs:
       - name: Update plugin version with PR number
         run: |
           set -euxo pipefail
-          PLUGIN_FILE="${{ steps.prep.outputs.PKG_DIR }}/${{ github.event.repository.name }}.php"
+          # Find the main plugin file (contains "Plugin Name:" header).
+          PLUGIN_FILE=$(grep -rl "Plugin Name:" "${{ steps.prep.outputs.PKG_DIR }}"/*.php | head -1)
           PR_NUMBER="${{ github.event.number }}"
 
           # Extract current version
