@@ -1,14 +1,14 @@
 /**
  * Glossary Styles
  *
- * @package PP_Glossary
+ * @package Inline_Glossary
  */
 
 /* ==========================================================================
    Screen Reader Only (visually hidden but accessible)
    ========================================================================== */
 
-.pp-glossary-sr-only {
+.inline-glossary-sr-only {
 	clip: rect(1px, 1px, 1px, 1px);
 	clip-path: inset(50%);
 	height: 1px;
@@ -28,7 +28,7 @@ dfn {
 	font-style: normal;
 }
 
-dfn.pp-glossary-term span {
+dfn.inline-glossary-term span {
 	color: inherit;
 	text-decoration: underline;
 	text-decoration-style: dotted;
@@ -42,12 +42,12 @@ dfn.pp-glossary-term span {
 	border-bottom: none;
 }
 
-dfn.pp-glossary-term span:hover,
-dfn.pp-glossary-term span:focus {
+dfn.inline-glossary-term span:hover,
+dfn.inline-glossary-term span:focus {
 	text-decoration-color: var(--glossary-underline-hover-color, rgba(0, 0, 0, 0.7));
 }
 
-dfn.pp-glossary-term span:focus-visible {
+dfn.inline-glossary-term span:focus-visible {
 	outline: 2px solid var(--glossary-focus-color, #005a87);
 	outline-offset: 2px;
 	border-radius: 2px;
@@ -57,7 +57,7 @@ dfn.pp-glossary-term span:focus-visible {
    Nested Glossary Links (within definitions)
    ========================================================================== */
 
-.pp-glossary-link {
+.inline-glossary-link {
 	color: inherit;
 	text-decoration: underline;
 	text-decoration-style: dotted;
@@ -66,12 +66,12 @@ dfn.pp-glossary-term span:focus-visible {
 	text-underline-offset: 3px;
 }
 
-.pp-glossary-link:hover,
-.pp-glossary-link:focus {
+.inline-glossary-link:hover,
+.inline-glossary-link:focus {
 	text-decoration-color: var(--glossary-underline-hover-color, rgba(0, 0, 0, 0.7));
 }
 
-.pp-glossary-link:focus-visible {
+.inline-glossary-link:focus-visible {
 	outline: 2px solid var(--glossary-focus-color, #005a87);
 	outline-offset: 2px;
 	border-radius: 2px;
@@ -146,7 +146,7 @@ aside[popover] > p a:focus-visible {
    Glossary Block Styles
    ========================================================================== */
 
-.pp-glossary-block {
+.inline-glossary-block {
 	margin: 2rem 0;
 }
 
@@ -301,7 +301,7 @@ aside[popover] > p a:focus-visible {
 		display: none;
 	}
 
-	dfn.pp-glossary-term span {
+	dfn.inline-glossary-term span {
 		text-decoration: none;
 		cursor: inherit;
 	}
