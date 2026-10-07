@@ -8,14 +8,14 @@ argument-hint: [patch|minor|major]
 
 # Release Process
 
-Create a new release of the pp-glossary plugin. The argument `$ARGUMENTS` specifies the version bump type: `patch`, `minor`, or `major`. If no argument is given, ask the user which type of bump they want.
+Create a new release of the inline-glossary plugin. The argument `$ARGUMENTS` specifies the version bump type: `patch`, `minor`, or `major`. If no argument is given, ask the user which type of bump they want.
 
 ## Step 0: Preflight checks
 
 - Ensure we are on the `develop` branch. If not, switch to it.
 - Run `git pull origin develop` to ensure we're up to date.
 - Run `git status` to ensure the working tree is clean. If not, stop and ask the user to commit or stash changes.
-- Determine the current version from `pp-glossary.php` (the `Version:` header).
+- Determine the current version from `inline-glossary.php` (the `Version:` header).
 - Calculate the new version based on the bump type (`$ARGUMENTS`):
   - `patch`: increment the patch number (e.g., 1.3.0 -> 1.3.1)
   - `minor`: increment the minor number, reset patch (e.g., 1.3.1 -> 1.4.0)
@@ -33,8 +33,8 @@ Create a new release of the pp-glossary plugin. The argument `$ARGUMENTS` specif
 
 Update the version in these locations (all in one commit):
 
-1. `pp-glossary.php` line with `* Version: X.Y.Z` - update to new version
-2. `pp-glossary.php` line with `define( 'PP_GLOSSARY_VERSION', 'X.Y.Z' )` - update to new version
+1. `inline-glossary.php` line with `* Version: X.Y.Z` - update to new version
+2. `inline-glossary.php` line with `define( 'INLINE_GLOSSARY_VERSION', 'X.Y.Z' )` - update to new version
 3. `readme.txt` line with `Stable tag: X.Y.Z` - update to new version
 
 ## Step 3: Update changelogs
@@ -58,7 +58,7 @@ If any fail, fix the issues before proceeding. All three must pass.
 
 ## Step 5: Commit and push
 
-- Stage all changed files: `pp-glossary.php`, `readme.txt`, `README.md`
+- Stage all changed files: `inline-glossary.php`, `readme.txt`, `README.md`
 - Commit with message: `Bump version to X.Y.Z and update changelogs for release`
 - Push to `origin develop`
 

@@ -1,4 +1,4 @@
-=== Glossary ===
+=== Inline Glossary by Progress Planner ===
 Contributors: joostdevalk, aristath, filipi, progressplanner
 Tags: glossary, definitions, popover, accessibility, schema
 Requires at least: 6.0

@@ -2,10 +2,10 @@
 /**
  * Block Registration for Glossary
  *
- * @package PP_Glossary
+ * @package Inline_Glossary
  */
 
-namespace PP_Glossary;
+namespace Inline_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -30,18 +30,18 @@ class Blocks {
 	public static function register_blocks(): void {
 		// Register the editor script.
 		wp_register_script(
-			'pp-glossary-block-editor',
-			PP_GLOSSARY_PLUGIN_URL . 'blocks/glossary-list/editor.js',
+			'inline-glossary-block-editor',
+			INLINE_GLOSSARY_PLUGIN_URL . 'blocks/glossary-list/editor.js',
 			[ 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n' ],
-			PP_GLOSSARY_VERSION,
+			INLINE_GLOSSARY_VERSION,
 			true
 		);
 
 		// Register the block type.
 		register_block_type(
-			PP_GLOSSARY_PLUGIN_DIR . 'blocks/glossary-list',
+			INLINE_GLOSSARY_PLUGIN_DIR . 'blocks/glossary-list',
 			[
-				'editor_script'   => 'pp-glossary-block-editor',
+				'editor_script'   => 'inline-glossary-block-editor',
 				'render_callback' => [ __CLASS__, 'render_glossary_list_block' ],
 			]
 		);
@@ -65,7 +65,7 @@ class Blocks {
 
 		ob_start();
 		?>
-		<div class="pp-glossary-block"<?php echo $schema_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+		<div class="inline-glossary-block"<?php echo $schema_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 			<?php if ( ! empty( $grouped_entries ) ) : ?>
 				<?php
 				// Hidden schema name for microdata.
@@ -73,11 +73,11 @@ class Blocks {
 					echo '<meta itemprop="name" content="' . esc_attr( get_the_title( $glossary_page_id ) ) . '">';
 				}
 				?>
-				<nav class="glossary-navigation" aria-label="<?php esc_attr_e( 'Glossary alphabet navigation', 'pp-glossary' ); ?>">
+				<nav class="glossary-navigation" aria-label="<?php esc_attr_e( 'Glossary alphabet navigation', 'inline-glossary' ); ?>">
 					<ul class="glossary-alphabet">
 						<?php foreach ( $grouped_entries as $letter => $entries ) : ?>
 							<li>
-								<a href="#letter-<?php echo esc_attr( pp_glossary_strtolower( $letter ) ); ?>">
+								<a href="#letter-<?php echo esc_attr( inline_glossary_strtolower( $letter ) ); ?>">
 									<?php echo esc_html( $letter ); ?>
 								</a>
 							</li>
@@ -87,7 +87,7 @@ class Blocks {
 
 				<div class="glossary-entries">
 					<?php foreach ( $grouped_entries as $letter => $entries ) : ?>
-						<section class="glossary-letter-section" id="letter-<?php echo esc_attr( pp_glossary_strtolower( $letter ) ); ?>">
+						<section class="glossary-letter-section" id="letter-<?php echo esc_attr( inline_glossary_strtolower( $letter ) ); ?>">
 							<h3 class="glossary-letter-heading"><?php echo esc_html( $letter ); ?></h3>
 
 							<?php foreach ( $entries as $entry ) : ?>
@@ -105,14 +105,14 @@ class Blocks {
 									<?php if ( current_user_can( 'edit_post', $entry['id'] ) ) : ?>
 										<p class="glossary-edit-link">
 											<a href="<?php echo esc_url( get_edit_post_link( $entry['id'] ) ); ?>">
-												<?php esc_html_e( 'Edit', 'pp-glossary' ); ?>
+												<?php esc_html_e( 'Edit', 'inline-glossary' ); ?>
 											</a>
 										</p>
 									<?php endif; ?>
 
 									<?php if ( ! empty( $entry['synonyms'] ) ) : ?>
 										<div class="glossary-synonyms">
-											<span class="synonyms-label"><?php esc_html_e( 'Also known as:', 'pp-glossary' ); ?></span>
+											<span class="synonyms-label"><?php esc_html_e( 'Also known as:', 'inline-glossary' ); ?></span>
 											<span><?php echo esc_html( implode( ', ', $entry['synonyms'] ) ); ?></span>
 											<?php
 											// Output multiple meta tags for Microdata (array of alternateName).
@@ -142,7 +142,7 @@ class Blocks {
 				</div>
 
 			<?php else : ?>
-				<p><?php esc_html_e( 'No glossary entries found.', 'pp-glossary' ); ?></p>
+				<p><?php esc_html_e( 'No glossary entries found.', 'inline-glossary' ); ?></p>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -156,10 +156,10 @@ class Blocks {
 	 */
 	private static function get_grouped_entries(): array {
 		$grouped = [];
-		$entries = pp_glossary_get_entries();
+		$entries = inline_glossary_get_entries();
 
 		foreach ( $entries as $entry ) {
-			$letter = pp_glossary_strtoupper( pp_glossary_substr( $entry['title'], 0, 1 ) );
+			$letter = inline_glossary_strtoupper( inline_glossary_substr( $entry['title'], 0, 1 ) );
 
 			// Handle numbers and special characters.
 			// Match Latin (including extended), Cyrillic, and Greek letters.

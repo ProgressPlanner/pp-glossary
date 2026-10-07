@@ -2,10 +2,10 @@
 /**
  * Meta Boxes for Glossary
  *
- * @package PP_Glossary
+ * @package Inline_Glossary
  */
 
-namespace PP_Glossary;
+namespace Inline_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -22,7 +22,7 @@ class Meta_Boxes {
 	 */
 	public static function init(): void {
 		add_action( 'add_meta_boxes', [ __CLASS__, 'add_meta_boxes' ] );
-		add_action( 'save_post_pp_glossary', [ __CLASS__, 'save_meta_boxes' ], 10 );
+		add_action( 'save_post_inline_glossary', [ __CLASS__, 'save_meta_boxes' ], 10 );
 		add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_admin_scripts' ] );
 	}
 
@@ -31,10 +31,10 @@ class Meta_Boxes {
 	 */
 	public static function add_meta_boxes(): void {
 		add_meta_box(
-			'pp_glossary_details',
-			__( 'Glossary entry', 'pp-glossary' ),
+			'inline_glossary_details',
+			__( 'Glossary entry', 'inline-glossary' ),
 			[ __CLASS__, 'render_meta_box' ],
-			'pp_glossary',
+			'inline_glossary',
 			'normal',
 			'high'
 		);
@@ -55,7 +55,7 @@ class Meta_Boxes {
 			'disable_autolink'  => false,
 		];
 
-		$data = get_post_meta( $post_id, '_pp_glossary_data', true );
+		$data = get_post_meta( $post_id, '_inline_glossary_data', true );
 
 		if ( ! is_array( $data ) ) {
 			return $defaults;
@@ -71,7 +71,7 @@ class Meta_Boxes {
 	 */
 	public static function render_meta_box( $post ): void {
 		// Add nonce for security.
-		wp_nonce_field( 'pp_glossary_meta_box', 'pp_glossary_meta_box_nonce' );
+		wp_nonce_field( 'inline_glossary_meta_box', 'inline_glossary_meta_box_nonce' );
 
 		// Get current values.
 		$data              = self::get_entry_data( $post->ID );
@@ -81,42 +81,42 @@ class Meta_Boxes {
 		$case_sensitive    = $data['case_sensitive'];
 		$disable_autolink  = $data['disable_autolink'];
 		?>
-		<div class="pp-glossary-meta-box">
+		<div class="inline-glossary-meta-box">
 			<p>
-				<label for="pp_glossary_short_description">
-					<strong><?php esc_html_e( 'Short description', 'pp-glossary' ); ?></strong>
+				<label for="inline_glossary_short_description">
+					<strong><?php esc_html_e( 'Short description', 'inline-glossary' ); ?></strong>
 					<span class="required">*</span>
 				</label>
 				<br>
 				<span class="description">
-					<?php esc_html_e( 'A brief definition that will appear in the popover (recommended: 1-2 sentences).', 'pp-glossary' ); ?>
+					<?php esc_html_e( 'A brief definition that will appear in the popover (recommended: 1-2 sentences).', 'inline-glossary' ); ?>
 				</span>
 			</p>
 			<p>
 				<textarea
-					id="pp_glossary_short_description"
-					name="pp_glossary_short_description"
+					id="inline_glossary_short_description"
+					name="inline_glossary_short_description"
 					rows="3"
 					class="large-text"
 					required><?php echo esc_textarea( $short_description ); ?></textarea>
 			</p>
 
 			<p>
-				<label for="pp_glossary_long_description">
-					<strong><?php esc_html_e( 'Long description', 'pp-glossary' ); ?></strong>
+				<label for="inline_glossary_long_description">
+					<strong><?php esc_html_e( 'Long description', 'inline-glossary' ); ?></strong>
 				</label>
 				<br>
 				<span class="description">
-					<?php esc_html_e( 'A detailed explanation that will appear on the glossary page.', 'pp-glossary' ); ?>
+					<?php esc_html_e( 'A detailed explanation that will appear on the glossary page.', 'inline-glossary' ); ?>
 				</span>
 			</p>
 			<p>
 				<?php
 				wp_editor(
 					$long_description,
-					'pp_glossary_long_description',
+					'inline_glossary_long_description',
 					[
-						'textarea_name' => 'pp_glossary_long_description',
+						'textarea_name' => 'inline_glossary_long_description',
 						'textarea_rows' => 10,
 						'media_buttons' => true,
 						'teeny'         => false,
@@ -129,26 +129,26 @@ class Meta_Boxes {
 
 			<p>
 				<label>
-					<strong><?php esc_html_e( 'Synonyms', 'pp-glossary' ); ?></strong>
+					<strong><?php esc_html_e( 'Synonyms', 'inline-glossary' ); ?></strong>
 				</label>
 				<br>
 				<span class="description">
-					<?php esc_html_e( 'Add alternative terms or phrases that should also trigger this glossary entry.', 'pp-glossary' ); ?>
+					<?php esc_html_e( 'Add alternative terms or phrases that should also trigger this glossary entry.', 'inline-glossary' ); ?>
 				</span>
 			</p>
-			<div id="pp-glossary-synonyms-container">
+			<div id="inline-glossary-synonyms-container">
 				<?php if ( ! empty( $synonyms ) ) : ?>
 					<?php foreach ( $synonyms as $index => $synonym ) : ?>
-						<div class="pp-glossary-synonym-row" style="margin-bottom: 10px;display: flex;gap: 10px;">
+						<div class="inline-glossary-synonym-row" style="margin-bottom: 10px;display: flex;gap: 10px;">
 							<input
 								type="text"
-								name="pp_glossary_synonyms[]"
+								name="inline_glossary_synonyms[]"
 								value="<?php echo esc_attr( $synonym ); ?>"
 								class="regular-text"
-								placeholder="<?php esc_attr_e( 'e.g., CLS, layout shift', 'pp-glossary' ); ?>"
+								placeholder="<?php esc_attr_e( 'e.g., CLS, layout shift', 'inline-glossary' ); ?>"
 							>
-							<button type="button" class="button pp-glossary-remove-synonym">
-								<?php esc_html_e( 'Remove', 'pp-glossary' ); ?>
+							<button type="button" class="button inline-glossary-remove-synonym">
+								<?php esc_html_e( 'Remove', 'inline-glossary' ); ?>
 							</button>
 						</div>
 					<?php endforeach; ?>
@@ -157,12 +157,12 @@ class Meta_Boxes {
 			<p>
 				<button
 					type="button"
-					id="pp-glossary-add-synonym"
+					id="inline-glossary-add-synonym"
 					class="button"
-					data-placeholder="<?php esc_attr_e( 'e.g., CLS, layout shift', 'pp-glossary' ); ?>"
-					data-remove-text="<?php esc_attr_e( 'Remove', 'pp-glossary' ); ?>"
+					data-placeholder="<?php esc_attr_e( 'e.g., CLS, layout shift', 'inline-glossary' ); ?>"
+					data-remove-text="<?php esc_attr_e( 'Remove', 'inline-glossary' ); ?>"
 				>
-					<?php esc_html_e( 'Add synonym', 'pp-glossary' ); ?>
+					<?php esc_html_e( 'Add synonym', 'inline-glossary' ); ?>
 				</button>
 			</p>
 			<hr>
@@ -170,30 +170,30 @@ class Meta_Boxes {
 				<label>
 					<input
 						type="checkbox"
-						name="pp_glossary_case_sensitive"
+						name="inline_glossary_case_sensitive"
 						value="1"
 						<?php checked( $case_sensitive ); ?>
 					>
-					<strong><?php esc_html_e( 'Case sensitive', 'pp-glossary' ); ?></strong>
+					<strong><?php esc_html_e( 'Case sensitive', 'inline-glossary' ); ?></strong>
 				</label>
 				<br>
 				<span class="description">
-					<?php esc_html_e( 'Only match terms when the case matches exactly.', 'pp-glossary' ); ?>
+					<?php esc_html_e( 'Only match terms when the case matches exactly.', 'inline-glossary' ); ?>
 				</span>
 			</p>
 			<p>
 				<label>
 					<input
 						type="checkbox"
-						name="pp_glossary_disable_autolink"
+						name="inline_glossary_disable_autolink"
 						value="1"
 						<?php checked( $disable_autolink ); ?>
 					>
-					<strong><?php esc_html_e( 'Disable auto-linking', 'pp-glossary' ); ?></strong>
+					<strong><?php esc_html_e( 'Disable auto-linking', 'inline-glossary' ); ?></strong>
 				</label>
 				<br>
 				<span class="description">
-					<?php esc_html_e( 'This term will appear in the glossary but will not be automatically linked in content.', 'pp-glossary' ); ?>
+					<?php esc_html_e( 'This term will appear in the glossary but will not be automatically linked in content.', 'inline-glossary' ); ?>
 				</span>
 			</p>
 		</div>
@@ -207,11 +207,11 @@ class Meta_Boxes {
 	 */
 	public static function save_meta_boxes( $post_id ): void {
 		// Check nonce.
-		if ( ! isset( $_POST['pp_glossary_meta_box_nonce'] ) ) {
+		if ( ! isset( $_POST['inline_glossary_meta_box_nonce'] ) ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pp_glossary_meta_box_nonce'] ) ), 'pp_glossary_meta_box' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['inline_glossary_meta_box_nonce'] ) ), 'inline_glossary_meta_box' ) ) {
 			return;
 		}
 
@@ -227,26 +227,26 @@ class Meta_Boxes {
 
 		// Build data array.
 		$data = [
-			'case_sensitive'    => isset( $_POST['pp_glossary_case_sensitive'] ),
-			'disable_autolink'  => isset( $_POST['pp_glossary_disable_autolink'] ),
+			'case_sensitive'    => isset( $_POST['inline_glossary_case_sensitive'] ),
+			'disable_autolink'  => isset( $_POST['inline_glossary_disable_autolink'] ),
 			'short_description' => '',
 			'long_description'  => '',
 			'synonyms'          => [],
 		];
 
 		// Sanitize short description.
-		if ( isset( $_POST['pp_glossary_short_description'] ) ) {
-			$data['short_description'] = sanitize_textarea_field( wp_unslash( $_POST['pp_glossary_short_description'] ) );
+		if ( isset( $_POST['inline_glossary_short_description'] ) ) {
+			$data['short_description'] = sanitize_textarea_field( wp_unslash( $_POST['inline_glossary_short_description'] ) );
 		}
 
 		// Sanitize long description.
-		if ( isset( $_POST['pp_glossary_long_description'] ) ) {
-			$data['long_description'] = wp_kses_post( wp_unslash( $_POST['pp_glossary_long_description'] ) );
+		if ( isset( $_POST['inline_glossary_long_description'] ) ) {
+			$data['long_description'] = wp_kses_post( wp_unslash( $_POST['inline_glossary_long_description'] ) );
 		}
 
 		// Sanitize synonyms.
-		if ( isset( $_POST['pp_glossary_synonyms'] ) && is_array( $_POST['pp_glossary_synonyms'] ) ) {
-			foreach ( wp_unslash( $_POST['pp_glossary_synonyms'] ) as $synonym ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization handled below.
+		if ( isset( $_POST['inline_glossary_synonyms'] ) && is_array( $_POST['inline_glossary_synonyms'] ) ) {
+			foreach ( wp_unslash( $_POST['inline_glossary_synonyms'] ) as $synonym ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization handled below.
 				$synonym = sanitize_text_field( $synonym );
 				if ( ! empty( $synonym ) ) {
 					$data['synonyms'][] = $synonym;
@@ -254,7 +254,7 @@ class Meta_Boxes {
 			}
 		}
 
-		update_post_meta( $post_id, '_pp_glossary_data', $data );
+		update_post_meta( $post_id, '_inline_glossary_data', $data );
 	}
 
 	/**
@@ -269,16 +269,16 @@ class Meta_Boxes {
 		}
 
 		$screen = get_current_screen();
-		if ( ! $screen || 'pp_glossary' !== $screen->post_type ) {
+		if ( ! $screen || 'inline_glossary' !== $screen->post_type ) {
 			return;
 		}
 
 		// Enqueue admin script for synonyms management.
 		wp_enqueue_script(
-			'pp-glossary-admin',
-			PP_GLOSSARY_PLUGIN_URL . 'assets/js/admin.js',
+			'inline-glossary-admin',
+			INLINE_GLOSSARY_PLUGIN_URL . 'assets/js/admin.js',
 			[],
-			PP_GLOSSARY_VERSION,
+			INLINE_GLOSSARY_VERSION,
 			true
 		);
 	}

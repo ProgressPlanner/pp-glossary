@@ -2,10 +2,10 @@
 /**
  * Schema.org Integration for Glossary
  *
- * @package PP_Glossary
+ * @package Inline_Glossary
  */
 
-namespace PP_Glossary;
+namespace Inline_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -41,7 +41,7 @@ class Schema {
 		}
 
 		// Get all glossary entries.
-		$entries = pp_glossary_get_entries();
+		$entries = inline_glossary_get_entries();
 
 		if ( empty( $entries ) ) {
 			return $graph;

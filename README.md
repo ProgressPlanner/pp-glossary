@@ -1,4 +1,4 @@
-# Glossary
+# Inline Glossary by Progress Planner
 
 [![Try Glossary on WordPress Playground](https://img.shields.io/badge/Try%20Glossary%20on%20WordPress%20Playground-%23117AC9.svg?style=for-the-badge&logo=WordPress&logoColor=fff)](https://playground.wordpress.net/?blueprint-url=https%3A%2F%2Fprogressplanner.com%2Fresearch%2Fblueprint-glossary.php)
 
@@ -134,7 +134,7 @@ The plugin uses CSS custom properties for easy theme-level styling.
 You can also control where auto-linking runs with filters such as:
 
 ```php
-add_filter( 'pp_glossary_disabled_post_types', function( $post_types ) {
+add_filter( 'inline_glossary_disabled_post_types', function( $post_types ) {
 	return array( 'product', 'custom_post_type' );
 } );
 ```
