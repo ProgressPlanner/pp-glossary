@@ -2,10 +2,10 @@
 /**
  * Glossary Post Type Registration.
  *
- * @package PP_Glossary
+ * @package Your_Glossary
  */
 
-namespace PP_Glossary;
+namespace Your_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -36,7 +36,7 @@ class Post_Type {
 	 * @return array<int, string> Modified array of excluded post types.
 	 */
 	public static function exclude_from_yoast_indexables( array $excluded_post_types ): array {
-		$excluded_post_types[] = 'pp_glossary';
+		$excluded_post_types[] = 'your_glossary';
 		return $excluded_post_types;
 	}
 
@@ -49,7 +49,7 @@ class Post_Type {
 	 * @return bool Whether to exclude this post type.
 	 */
 	public static function exclude_from_yoast_sitemap( bool $exclude, string $post_type ): bool {
-		if ( 'pp_glossary' === $post_type ) {
+		if ( 'your_glossary' === $post_type ) {
 			return true;
 		}
 		return $exclude;
@@ -60,33 +60,33 @@ class Post_Type {
 	 */
 	public static function register_post_type(): void {
 		$labels = [
-			'name'                  => _x( 'Glossary', 'Post Type General Name', 'pp-glossary' ),
-			'singular_name'         => _x( 'Entry', 'Post Type Singular Name', 'pp-glossary' ),
-			'menu_name'             => __( 'Glossary', 'pp-glossary' ),
-			'name_admin_bar'        => __( 'Glossary entry', 'pp-glossary' ),
-			'archives'              => __( 'Glossary archives', 'pp-glossary' ),
-			'attributes'            => __( 'Entry attributes', 'pp-glossary' ),
-			'all_items'             => __( 'All entries', 'pp-glossary' ),
-			'add_new_item'          => __( 'Add new entry', 'pp-glossary' ),
-			'add_new'               => __( 'Add new', 'pp-glossary' ),
-			'new_item'              => __( 'New entry', 'pp-glossary' ),
-			'edit_item'             => __( 'Edit entry', 'pp-glossary' ),
-			'update_item'           => __( 'Update entry', 'pp-glossary' ),
-			'view_item'             => __( 'View entry', 'pp-glossary' ),
-			'view_items'            => __( 'View entries', 'pp-glossary' ),
-			'search_items'          => __( 'Search entries', 'pp-glossary' ),
-			'not_found'             => __( 'Not found', 'pp-glossary' ),
-			'not_found_in_trash'    => __( 'Not found in Trash', 'pp-glossary' ),
-			'insert_into_item'      => __( 'Insert into entry', 'pp-glossary' ),
-			'uploaded_to_this_item' => __( 'Uploaded to this entry', 'pp-glossary' ),
-			'items_list'            => __( 'Entries list', 'pp-glossary' ),
-			'items_list_navigation' => __( 'Entries list navigation', 'pp-glossary' ),
-			'filter_items_list'     => __( 'Filter entries list', 'pp-glossary' ),
+			'name'                  => _x( 'Glossary', 'Post Type General Name', 'your-glossary' ),
+			'singular_name'         => _x( 'Entry', 'Post Type Singular Name', 'your-glossary' ),
+			'menu_name'             => __( 'Glossary', 'your-glossary' ),
+			'name_admin_bar'        => __( 'Glossary entry', 'your-glossary' ),
+			'archives'              => __( 'Glossary archives', 'your-glossary' ),
+			'attributes'            => __( 'Entry attributes', 'your-glossary' ),
+			'all_items'             => __( 'All entries', 'your-glossary' ),
+			'add_new_item'          => __( 'Add new entry', 'your-glossary' ),
+			'add_new'               => __( 'Add new', 'your-glossary' ),
+			'new_item'              => __( 'New entry', 'your-glossary' ),
+			'edit_item'             => __( 'Edit entry', 'your-glossary' ),
+			'update_item'           => __( 'Update entry', 'your-glossary' ),
+			'view_item'             => __( 'View entry', 'your-glossary' ),
+			'view_items'            => __( 'View entries', 'your-glossary' ),
+			'search_items'          => __( 'Search entries', 'your-glossary' ),
+			'not_found'             => __( 'Not found', 'your-glossary' ),
+			'not_found_in_trash'    => __( 'Not found in Trash', 'your-glossary' ),
+			'insert_into_item'      => __( 'Insert into entry', 'your-glossary' ),
+			'uploaded_to_this_item' => __( 'Uploaded to this entry', 'your-glossary' ),
+			'items_list'            => __( 'Entries list', 'your-glossary' ),
+			'items_list_navigation' => __( 'Entries list navigation', 'your-glossary' ),
+			'filter_items_list'     => __( 'Filter entries list', 'your-glossary' ),
 		];
 
 		$args = [
-			'label'               => __( 'Entry', 'pp-glossary' ),
-			'description'         => __( 'Glossary entries with definitions', 'pp-glossary' ),
+			'label'               => __( 'Entry', 'your-glossary' ),
+			'description'         => __( 'Glossary entries with definitions', 'your-glossary' ),
 			'labels'              => $labels,
 			'supports'            => [ 'title' ],
 			'hierarchical'        => false,
@@ -106,6 +106,6 @@ class Post_Type {
 			'rewrite'             => false,
 		];
 
-		register_post_type( 'pp_glossary', $args );
+		register_post_type( 'your_glossary', $args );
 	}
 }

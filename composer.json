@@ -1,5 +1,5 @@
 {
-	"name": "progress-planner/glossary",
+	"name": "progress-planner/your-glossary",
 	"description": "An accessible WordPress glossary plugin with auto-linking definitions, popovers, and structured data.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",

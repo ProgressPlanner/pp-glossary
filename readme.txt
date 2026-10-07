@@ -4,7 +4,7 @@ Tags: glossary, definitions, popover, accessibility, schema
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -125,6 +125,14 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 5. Choose the glossary page and control where glossary term linking appears.
 
 == Changelog ==
+
+= 1.4.0 =
+
+* Plugin renamed to Your Glossary with new slug (your-glossary).
+* Renamed all internal identifiers (namespace, constants, functions, text domain).
+* Added migration to rename database identifiers (post type, meta key, option, block name).
+* Deprecated `pp_glossary_excluded_tags` and `pp_glossary_disabled_post_types` filters — use `your_glossary_excluded_tags` and `your_glossary_disabled_post_types` instead. Old filters still work but trigger a `_doing_it_wrong` notice.
+* Plugin reactivation required after update due to file/directory rename.
 
 = 1.3.1 =
 

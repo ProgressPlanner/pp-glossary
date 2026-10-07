@@ -4,7 +4,7 @@
         "networking": true
     },
     "plugins": [
-        "pp-glossary"
+        "your-glossary"
     ],
     "steps": [
         {
@@ -19,7 +19,7 @@
         },
         {
             "step": "runPHP",
-            "code": "<?php require_once '/wordpress/wp-load.php'; update_option( 'pp_glossary_settings', array( 'glossary_page' => 10 ) ); ?>"
+            "code": "<?php require_once '/wordpress/wp-load.php'; update_option( 'your_glossary_settings', array( 'glossary_page' => 10 ) ); ?>"
         }
     ]
 }

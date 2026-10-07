@@ -2,10 +2,10 @@
 /**
  * Term Linker Utility
  *
- * @package PP_Glossary
+ * @package Your_Glossary
  */
 
-namespace PP_Glossary;
+namespace Your_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -36,7 +36,7 @@ class Term_Linker {
 			return $text;
 		}
 
-		$entries = pp_glossary_get_linkable_entries();
+		$entries = your_glossary_get_linkable_entries();
 		if ( empty( $entries ) ) {
 			return $text;
 		}
@@ -64,8 +64,8 @@ class Term_Linker {
 	 * @return string Modified text.
 	 */
 	private static function replace_first_term_occurrence( string $text, array $entry, string $glossary_url ): string {
-		$excluded_tags    = pp_glossary_get_excluded_tags();
-		$parts            = pp_glossary_split_by_excluded_tags( $text, $excluded_tags );
+		$excluded_tags    = your_glossary_get_excluded_tags();
+		$parts            = your_glossary_split_by_excluded_tags( $text, $excluded_tags );
 		$excluded_pattern = '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i';
 
 		if ( false === $parts ) {
@@ -91,7 +91,7 @@ class Term_Linker {
 					$offset       = $matches[1][1];
 
 					$link_html = sprintf(
-						'<a href="%s#%s" class="pp-glossary-link">%s</a>',
+						'<a href="%s#%s" class="your-glossary-link">%s</a>',
 						esc_url( $glossary_url ),
 						esc_attr( $entry['slug'] ),
 						esc_html( $matched_term )

@@ -2,10 +2,10 @@
 /**
  * Glossary Settings Page
  *
- * @package PP_Glossary
+ * @package Your_Glossary
  */
 
-namespace PP_Glossary;
+namespace Your_Glossary;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -20,7 +20,7 @@ class Settings {
 	/**
 	 * Option name for settings
 	 */
-	const OPTION_NAME = 'pp_glossary_settings';
+	const OPTION_NAME = 'your_glossary_settings';
 
 	/**
 	 * Default excluded tags for term highlighting
@@ -42,10 +42,10 @@ class Settings {
 	public static function add_settings_page(): void {
 		add_submenu_page(
 			'edit.php?post_type=pp_glossary',
-			__( 'Glossary Settings', 'pp-glossary' ),
-			__( 'Settings', 'pp-glossary' ),
+			__( 'Glossary Settings', 'your-glossary' ),
+			__( 'Settings', 'your-glossary' ),
 			'manage_options',
-			'pp-glossary-settings',
+			'your-glossary-settings',
 			[ __CLASS__, 'render_settings_page' ]
 		);
 	}
@@ -55,7 +55,7 @@ class Settings {
 	 */
 	public static function register_settings(): void {
 		register_setting(
-			'pp_glossary_settings_group',
+			'your_glossary_settings_group',
 			self::OPTION_NAME,
 			[
 				'sanitize_callback' => [ __CLASS__, 'sanitize_settings' ],
@@ -63,34 +63,34 @@ class Settings {
 		);
 
 		add_settings_section(
-			'pp_glossary_display_section',
-			__( 'Display settings', 'pp-glossary' ),
+			'your_glossary_display_section',
+			__( 'Display settings', 'your-glossary' ),
 			[ __CLASS__, 'render_display_section' ],
-			'pp-glossary-settings'
+			'your-glossary-settings'
 		);
 
 		add_settings_field(
 			'glossary_page',
-			__( 'Glossary page', 'pp-glossary' ),
+			__( 'Glossary page', 'your-glossary' ),
 			[ __CLASS__, 'render_glossary_page_field' ],
-			'pp-glossary-settings',
-			'pp_glossary_display_section'
+			'your-glossary-settings',
+			'your_glossary_display_section'
 		);
 
 		add_settings_field(
 			'excluded_tags',
-			__( 'Excluded HTML tags', 'pp-glossary' ),
+			__( 'Excluded HTML tags', 'your-glossary' ),
 			[ __CLASS__, 'render_excluded_tags_field' ],
-			'pp-glossary-settings',
-			'pp_glossary_display_section'
+			'your-glossary-settings',
+			'your_glossary_display_section'
 		);
 
 		add_settings_field(
 			'excluded_post_types',
-			__( 'Excluded post types', 'pp-glossary' ),
+			__( 'Excluded post types', 'your-glossary' ),
 			[ __CLASS__, 'render_excluded_post_types_field' ],
-			'pp-glossary-settings',
-			'pp_glossary_display_section'
+			'your-glossary-settings',
+			'your_glossary_display_section'
 		);
 	}
 
@@ -105,22 +105,22 @@ class Settings {
 		// Check if settings were saved.
 		if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Nonce check not needed here.
 			add_settings_error(
-				'pp_glossary_messages',
-				'pp_glossary_message',
-				esc_html__( 'Settings saved.', 'pp-glossary' ),
+				'your_glossary_messages',
+				'your_glossary_message',
+				esc_html__( 'Settings saved.', 'your-glossary' ),
 				'updated'
 			);
 		}
 
-		settings_errors( 'pp_glossary_messages' );
+		settings_errors( 'your_glossary_messages' );
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<form action="options.php" method="post">
 				<?php
-				settings_fields( 'pp_glossary_settings_group' );
-				do_settings_sections( 'pp-glossary-settings' );
-				submit_button( __( 'Save Settings', 'pp-glossary' ) );
+				settings_fields( 'your_glossary_settings_group' );
+				do_settings_sections( 'your-glossary-settings' );
+				submit_button( __( 'Save Settings', 'your-glossary' ) );
 				?>
 			</form>
 		</div>
@@ -131,7 +131,7 @@ class Settings {
 	 * Render display section description
 	 */
 	public static function render_display_section(): void {
-		echo '<p>' . esc_html__( 'Configure how and where the glossary is displayed on your site.', 'pp-glossary' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure how and where the glossary is displayed on your site.', 'your-glossary' ) . '</p>';
 	}
 
 	/**
@@ -145,13 +145,13 @@ class Settings {
 			[
 				'name'              => esc_attr( self::OPTION_NAME ) . '[glossary_page]',
 				'selected'          => esc_attr( (string) $page_id ),
-				'show_option_none'  => esc_html__( '— Select a Page —', 'pp-glossary' ),
+				'show_option_none'  => esc_html__( '— Select a Page —', 'your-glossary' ),
 				'option_none_value' => '0',
 			]
 		);
 
 		echo '<p class="description">';
-		echo esc_html__( 'Select the page where the glossary block is located. This page will be used for "Read more" links in popovers.', 'pp-glossary' );
+		echo esc_html__( 'Select the page where the glossary block is located. This page will be used for "Read more" links in popovers.', 'your-glossary' );
 		echo '</p>';
 	}
 
@@ -170,11 +170,11 @@ class Settings {
 		);
 
 		echo '<p class="description">';
-		echo esc_html__( 'HTML tags where glossary terms should not be highlighted (comma-separated, without angle brackets).', 'pp-glossary' );
+		echo esc_html__( 'HTML tags where glossary terms should not be highlighted (comma-separated, without angle brackets).', 'your-glossary' );
 		echo '<br>';
 		printf(
 			/* translators: %s: default tags */
-			esc_html__( 'Default: %s', 'pp-glossary' ),
+			esc_html__( 'Default: %s', 'your-glossary' ),
 			esc_html( implode( ', ', self::DEFAULT_EXCLUDED_TAGS ) )
 		);
 		echo '</p>';
@@ -196,10 +196,10 @@ class Settings {
 		);
 
 		// Remove the glossary post type from the list.
-		unset( $post_types['pp_glossary'] );
+		unset( $post_types['your_glossary'] );
 
 		if ( empty( $post_types ) ) {
-			echo '<p>' . esc_html__( 'No public post types found.', 'pp-glossary' ) . '</p>';
+			echo '<p>' . esc_html__( 'No public post types found.', 'your-glossary' ) . '</p>';
 			return;
 		}
 
@@ -217,7 +217,7 @@ class Settings {
 		echo '</fieldset>';
 
 		echo '<p class="description">';
-		echo esc_html__( 'Glossary terms will not be highlighted in content from the selected post types.', 'pp-glossary' );
+		echo esc_html__( 'Glossary terms will not be highlighted in content from the selected post types.', 'your-glossary' );
 		echo '</p>';
 	}
 
@@ -270,7 +270,7 @@ class Settings {
 			'glossary_page'       => 0,
 			'excluded_tags'       => self::DEFAULT_EXCLUDED_TAGS,
 			'excluded_post_types' => [],
-			'db_version'          => PP_GLOSSARY_VERSION,
+			'db_version'          => YOUR_GLOSSARY_VERSION,
 		];
 
 		$settings = get_option( self::OPTION_NAME, [] );
