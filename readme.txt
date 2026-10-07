@@ -2,7 +2,7 @@
 Contributors: joostdevalk, aristath, filipi, progressplanner
 Tags: glossary, definitions, popover, accessibility, schema
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 1.3.1
 License: GPLv3 or later
