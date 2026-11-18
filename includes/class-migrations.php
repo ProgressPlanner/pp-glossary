@@ -123,7 +123,7 @@ class Migrations {
 			];
 
 			// Save new format.
-			update_post_meta( $post_id, '_pp_glossary_data', $data );
+			update_post_meta( $post_id, '_pp_glossary_data', wp_slash( $data ) );
 
 			// Delete old meta keys.
 			delete_post_meta( $post_id, '_pp_glossary_short_description' );

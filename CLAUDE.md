@@ -75,6 +75,7 @@ pp-glossary/
 
 1. **Post Type Registration** (`includes/class-post-type.php`)
    - Post type slug: `pp_glossary`
+   - Dedicated capability type with mutation capabilities mapped to `manage_options`; Authors and Editors cannot manage site-wide glossary content.
    - Supports: `title` only (no editor, no revisions - all data is in post meta)
    - `has_archive` set to `false` (uses block instead)
    - `publicly_queryable` set to `false` (no individual entry pages)
@@ -141,7 +142,7 @@ All custom field data is stored in a single WordPress post meta key `_pp_glossar
 
 Retrieved using `Meta_Boxes::get_entry_data($post_id)` which handles defaults. Saved using `update_post_meta()`.
 
-**Migration**: The plugin includes an automatic migration system that converts old separate meta keys to the new consolidated format on upgrade.
+**Migration**: The plugin includes an automatic migration system that converts old separate meta keys to the new consolidated format on upgrade. Settings sanitization retains the stored `db_version` when the form omits it and accepts explicit version updates from migrations. Excluded tags support both form strings and programmatic arrays.
 
 ## HTML Structure Pattern
 
@@ -337,6 +338,8 @@ The `alternateName` property (synonyms) is output as an array in both formats, b
 
 This ensures that search engines see synonyms as an array regardless of the schema format used.
 
+Run `php tests/text-matcher.php` for standalone HTML matching regression checks.
+
 ## Development Commands
 
 No build process required - vanilla JavaScript and CSS.
@@ -356,11 +359,10 @@ composer run phpcbf   # Fix coding standards
 - Entries with `disable_autolink` enabled are skipped entirely
 - Content inside excluded HTML tags is skipped (configurable via settings, default: `a`, `h1`-`h6`)
 - Post types in the excluded list are skipped entirely (configurable via settings)
-- Uses regex pattern: `/\b({term})\b(?![^<]*>)/u` (or `/iu` for case-insensitive)
-  - `\b` = word boundaries
-  - `(?![^<]*>)` = negative lookahead to avoid matching inside HTML tags
-  - `i` flag = case-insensitive (omitted when `case_sensitive` is enabled)
-  - `u` flag = Unicode support
+- `Text_Matcher::find()` tokenizes HTML with quote-aware boundaries before matching text; it preserves attributes, comments, and character references.
+- Always excludes links, existing definitions, scripts, styles, form controls, SVG/MathML, templates, and raw-text elements, in addition to configured exclusions.
+- Tracks nested excluded elements and uses case-sensitive or case-insensitive Unicode word matching only in eligible text chunks.
+- Works on the existing WordPress 6.0 / PHP 7.4 minimum without requiring newer HTML API methods.
 - Only replaces first occurrence per entry per content piece
 
 ### State Management
@@ -368,7 +370,7 @@ composer run phpcbf   # Fix coding standards
 `PP_Glossary_Content_Filter` uses static properties during filtering:
 - `$popover_counter` - ensures unique IDs
 - `$popovers` - stores popover HTML for end-of-content appending
-- These reset on each `filter_content()` call
+- `$popovers` resets on each `filter_content()` call; `$popover_counter` persists for the whole request so archive posts cannot reuse IDs.
 
 ### Settings Integration
 
@@ -507,6 +509,9 @@ Use this environment to test:
 - CSS styling and accessibility features
 
 ## Testing Tips
+
+See [WordPress 7.2 compatibility validation](docs/testing/wordpress-7.2.md) for
+the tested core revision, environment, checks and remaining coverage limits.
 
 ### General Testing
 - Test with overlapping terms (e.g., "CLS" and "Cumulative Layout Shift")
