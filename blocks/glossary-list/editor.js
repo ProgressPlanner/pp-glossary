@@ -1,14 +1,16 @@
 /**
  * Glossary List Block Editor
+ *
+ * @param {Object} wp The WordPress global.
  */
 
-(function (wp) {
+( function ( wp ) {
 	const { registerBlockType } = wp.blocks;
 	const { __ } = wp.i18n;
 	const { createElement: el } = wp.element;
 
-	registerBlockType('pp-glossary/glossary-list', {
-		edit: function (props) {
+	registerBlockType( 'pp-glossary/glossary-list', {
+		edit() {
 			return el(
 				'div',
 				{
@@ -21,15 +23,25 @@
 						textAlign: 'center',
 					},
 				},
-				el('span', { className: 'dashicons dashicons-book-alt', style: { fontSize: '48px', color: '#0073aa' } }),
-				el('h3', {}, __('Glossary List', 'pp-glossary')),
-				el('p', {}, __('The glossary entries will be displayed here on the frontend.', 'pp-glossary'))
+				el( 'span', {
+					className: 'dashicons dashicons-book-alt',
+					style: { fontSize: '48px', color: '#0073aa' },
+				} ),
+				el( 'h3', {}, __( 'Glossary List', 'pp-glossary' ) ),
+				el(
+					'p',
+					{},
+					__(
+						'The glossary entries will be displayed here on the frontend.',
+						'pp-glossary'
+					)
+				)
 			);
 		},
 
-		save: function () {
+		save() {
 			// Server-side rendered block
 			return null;
 		},
-	});
-})(window.wp);
+	} );
+} )( window.wp );
