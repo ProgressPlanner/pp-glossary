@@ -9,6 +9,7 @@
    ========================================================================== */
 
 .pp-glossary-sr-only {
+	/* stylelint-disable-next-line property-no-deprecated -- Legacy fallback. */
 	clip: rect(1px, 1px, 1px, 1px);
 	clip-path: inset(50%);
 	height: 1px;
@@ -133,7 +134,7 @@ aside[popover] > p a {
 
 aside[popover] > p a:hover,
 aside[popover] > p a:focus {
-	border-bottom-color: currentColor;
+	border-bottom-color: currentcolor;
 }
 
 aside[popover] > p a:focus-visible {
@@ -272,6 +273,7 @@ aside[popover] > p a:focus-visible {
    ========================================================================== */
 
 @media (max-width: 768px) {
+
 	.glossary-alphabet {
 		gap: 0.25rem;
 	}
@@ -296,6 +298,7 @@ aside[popover] > p a:focus-visible {
    ========================================================================== */
 
 @media print {
+
 	aside[popover],
 	.glossary-navigation {
 		display: none;

@@ -1,12 +1,12 @@
 /**
  * Admin synonyms management for Glossary entries.
- *
- * @package PP_Glossary
  */
 
 document.addEventListener( 'DOMContentLoaded', function () {
 	const addButton = document.getElementById( 'pp-glossary-add-synonym' );
-	const container = document.getElementById( 'pp-glossary-synonyms-container' );
+	const container = document.getElementById(
+		'pp-glossary-synonyms-container'
+	);
 
 	if ( ! addButton || ! container ) {
 		return;
