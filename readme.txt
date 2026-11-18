@@ -128,6 +128,7 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 = Unreleased =
 
+* Keep popover IDs unique across multiple posts rendered in the same request.
 * Preserve the database migration version when settings are saved and support programmatic settings updates.
 * Preserve backslashes in glossary descriptions and synonyms during saves and legacy migration.
 * Keep term linking working when the excluded HTML tags setting is empty.

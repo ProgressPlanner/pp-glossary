@@ -58,9 +58,8 @@ class Content_Filter {
 			return $content;
 		}
 
-		// Reset counters and storage for each content piece.
-		self::$popover_counter = 0;
-		self::$popovers        = [];
+		// Clear this post's popovers, keeping IDs unique across the request.
+		self::$popovers = [];
 
 		// Check if content filtering is disabled for this post type.
 		$disabled_post_types = Settings::get_excluded_post_types();

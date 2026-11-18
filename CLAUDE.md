@@ -370,7 +370,7 @@ composer run phpcbf   # Fix coding standards
 `PP_Glossary_Content_Filter` uses static properties during filtering:
 - `$popover_counter` - ensures unique IDs
 - `$popovers` - stores popover HTML for end-of-content appending
-- These reset on each `filter_content()` call
+- `$popovers` resets on each `filter_content()` call; `$popover_counter` persists for the whole request so archive posts cannot reuse IDs.
 
 ### Settings Integration
 
