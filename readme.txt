@@ -128,6 +128,7 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 = Unreleased =
 
+* Update PHP_CodeSniffer, Symfony Process, and Symfony Filesystem to resolve remaining development dependency advisories.
 * Pass pull request branch names through environment variables when generating Playground blueprints.
 * Run the weekly dependency security scan in ProgressPlanner/pp-glossary while keeping fork schedules disabled.
 * Pin workflow actions to immutable commits, verify the pinned Syft archive checksum, and declare token permissions explicitly.
