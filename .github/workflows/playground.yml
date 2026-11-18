@@ -3,6 +3,9 @@ name: Playground Comment
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   playground:
     runs-on: ubuntu-latest
@@ -12,7 +15,7 @@ jobs:
       actions: read
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       # Prepare a folder named exactly like the repo as the plugin root.
       # If the repo already has such a folder (common for WP plugins), use it.
@@ -75,22 +78,28 @@ jobs:
 
       - name: Prepare blueprint with artifact link
         id: blueprint
+        env:
+          BLUEPRINT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          BLUEPRINT_REPOSITORY: ${{ github.repository }}
+          BLUEPRINT_RUN_ID: ${{ github.run_id }}
+          BLUEPRINT_PLUGIN: ${{ github.event.repository.name }}
         run: |
           set -euxo pipefail
-          ARTIFACT_URL="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/${{ github.event.repository.name }}.zip"
-          XML_URL="https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/${{ github.head_ref || github.ref_name }}/.wordpress-org/blueprints/blueprint.xml"
-          echo "XML URL: $XML_URL"
 
-          # Use Node.js to parse, modify, and stringify the JSON
-          BLUEPRINT=$(node -e "
+          BLUEPRINT=$(node <<'NODE'
             const fs = require('fs');
+            const { BLUEPRINT_BRANCH, BLUEPRINT_REPOSITORY, BLUEPRINT_RUN_ID, BLUEPRINT_PLUGIN } = process.env;
+            const artifactUrl = `https://nightly.link/${BLUEPRINT_REPOSITORY}/actions/runs/${BLUEPRINT_RUN_ID}/${BLUEPRINT_PLUGIN}.zip`;
+            const branch = BLUEPRINT_BRANCH.split('/').map(encodeURIComponent).join('/');
+            const xmlUrl = `https://raw.githubusercontent.com/${BLUEPRINT_REPOSITORY}/refs/heads/${branch}/.wordpress-org/blueprints/blueprint.xml`;
             const blueprint = JSON.parse(fs.readFileSync('.wordpress-org/blueprints/blueprint.json', 'utf8'));
             blueprint.plugins = blueprint.plugins.map(plugin =>
-              plugin === '${{ github.event.repository.name }}' ? '$ARTIFACT_URL' : plugin
+              plugin === BLUEPRINT_PLUGIN ? artifactUrl : plugin
             );
-            blueprint.steps[1].file.url = '$XML_URL';
+            blueprint.steps[1].file.url = xmlUrl;
             console.log(JSON.stringify(blueprint));
-          ")
+          NODE
+          )
 
           # Base64 encode the blueprint
           ENCODED_BLUEPRINT=$(echo -n "$BLUEPRINT" | base64 -w 0)
@@ -100,7 +109,7 @@ jobs:
       # Upload the FOLDER (not a .zip). The artifact service zips it for us,
       # keeping the top-level folder name inside the archive.
       - name: Upload plugin artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: ${{ github.event.repository.name }}
           path: ${{ steps.prep.outputs.PKG_DIR }}
@@ -108,7 +117,7 @@ jobs:
           compression-level: 0
 
       # Comment with a Playground link that installs from the artifact ZIP
-      - uses: mshick/add-pr-comment@v2
+      - uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
         with:
           message: |
             **Test on Playground**

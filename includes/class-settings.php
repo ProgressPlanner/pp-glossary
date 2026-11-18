@@ -229,13 +229,21 @@ class Settings {
 	 */
 	public static function sanitize_settings( $input ): array {
 		$sanitized = [];
+		$stored    = get_option( self::OPTION_NAME, [] );
+
+		// Settings forms omit this internal value; migrations pass it explicitly.
+		$db_version = $input['db_version'] ?? ( $stored['db_version'] ?? null );
+		if ( is_string( $db_version ) ) {
+			$sanitized['db_version'] = sanitize_text_field( $db_version );
+		}
 
 		if ( isset( $input['glossary_page'] ) ) {
 			$sanitized['glossary_page'] = absint( $input['glossary_page'] );
 		}
 
 		if ( isset( $input['excluded_tags'] ) ) {
-			$tags_string = sanitize_text_field( $input['excluded_tags'] );
+			$tags_input  = is_array( $input['excluded_tags'] ) ? implode( ',', $input['excluded_tags'] ) : $input['excluded_tags'];
+			$tags_string = sanitize_text_field( $tags_input );
 			$tags_array  = array_map( 'trim', explode( ',', $tags_string ) );
 			// Filter out empty values and sanitize each tag (lowercase, alphanumeric only).
 			$sanitized['excluded_tags'] = array_values(

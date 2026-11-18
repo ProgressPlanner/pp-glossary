@@ -129,6 +129,18 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 = Unreleased =
 
 * Add commit-pinned pull request readme previews with preflight warnings and expandable passing checks.
+* Keep popover IDs unique across multiple posts rendered in the same request.
+* Preserve the database migration version when settings are saved and support programmatic settings updates.
+* Preserve backslashes in glossary descriptions and synonyms during saves and legacy migration.
+* Keep term linking working when the excluded HTML tags setting is empty.
+* Skip untitled glossary entries and empty synonyms without dropping the valid term "0".
+* Update PHP_CodeSniffer, Symfony Process, and Symfony Filesystem to resolve remaining development dependency advisories.
+* Pass pull request branch names through environment variables when generating Playground blueprints.
+* Run the weekly dependency security scan in ProgressPlanner/pp-glossary while keeping fork schedules disabled.
+* Pin workflow actions to immutable commits, verify the pinned Syft archive checksum, and declare token permissions explicitly.
+* Match glossary terms only in text outside HTML markup, character references, and protected elements, including nested exclusions.
+* Exclude password-protected glossary entries from popovers, the glossary block, and structured data.
+* Restrict glossary creation, editing, publishing, and deletion to administrators with manage_options.
 * Validated core glossary functionality on WordPress 7.2 RC1 and updated the tested-up-to header.
 * Use standalone Composer to install the archive command in CI, avoiding WP-CLI’s bundled Composer token-format error.
 
