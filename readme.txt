@@ -126,6 +126,10 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 == Changelog ==
 
+= Unreleased =
+
+* Use standalone Composer to install the archive command in CI, avoiding WP-CLI’s bundled Composer token-format error.
+
 = 1.3.1 =
 
 * Added uninstall.php to clean up all plugin data (glossary posts, meta, and options) on deletion.
