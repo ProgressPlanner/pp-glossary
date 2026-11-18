@@ -509,6 +509,9 @@ Use this environment to test:
 
 ## Testing Tips
 
+See [WordPress 7.2 compatibility validation](docs/testing/wordpress-7.2.md) for
+the tested core revision, environment, checks and remaining coverage limits.
+
 ### General Testing
 - Test with overlapping terms (e.g., "CLS" and "Cumulative Layout Shift")
 - Check keyboard navigation (Tab, Enter, Space, Escape)
