@@ -115,64 +115,24 @@ class Content_Filter {
 	 * @return string Modified content.
 	 */
 	private static function replace_first_occurrence( $content, $entry ): string {
-		$excluded_tags    = pp_glossary_get_excluded_tags();
-		$parts            = pp_glossary_split_by_excluded_tags( $content, $excluded_tags );
-		$excluded_pattern = '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i';
-
-		if ( false === $parts ) {
-			return $content;
-		}
-
-		// Now iterate through terms.
 		foreach ( $entry['terms'] as $term ) {
-			$replaced  = false;
-			$new_parts = [];
-
-			foreach ( $parts as $part ) {
-				// If already replaced or this matches an excluded tag pattern, keep as-is.
-				if ( $replaced || preg_match( $excluded_pattern, $part ) ) {
-					$new_parts[] = $part;
-					continue;
-				}
-
-				// Try to match term in this text chunk, but avoid HTML attributes.
-				// Use case-insensitive matching unless the entry is marked as case sensitive.
-				$flags   = $entry['case_sensitive'] ? 'u' : 'iu';
-				$pattern = '/\b(' . preg_quote( $term, '/' ) . ')\b(?![^<]*>)/' . $flags;
-
-				if ( preg_match( $pattern, $part, $matches, PREG_OFFSET_CAPTURE ) ) {
-					$matched_term = $matches[1][0];
-					$offset       = $matches[1][1];
-
-					// Generate unique ID for this occurrence.
-					++self::$popover_counter;
-					$hash       = md5( sanitize_title( $entry['title'] ) );
-					$unique_id  = 'dfn-' . $hash . '-' . self::$popover_counter;
-					$popover_id = 'pop-' . $hash . '-' . self::$popover_counter;
-
-					// Create the replacement HTML.
-					$replacement = self::create_term_button( $matched_term, $unique_id, $popover_id );
-
-					// Replace only this occurrence in this chunk.
-					$new_parts[] = substr_replace( $part, $replacement, $offset, strlen( $matched_term ) );
-
-					// Store the popover for later.
-					self::$popovers[] = self::create_popover( $entry, $unique_id, $popover_id );
-
-					$replaced = true;
-				} else {
-					$new_parts[] = $part;
-				}
+			$match = Text_Matcher::find( $content, $term, (bool) $entry['case_sensitive'] );
+			if ( null === $match ) {
+				continue;
 			}
 
-			if ( $replaced ) {
-				// Update parts for next term iteration.
-				$parts = $new_parts;
-				break;
-			}
+			++self::$popover_counter;
+			$hash        = md5( sanitize_title( $entry['title'] ) );
+			$unique_id   = 'dfn-' . $hash . '-' . self::$popover_counter;
+			$popover_id  = 'pop-' . $hash . '-' . self::$popover_counter;
+			$replacement = self::create_term_button( $match[0], $unique_id, $popover_id );
+
+			self::$popovers[] = self::create_popover( $entry, $unique_id, $popover_id );
+
+			return substr_replace( $content, $replacement, $match[1], strlen( $match[0] ) );
 		}
 
-		return implode( '', $parts );
+		return $content;
 	}
 
 	/**
