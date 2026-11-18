@@ -13,3 +13,4 @@ composer.lock
 phpcs.xml
 phpstan.neon.dist
 README.md
+docs/testing/
