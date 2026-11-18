@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Match glossary terms only in text outside HTML markup, character references, and protected elements, including nested exclusions.

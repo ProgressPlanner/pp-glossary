@@ -55,8 +55,8 @@ class Term_Linker {
 	/**
 	 * Replace first occurrence of any term in entry
 	 *
-	 * Splits text by excluded tags (e.g. <a>, headings) to avoid creating
-	 * nested anchors or linking inside elements that should be skipped.
+	 * Matches text outside markup and excluded elements to avoid creating
+	 * nested anchors or linking inside attributes and character references.
 	 *
 	 * @param string               $text         The text to process.
 	 * @param array<string, mixed> $entry        The glossary entry data.
@@ -64,52 +64,22 @@ class Term_Linker {
 	 * @return string Modified text.
 	 */
 	private static function replace_first_term_occurrence( string $text, array $entry, string $glossary_url ): string {
-		$excluded_tags    = pp_glossary_get_excluded_tags();
-		$parts            = pp_glossary_split_by_excluded_tags( $text, $excluded_tags );
-		$excluded_pattern = '/^<(?:' . implode( '|', $excluded_tags ) . ')\b/i';
-
-		if ( false === $parts ) {
-			return $text;
-		}
-
-		// Try each term until we find a match in a non-excluded part.
 		foreach ( $entry['terms'] as $term ) {
-			$replaced  = false;
-			$new_parts = [];
-			$flags     = $entry['case_sensitive'] ? 'u' : 'iu';
-			$pattern   = '/\b(' . preg_quote( $term, '/' ) . ')\b(?![^<]*>)/' . $flags;
-
-			foreach ( $parts as $part ) {
-				// If already replaced or this is an excluded tag, keep as-is.
-				if ( $replaced || preg_match( $excluded_pattern, $part ) ) {
-					$new_parts[] = $part;
-					continue;
-				}
-
-				if ( preg_match( $pattern, $part, $matches, PREG_OFFSET_CAPTURE ) ) {
-					$matched_term = $matches[1][0];
-					$offset       = $matches[1][1];
-
-					$link_html = sprintf(
-						'<a href="%s#%s" class="pp-glossary-link">%s</a>',
-						esc_url( $glossary_url ),
-						esc_attr( $entry['slug'] ),
-						esc_html( $matched_term )
-					);
-
-					$new_parts[] = substr_replace( $part, $link_html, $offset, strlen( $matched_term ) );
-					$replaced    = true;
-				} else {
-					$new_parts[] = $part;
-				}
+			$match = Text_Matcher::find( $text, $term, (bool) $entry['case_sensitive'] );
+			if ( null === $match ) {
+				continue;
 			}
 
-			if ( $replaced ) {
-				$parts = $new_parts;
-				break;
-			}
+			$link_html = sprintf(
+				'<a href="%s#%s" class="pp-glossary-link">%s</a>',
+				esc_url( $glossary_url ),
+				esc_attr( $entry['slug'] ),
+				esc_html( $match[0] )
+			);
+
+			return substr_replace( $text, $link_html, $match[1], strlen( $match[0] ) );
 		}
 
-		return implode( '', $parts );
+		return $text;
 	}
 }
