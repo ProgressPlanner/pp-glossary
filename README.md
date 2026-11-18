@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Skip untitled glossary entries and empty synonyms without dropping the valid term "0".

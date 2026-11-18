@@ -126,7 +126,13 @@ function pp_glossary_get_entries(): array {
 	foreach ( $query->posts as $post ) {
 		$post_id = ( $post instanceof \WP_Post ) ? $post->ID : (int) $post;
 		$title   = ( $post instanceof \WP_Post ) ? $post->post_title : get_the_title( $post_id );
-		$data    = PP_Glossary\Meta_Boxes::get_entry_data( $post_id );
+
+		// Untitled entries have no usable label or glossary anchor.
+		if ( '' === trim( $title ) ) {
+			continue;
+		}
+
+		$data = PP_Glossary\Meta_Boxes::get_entry_data( $post_id );
 
 		// Build array of terms (title + non-empty synonyms).
 		$terms    = [ $title ];
@@ -162,7 +168,14 @@ function pp_glossary_filter_synonyms( $synonyms ): array {
 		return [];
 	}
 
-	return array_values( array_filter( $synonyms ) );
+	return array_values(
+		array_filter(
+			$synonyms,
+			static function ( $synonym ) {
+				return is_string( $synonym ) && '' !== trim( $synonym );
+			}
+		)
+	);
 }
 
 /**

@@ -126,6 +126,10 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 == Changelog ==
 
+= Unreleased =
+
+* Skip untitled glossary entries and empty synonyms without dropping the valid term "0".
+
 = 1.3.1 =
 
 * Added uninstall.php to clean up all plugin data (glossary posts, meta, and options) on deletion.
