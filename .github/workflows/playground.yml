@@ -75,22 +75,28 @@ jobs:
 
       - name: Prepare blueprint with artifact link
         id: blueprint
+        env:
+          BLUEPRINT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          BLUEPRINT_REPOSITORY: ${{ github.repository }}
+          BLUEPRINT_RUN_ID: ${{ github.run_id }}
+          BLUEPRINT_PLUGIN: ${{ github.event.repository.name }}
         run: |
           set -euxo pipefail
-          ARTIFACT_URL="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/${{ github.event.repository.name }}.zip"
-          XML_URL="https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/${{ github.head_ref || github.ref_name }}/.wordpress-org/blueprints/blueprint.xml"
-          echo "XML URL: $XML_URL"
 
-          # Use Node.js to parse, modify, and stringify the JSON
-          BLUEPRINT=$(node -e "
+          BLUEPRINT=$(node <<'NODE'
             const fs = require('fs');
+            const { BLUEPRINT_BRANCH, BLUEPRINT_REPOSITORY, BLUEPRINT_RUN_ID, BLUEPRINT_PLUGIN } = process.env;
+            const artifactUrl = `https://nightly.link/${BLUEPRINT_REPOSITORY}/actions/runs/${BLUEPRINT_RUN_ID}/${BLUEPRINT_PLUGIN}.zip`;
+            const branch = BLUEPRINT_BRANCH.split('/').map(encodeURIComponent).join('/');
+            const xmlUrl = `https://raw.githubusercontent.com/${BLUEPRINT_REPOSITORY}/refs/heads/${branch}/.wordpress-org/blueprints/blueprint.xml`;
             const blueprint = JSON.parse(fs.readFileSync('.wordpress-org/blueprints/blueprint.json', 'utf8'));
             blueprint.plugins = blueprint.plugins.map(plugin =>
-              plugin === '${{ github.event.repository.name }}' ? '$ARTIFACT_URL' : plugin
+              plugin === BLUEPRINT_PLUGIN ? artifactUrl : plugin
             );
-            blueprint.steps[1].file.url = '$XML_URL';
+            blueprint.steps[1].file.url = xmlUrl;
             console.log(JSON.stringify(blueprint));
-          ")
+          NODE
+          )
 
           # Base64 encode the blueprint
           ENCODED_BLUEPRINT=$(echo -n "$BLUEPRINT" | base64 -w 0)
