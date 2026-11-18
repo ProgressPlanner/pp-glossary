@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Preserve backslashes in glossary descriptions and synonyms during saves and legacy migration.
