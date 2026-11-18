@@ -159,5 +159,7 @@ GPL v3 or later
 ### Unreleased
 
 - Match glossary terms only in text outside HTML markup, character references, and protected elements, including nested exclusions.
+- Exclude password-protected glossary entries from popovers, the glossary block, and structured data.
+- Restrict glossary creation, editing, publishing, and deletion to administrators with manage_options.
 - Validated core glossary functionality on WordPress 7.2 RC1 and updated the tested-up-to header.
 - Use standalone Composer to install the archive command in CI, avoiding WP-CLI’s bundled Composer token-format error.
