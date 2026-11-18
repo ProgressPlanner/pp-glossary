@@ -21,7 +21,7 @@ jobs:
       with:
         php-version: '8.0'
         extensions: dom, curl, json
-        tools: wp-cli
+        tools: composer:v2, wp-cli
 
     - name: Check for composer.json
       id: composer-check
@@ -99,12 +99,16 @@ jobs:
       run: syft . -o cyclonedx-json=sbom-${{ github.event.release.tag_name }}.json
 
     # === Build plugin ===
-    - name: Install latest version of dist-archive-command
-      run: wp package install wp-cli/dist-archive-command:^3.1
+    - name: Install dist-archive-command
+      run: |
+        mkdir -p "$RUNNER_TEMP/wp-cli-dist"
+        composer require --working-dir="$RUNNER_TEMP/wp-cli-dist" \
+          --no-interaction --no-plugins --no-scripts --prefer-dist \
+          'wp-cli/dist-archive-command:^3.1'
 
     - name: Build plugin
       run: |
-        wp dist-archive . ./${{ github.event.repository.name }}.zip
+        wp --require="$RUNNER_TEMP/wp-cli-dist/vendor/autoload.php" dist-archive . ./${{ github.event.repository.name }}.zip
 
     # === Check that the SBOM was generated ===
     - name: Verify SBOM exists

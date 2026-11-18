@@ -2,7 +2,7 @@
 Contributors: joostdevalk, aristath, filipi, progressplanner
 Tags: glossary, definitions, popover, accessibility, schema
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.2
 Requires PHP: 7.4
 Stable tag: 1.3.1
 License: GPLv3 or later
@@ -129,6 +129,8 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 = Unreleased =
 
 * Pin workflow actions to immutable commits, verify the pinned Syft archive checksum, and declare token permissions explicitly.
+* Validated core glossary functionality on WordPress 7.2 RC1 and updated the tested-up-to header.
+* Use standalone Composer to install the archive command in CI, avoiding WP-CLI’s bundled Composer token-format error.
 
 = 1.3.1 =
 
