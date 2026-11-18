@@ -18,4 +18,5 @@ phpcs.xml
 phpstan.neon.dist
 phpunit.xml.dist
 README.md
+tests/
 docs/testing/
