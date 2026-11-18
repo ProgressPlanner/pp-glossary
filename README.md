@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Restrict glossary creation, editing, publishing, and deletion to administrators with manage_options.
