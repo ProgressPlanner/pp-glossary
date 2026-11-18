@@ -131,7 +131,7 @@ class Content_Filter {
 
 			foreach ( $parts as $part ) {
 				// If already replaced or this matches an excluded tag pattern, keep as-is.
-				if ( $replaced || preg_match( $excluded_pattern, $part ) ) {
+				if ( $replaced || ( ! empty( $excluded_tags ) && preg_match( $excluded_pattern, $part ) ) ) {
 					$new_parts[] = $part;
 					continue;
 				}

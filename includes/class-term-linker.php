@@ -81,7 +81,7 @@ class Term_Linker {
 
 			foreach ( $parts as $part ) {
 				// If already replaced or this is an excluded tag, keep as-is.
-				if ( $replaced || preg_match( $excluded_pattern, $part ) ) {
+				if ( $replaced || ( ! empty( $excluded_tags ) && preg_match( $excluded_pattern, $part ) ) ) {
 					$new_parts[] = $part;
 					continue;
 				}
