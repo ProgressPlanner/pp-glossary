@@ -1,0 +1,26 @@
+{
+	"name": "pp-glossary",
+	"version": "1.3.1",
+	"private": true,
+	"description": "An accessible WordPress glossary plugin with auto-linking definitions, popovers, and structured data.",
+	"author": "Team Progress Planner",
+	"license": "GPL-3.0-or-later",
+	"keywords": [
+		"WordPress",
+		"plugin"
+	],
+	"engines": {
+		"node": ">=20.10.0",
+		"npm": ">=10.2.3"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "*"
+	},
+	"scripts": {
+		"format": "wp-scripts format ./assets ./blocks",
+		"lint:css": "wp-scripts lint-style \"assets/**/*.css\"",
+		"lint:css:fix": "npm run lint:css -- --fix",
+		"lint:js": "wp-scripts lint-js ./assets/js ./blocks",
+		"lint:js:fix": "npm run lint:js -- --fix"
+	}
+}
