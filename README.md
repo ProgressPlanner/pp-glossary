@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Add commit-pinned pull request readme previews with preflight warnings and expandable passing checks.
