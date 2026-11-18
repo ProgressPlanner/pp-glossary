@@ -128,6 +128,7 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 = Unreleased =
 
+* Pass pull request branch names through environment variables when generating Playground blueprints.
 * Run the weekly dependency security scan in ProgressPlanner/pp-glossary while keeping fork schedules disabled.
 * Pin workflow actions to immutable commits, verify the pinned Syft archive checksum, and declare token permissions explicitly.
 * Match glossary terms only in text outside HTML markup, character references, and protected elements, including nested exclusions.
