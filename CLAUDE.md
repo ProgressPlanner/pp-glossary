@@ -75,6 +75,7 @@ pp-glossary/
 
 1. **Post Type Registration** (`includes/class-post-type.php`)
    - Post type slug: `pp_glossary`
+   - Dedicated capability type with mutation capabilities mapped to `manage_options`; Authors and Editors cannot manage site-wide glossary content.
    - Supports: `title` only (no editor, no revisions - all data is in post meta)
    - `has_archive` set to `false` (uses block instead)
    - `publicly_queryable` set to `false` (no individual entry pages)
