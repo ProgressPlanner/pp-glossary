@@ -133,6 +133,7 @@ Your glossary entries and settings are kept by default and become available agai
 = Unreleased =
 
 * Keep glossary entries and settings on uninstall by default, with an optional setting for permanent deletion.
+* Include trashed entries and auto-drafts when permanent deletion is enabled.
 * Add commit-pinned pull request readme previews with preflight warnings and expandable passing checks.
 * Keep popover IDs unique across multiple posts rendered in the same request.
 * Preserve the database migration version when settings are saved and support programmatic settings updates.

@@ -18,12 +18,12 @@ if ( ! is_array( $pp_glossary_settings ) || true !== ( $pp_glossary_settings['de
 	return;
 }
 
-// Delete all glossary posts and their meta.
+// Include internal statuses such as trash and auto-draft, which 'any' excludes.
 $pp_glossary_posts = get_posts(
 	[
 		'post_type'      => 'pp_glossary',
 		'posts_per_page' => -1,
-		'post_status'    => 'any',
+		'post_status'    => array_values( get_post_stati() ),
 		'fields'         => 'ids',
 	]
 );
