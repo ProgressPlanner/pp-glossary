@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Exclude password-protected glossary entries from popovers, the glossary block, and structured data.
