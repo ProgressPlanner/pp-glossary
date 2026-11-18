@@ -158,6 +158,7 @@ GPL v3 or later
 
 ### Unreleased
 
+- Preserve the database migration version when settings are saved and support programmatic settings updates.
 - Preserve backslashes in glossary descriptions and synonyms during saves and legacy migration.
 - Keep term linking working when the excluded HTML tags setting is empty.
 - Skip untitled glossary entries and empty synonyms without dropping the valid term "0".

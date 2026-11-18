@@ -142,7 +142,7 @@ All custom field data is stored in a single WordPress post meta key `_pp_glossar
 
 Retrieved using `Meta_Boxes::get_entry_data($post_id)` which handles defaults. Saved using `update_post_meta()`.
 
-**Migration**: The plugin includes an automatic migration system that converts old separate meta keys to the new consolidated format on upgrade.
+**Migration**: The plugin includes an automatic migration system that converts old separate meta keys to the new consolidated format on upgrade. Settings sanitization retains the stored `db_version` when the form omits it and accepts explicit version updates from migrations. Excluded tags support both form strings and programmatic arrays.
 
 ## HTML Structure Pattern
 
