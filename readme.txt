@@ -116,6 +116,10 @@ Yes. Glossary integrates with Yoast SEO and adds glossary structured data to Yoa
 
 Yes. Glossary uses CSS custom properties, so you can adapt colors and visual styling in your theme or custom CSS.
 
+= What happens to my data when I delete the plugin? =
+
+Your glossary entries and settings are kept by default and become available again if you reinstall the plugin. To permanently delete them, go to **Glossary → Settings**, enable **Delete glossary entries and settings when uninstalling**, and save before deleting the plugin. Deactivating the plugin does not delete data.
+
 == Screenshots ==
 
 1. Create a WordPress glossary entry with a short definition, long description, and synonyms.
@@ -128,6 +132,8 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 = Unreleased =
 
+* Keep glossary entries and settings on uninstall by default, with an optional setting for permanent deletion.
+* Include trashed entries and auto-drafts when permanent deletion is enabled.
 * Update the commit-pinned Plugin Check action to v1.1.9 for upstream startup and bundle fixes.
 * Add commit-pinned pull request readme previews with preflight warnings and expandable passing checks.
 * Keep popover IDs unique across multiple posts rendered in the same request.
