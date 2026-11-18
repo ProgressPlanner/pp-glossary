@@ -5,7 +5,6 @@
 .wordpress-org/
 vendor/
 node_modules/
-tests/
 .distignore
 .gitattributes
 .gitignore
