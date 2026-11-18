@@ -139,6 +139,10 @@ add_filter( 'pp_glossary_disabled_post_types', function( $post_types ) {
 } );
 ```
 
+## Uninstalling
+
+Glossary keeps your entries and settings when you delete the plugin, so they are available if you reinstall it. To remove them permanently, go to **Glossary → Settings**, enable **Delete glossary entries and settings when uninstalling**, and save before deleting the plugin. Deactivating the plugin does not delete data.
+
 ## Development
 
 No build step is required.
@@ -158,6 +162,7 @@ GPL v3 or later
 
 ### Unreleased
 
+- Keep glossary entries and settings on uninstall by default, with an optional setting for permanent deletion.
 - Add commit-pinned pull request readme previews with preflight warnings and expandable passing checks.
 - Keep popover IDs unique across multiple posts rendered in the same request.
 - Preserve the database migration version when settings are saved and support programmatic settings updates.

@@ -2,7 +2,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * Cleans up all plugin data including glossary posts, post meta, and options.
+ * Cleans up glossary posts, post meta, and options only when explicitly enabled.
  *
  * @package PP_Glossary
  */
@@ -10,6 +10,12 @@
 // If uninstall not called from WordPress, abort.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	die;
+}
+
+// Preserve data unless an administrator explicitly opted into deletion.
+$pp_glossary_settings = get_option( 'pp_glossary_settings', [] );
+if ( ! is_array( $pp_glossary_settings ) || true !== ( $pp_glossary_settings['delete_data_on_uninstall'] ?? false ) ) {
+	return;
 }
 
 // Delete all glossary posts and their meta.

@@ -109,6 +109,9 @@ pp-glossary/
      - `glossary_page` (int) - ID of the page containing the glossary block
      - `excluded_tags` (array) - HTML tags where terms should not be highlighted (default: `a`, `h1`-`h6`)
      - `excluded_post_types` (array) - Post types where terms should not be highlighted
+     - `delete_data_on_uninstall` (boolean, default `false`) - Explicit opt-in to permanently delete glossary entries, post meta, and settings when uninstalling
+   - Uninstall preserves entries and settings unless the stored deletion preference is strictly `true`; installations without the setting also retain their data.
+   - `render_delete_data_on_uninstall_field()` displays the unchecked-by-default preference under Uninstall settings.
    - Methods: `get_glossary_page_id()`, `get_glossary_page_url()`, `get_excluded_tags()`, `get_excluded_post_types()`
 
 5. **Block System** (`includes/class-blocks.php`, `blocks/glossary-list/`)

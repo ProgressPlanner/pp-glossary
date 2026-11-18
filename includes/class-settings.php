@@ -92,6 +92,21 @@ class Settings {
 			'pp-glossary-settings',
 			'pp_glossary_display_section'
 		);
+
+		add_settings_section(
+			'pp_glossary_uninstall_section',
+			__( 'Uninstall settings', 'pp-glossary' ),
+			'__return_false',
+			'pp-glossary-settings'
+		);
+
+		add_settings_field(
+			'delete_data_on_uninstall',
+			__( 'Data retention', 'pp-glossary' ),
+			[ __CLASS__, 'render_delete_data_on_uninstall_field' ],
+			'pp-glossary-settings',
+			'pp_glossary_uninstall_section'
+		);
 	}
 
 	/**
@@ -222,6 +237,24 @@ class Settings {
 	}
 
 	/**
+	 * Render the uninstall data deletion preference.
+	 */
+	public static function render_delete_data_on_uninstall_field(): void {
+		$settings = self::get_settings();
+
+		printf(
+			'<label><input type="checkbox" name="%s[delete_data_on_uninstall]" value="1" %s /> %s</label>',
+			esc_attr( self::OPTION_NAME ),
+			checked( true, $settings['delete_data_on_uninstall'], false ),
+			esc_html__( 'Delete glossary entries and settings when uninstalling', 'pp-glossary' )
+		);
+
+		echo '<p class="description">';
+		echo esc_html__( 'By default, your glossary entries and settings are kept so you can reinstall the plugin. Enable this option and save changes before deleting the plugin to permanently remove this data. This cannot be undone. Deactivating the plugin does not delete data.', 'pp-glossary' );
+		echo '</p>';
+	}
+
+	/**
 	 * Sanitize settings
 	 *
 	 * @param array<string, mixed> $input Settings input.
@@ -265,6 +298,9 @@ class Settings {
 			$sanitized['excluded_post_types'] = [];
 		}
 
+		$sanitized['delete_data_on_uninstall'] = isset( $input['delete_data_on_uninstall'] )
+			&& in_array( $input['delete_data_on_uninstall'], [ true, 1, '1' ], true );
+
 		return $sanitized;
 	}
 
@@ -275,10 +311,11 @@ class Settings {
 	 */
 	public static function get_settings(): array {
 		$defaults = [
-			'glossary_page'       => 0,
-			'excluded_tags'       => self::DEFAULT_EXCLUDED_TAGS,
-			'excluded_post_types' => [],
-			'db_version'          => PP_GLOSSARY_VERSION,
+			'glossary_page'            => 0,
+			'excluded_tags'            => self::DEFAULT_EXCLUDED_TAGS,
+			'excluded_post_types'      => [],
+			'delete_data_on_uninstall' => false,
+			'db_version'               => PP_GLOSSARY_VERSION,
 		];
 
 		$settings = get_option( self::OPTION_NAME, [] );
