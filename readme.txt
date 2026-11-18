@@ -126,6 +126,10 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 == Changelog ==
 
+= Unreleased =
+
+* Preserve the database migration version when settings are saved and support programmatic settings updates.
+
 = 1.3.1 =
 
 * Added uninstall.php to clean up all plugin data (glossary posts, meta, and options) on deletion.

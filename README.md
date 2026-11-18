@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Preserve the database migration version when settings are saved and support programmatic settings updates.
