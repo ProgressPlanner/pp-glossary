@@ -341,12 +341,32 @@ This ensures that search engines see synonyms as an array regardless of the sche
 
 No build process required - vanilla JavaScript and CSS.
 
-**Linting**:
+**PHP linting**:
 ```bash
 composer install
-composer run phpcs    # Check coding standards
-composer run phpcbf   # Fix coding standards
+composer check-cs     # Check coding standards
+composer fix-cs       # Fix coding standards
 ```
+
+**JS/CSS linting** (`@wordpress/scripts`, config in `package.json`):
+```bash
+npm ci
+npm run lint:js       # ESLint on assets/js and blocks (lint:js:fix to autofix)
+npm run lint:css      # Stylelint on assets/**/*.css (lint:css:fix to autofix)
+```
+
+**Tests** (PHPUnit integration tests against a real WordPress, in `tests/phpunit/`):
+```bash
+tests/bin/install-wp-tests.sh wordpress_tests root '' 127.0.0.1 latest   # Once: installs WP + test library, needs MySQL
+composer test                    # Single site
+WP_MULTISITE=1 composer test     # Multisite
+```
+
+- Test files are named `test-*.php` and extend `PP_Glossary\Tests\Glossary_TestCase` (`tests/phpunit/class-glossary-testcase.php`).
+- `pp_glossary_get_entries()` and `pp_glossary_get_linkable_entries()` cache in a function-level static that cannot be reset. The base class therefore creates one fixed set of glossary entries and primes the caches once per run; entries a test creates itself never show up in those helpers. Add new fixture entries in `Glossary_TestCase::fixture_entries()`.
+- Run a single class with `composer test -- --filter Content_Filter_Test` (passing a file path does not work with these file names).
+
+**CI workflows** (`.github/workflows/`): `cs.yml`, `lint.yml`, `phpstan.yml`, `test.yml` (PHPUnit), `lint-js-css.yml`, `security.yml`, `composer-diff.yml`, `plugin-check.yml`, `playground.yml`, `wp-version-checker.yml`, `image-actions.yml`, `zip-sbom.yml` (release ZIP). New actions are pinned to a full commit SHA.
 
 ## Important Implementation Details
 
