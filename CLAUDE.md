@@ -338,6 +338,8 @@ The `alternateName` property (synonyms) is output as an array in both formats, b
 
 This ensures that search engines see synonyms as an array regardless of the schema format used.
 
+Run `php tests/text-matcher.php` for standalone HTML matching regression checks.
+
 ## Development Commands
 
 No build process required - vanilla JavaScript and CSS.
@@ -357,11 +359,10 @@ composer run phpcbf   # Fix coding standards
 - Entries with `disable_autolink` enabled are skipped entirely
 - Content inside excluded HTML tags is skipped (configurable via settings, default: `a`, `h1`-`h6`)
 - Post types in the excluded list are skipped entirely (configurable via settings)
-- Uses regex pattern: `/\b({term})\b(?![^<]*>)/u` (or `/iu` for case-insensitive)
-  - `\b` = word boundaries
-  - `(?![^<]*>)` = negative lookahead to avoid matching inside HTML tags
-  - `i` flag = case-insensitive (omitted when `case_sensitive` is enabled)
-  - `u` flag = Unicode support
+- `Text_Matcher::find()` tokenizes HTML with quote-aware boundaries before matching text; it preserves attributes, comments, and character references.
+- Always excludes links, existing definitions, scripts, styles, form controls, SVG/MathML, templates, and raw-text elements, in addition to configured exclusions.
+- Tracks nested excluded elements and uses case-sensitive or case-insensitive Unicode word matching only in eligible text chunks.
+- Works on the existing WordPress 6.0 / PHP 7.4 minimum without requiring newer HTML API methods.
 - Only replaces first occurrence per entry per content piece
 
 ### State Management

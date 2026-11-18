@@ -128,6 +128,7 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 = Unreleased =
 
+* Match glossary terms only in text outside HTML markup, character references, and protected elements, including nested exclusions.
 * Exclude password-protected glossary entries from popovers, the glossary block, and structured data.
 * Restrict glossary creation, editing, publishing, and deletion to administrators with manage_options.
 * Validated core glossary functionality on WordPress 7.2 RC1 and updated the tested-up-to header.
