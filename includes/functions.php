@@ -118,6 +118,7 @@ function pp_glossary_get_entries(): array {
 			'post_type'      => 'pp_glossary',
 			'posts_per_page' => -1,
 			'post_status'    => 'publish',
+			'has_password'   => false,
 			'orderby'        => 'title',
 			'order'          => 'ASC',
 		]
