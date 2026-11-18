@@ -126,6 +126,10 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 == Changelog ==
 
+= Unreleased =
+
+* Run the weekly dependency security scan in ProgressPlanner/pp-glossary while keeping fork schedules disabled.
+
 = 1.3.1 =
 
 * Added uninstall.php to clean up all plugin data (glossary posts, meta, and options) on deletion.

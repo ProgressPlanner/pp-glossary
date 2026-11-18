@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Run the weekly dependency security scan in ProgressPlanner/pp-glossary while keeping fork schedules disabled.
