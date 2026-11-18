@@ -338,7 +338,7 @@ The `alternateName` property (synonyms) is output as an array in both formats, b
 
 This ensures that search engines see synonyms as an array regardless of the schema format used.
 
-Run `php tests/text-matcher.php` for standalone HTML matching regression checks.
+The HTML matching regression checks for `Text_Matcher` live in `tests/phpunit/test-class-text-matcher.php` and run with `composer test`.
 
 ## Development Commands
 
