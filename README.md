@@ -158,6 +158,7 @@ GPL v3 or later
 
 ### Unreleased
 
+- Preserve backslashes in glossary descriptions and synonyms during saves and legacy migration.
 - Keep term linking working when the excluded HTML tags setting is empty.
 - Skip untitled glossary entries and empty synonyms without dropping the valid term "0".
 - Update PHP_CodeSniffer, Symfony Process, and Symfony Filesystem to resolve remaining development dependency advisories.
