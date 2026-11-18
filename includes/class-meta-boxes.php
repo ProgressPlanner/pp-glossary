@@ -254,7 +254,7 @@ class Meta_Boxes {
 			}
 		}
 
-		update_post_meta( $post_id, '_pp_glossary_data', $data );
+		update_post_meta( $post_id, '_pp_glossary_data', wp_slash( $data ) );
 	}
 
 	/**
