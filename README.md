@@ -159,3 +159,5 @@ GPL v3 or later
 ### Unreleased
 
 - Keep popover IDs unique across multiple posts rendered in the same request.
+- Validated core glossary functionality on WordPress 7.2 RC1 and updated the tested-up-to header.
+- Use standalone Composer to install the archive command in CI, avoiding WP-CLI’s bundled Composer token-format error.
