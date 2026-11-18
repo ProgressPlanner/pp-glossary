@@ -126,6 +126,10 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 == Changelog ==
 
+= Unreleased =
+
+* Pin workflow actions to immutable commits, verify the pinned Syft archive checksum, and declare token permissions explicitly.
+
 = 1.3.1 =
 
 * Added uninstall.php to clean up all plugin data (glossary posts, meta, and options) on deletion.

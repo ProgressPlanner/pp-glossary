@@ -153,3 +153,9 @@ composer run phpstan
 ## License
 
 GPL v3 or later
+
+## Changelog
+
+### Unreleased
+
+- Pin workflow actions to immutable commits, verify the pinned Syft archive checksum, and declare token permissions explicitly.

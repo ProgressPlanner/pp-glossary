@@ -4,17 +4,20 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   build_artifact:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        persist-credentials: false
         fetch-depth: 0
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
       with:
         php-version: '8.0'
         extensions: dom, curl, json
@@ -35,7 +38,7 @@ jobs:
 
     - name: Cache Composer dependencies
       if: steps.composer-check.outputs.exists == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
       with:
         path: ${{ steps.composer-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -57,7 +60,7 @@ jobs:
 
     - name: Setup Node.js
       if: steps.npm-check.outputs.exists == 'true'
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: '18'
         cache: 'npm'
@@ -83,7 +86,14 @@ jobs:
     # === Generate SBOM before creating the build ===
     - name: Install Syft
       run: |
-        curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+        curl --fail --silent --show-error --location \
+          https://github.com/anchore/syft/releases/download/v1.57.2/syft_1.57.2_linux_amd64.tar.gz \
+          --output syft.tar.gz
+        echo 'ad92bd3ec1b94a3df01d4d0aec199afa9c42b72e86da436ff5f837914d32706b  syft.tar.gz' | sha256sum --check --strict
+        mkdir -p "$RUNNER_TEMP/syft"
+        tar -xzf syft.tar.gz -C "$RUNNER_TEMP/syft" syft
+        echo "$RUNNER_TEMP/syft" >> "$GITHUB_PATH"
+        rm syft.tar.gz
 
     - name: Generate SBOM
       run: syft . -o cyclonedx-json=sbom-${{ github.event.release.tag_name }}.json
@@ -103,6 +113,26 @@ jobs:
           echo "SBOM generation failed"
           exit 1
         fi
+
+    - name: Store release files
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+      with:
+        name: release-files
+        path: |
+          sbom-${{ github.event.release.tag_name }}.json
+          ${{ github.event.repository.name }}.zip
+        if-no-files-found: error
+
+  publish_artifact:
+    needs: build_artifact
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+    - name: Download release files
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+      with:
+        name: release-files
 
     # === Get existing release body and append SBOM info ===
     - name: Get existing release body
@@ -129,7 +159,7 @@ jobs:
 
     # === Upload both artifact and SBOM to release ===
     - name: Upload artifact to release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
       with:
         files: |
           sbom-${{ github.event.release.tag_name }}.json
