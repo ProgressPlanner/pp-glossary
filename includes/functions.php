@@ -83,6 +83,10 @@ function pp_glossary_get_excluded_tags(): array {
  * @return array<int, string>|false Array of parts, or false on regex failure.
  */
 function pp_glossary_split_by_excluded_tags( string $text, array $excluded_tags ) {
+	if ( empty( $excluded_tags ) ) {
+		return [ $text ];
+	}
+
 	$excluded_pattern = implode(
 		'|',
 		array_map(
