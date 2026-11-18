@@ -69,9 +69,13 @@ jobs:
           ini-values: zend.assertions=1, error_reporting=-1, display_errors=On
           coverage: none
 
-      # The lock file targets the PHP version used for the CS and static analysis
-      # tooling. The tests only need the test utilities, so drop the rest and let
-      # Composer resolve versions that fit the PHP version under test.
+      # The lock file and the Composer platform setting target the PHP version used
+      # for the CS and static analysis tooling. The tests only need the test
+      # utilities, so drop the rest and let Composer resolve versions that fit the
+      # PHP version under test.
+      - name: 'Composer: remove the PHP platform requirement'
+        run: composer config --unset platform.php
+
       - name: 'Composer: remove the dependencies the tests do not need'
         run: >
           composer remove --no-update --dev --no-scripts --no-interaction
