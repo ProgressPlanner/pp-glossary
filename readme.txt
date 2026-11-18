@@ -128,6 +128,7 @@ Yes. Glossary uses CSS custom properties, so you can adapt colors and visual sty
 
 = Unreleased =
 
+* Update the commit-pinned Plugin Check action to v1.1.9 for upstream startup and bundle fixes.
 * Add commit-pinned pull request readme previews with preflight warnings and expandable passing checks.
 * Keep popover IDs unique across multiple posts rendered in the same request.
 * Preserve the database migration version when settings are saved and support programmatic settings updates.
