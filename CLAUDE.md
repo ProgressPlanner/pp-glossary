@@ -112,6 +112,7 @@ pp-glossary/
      - `delete_data_on_uninstall` (boolean, default `false`) - Explicit opt-in to permanently delete glossary entries, post meta, and settings when uninstalling
    - Uninstall preserves entries and settings unless the stored deletion preference is strictly `true`; installations without the setting also retain their data.
    - Opt-in cleanup explicitly queries every registered post status, including `trash` and `auto-draft`, since WordPress excludes these from `post_status => 'any'`.
+   - Multisite uninstall visits every site in batches of 100, checks that site's own deletion preference, and restores the original blog context after each cleanup. Retained sites are never modified.
    - `render_delete_data_on_uninstall_field()` displays the unchecked-by-default preference under Uninstall settings.
    - Methods: `get_glossary_page_id()`, `get_glossary_page_url()`, `get_excluded_tags()`, `get_excluded_post_types()`
 
@@ -370,6 +371,7 @@ WP_MULTISITE=1 composer test     # Multisite
 ```
 
 - Test files are named `test-*.php` and extend `PP_Glossary\Tests\Glossary_TestCase` (`tests/phpunit/class-glossary-testcase.php`).
+- `Uninstall_Test` uses `WP_UnitTestCase` directly to test the real uninstall entry point without the shared glossary cache. It covers strict deletion consent, all seven post statuses, mixed multisite preferences, unrelated content retention, and restoring the calling site's context.
 - `pp_glossary_get_entries()` and `pp_glossary_get_linkable_entries()` cache in a function-level static that cannot be reset. The base class therefore creates one fixed set of glossary entries and primes the caches once per run; entries a test creates itself never show up in those helpers. Add new fixture entries in `Glossary_TestCase::fixture_entries()`.
 - Run a single class with `composer test -- --filter Content_Filter_Test` (passing a file path does not work with these file names).
 
