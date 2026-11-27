@@ -20,10 +20,11 @@ class Settings_Test extends Glossary_TestCase {
 	public function test_defaults() {
 		$this->assertSame(
 			[
-				'glossary_page'       => 0,
-				'excluded_tags'       => [ 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
-				'excluded_post_types' => [],
-				'db_version'          => PP_GLOSSARY_VERSION,
+				'glossary_page'            => 0,
+				'excluded_tags'            => [ 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
+				'excluded_post_types'      => [],
+				'delete_data_on_uninstall' => false,
+				'db_version'               => PP_GLOSSARY_VERSION,
 			],
 			Settings::get_settings()
 		);
@@ -58,9 +59,10 @@ class Settings_Test extends Glossary_TestCase {
 	public function test_sanitize_settings() {
 		$this->assertSame(
 			[
-				'glossary_page'       => 12,
-				'excluded_tags'       => [ 'a', 'h2', 'blockquote', 'pre' ],
-				'excluded_post_types' => [ 'post', 'mytype' ],
+				'glossary_page'            => 12,
+				'excluded_tags'            => [ 'a', 'h2', 'blockquote', 'pre' ],
+				'excluded_post_types'      => [ 'post', 'mytype' ],
+				'delete_data_on_uninstall' => false,
 			],
 			Settings::sanitize_settings(
 				[
@@ -77,8 +79,35 @@ class Settings_Test extends Glossary_TestCase {
 	 */
 	public function test_sanitize_settings_without_post_types() {
 		$this->assertSame(
-			[ 'excluded_post_types' => [] ],
+			[
+				'excluded_post_types'      => [],
+				'delete_data_on_uninstall' => false,
+			],
 			Settings::sanitize_settings( [] )
 		);
+	}
+
+	/**
+	 * Explicit checkbox consent survives sanitization and option storage.
+	 */
+	public function test_save_uninstall_consent() {
+		foreach ( [ '1', 1, true ] as $value ) {
+			$settings = Settings::sanitize_settings( [ 'delete_data_on_uninstall' => $value ] );
+			update_option( Settings::OPTION_NAME, Settings::sanitize_settings( $settings ) );
+
+			$this->assertTrue( get_option( Settings::OPTION_NAME )['delete_data_on_uninstall'] );
+		}
+	}
+
+	/**
+	 * Saving an unchecked or invalid value clears previous deletion consent.
+	 */
+	public function test_clear_uninstall_consent() {
+		foreach ( [ [], [ 'delete_data_on_uninstall' => '0' ], [ 'delete_data_on_uninstall' => 'false' ], [ 'delete_data_on_uninstall' => [ '1' ] ] ] as $input ) {
+			update_option( Settings::OPTION_NAME, [ 'delete_data_on_uninstall' => true ] );
+			update_option( Settings::OPTION_NAME, Settings::sanitize_settings( $input ) );
+
+			$this->assertFalse( get_option( Settings::OPTION_NAME )['delete_data_on_uninstall'] );
+		}
 	}
 }
